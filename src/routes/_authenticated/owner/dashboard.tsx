@@ -1,4 +1,4 @@
-import { createFileRoute, Link, Outlet, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
@@ -149,6 +149,3 @@ function QuickLink({ to, title, desc }: { to: string; title: string; desc: strin
     </Link>
   );
 }
-
-// Re-export the outlet since we own the layout in each page
-export const _ = Outlet;

@@ -10,11 +10,27 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ConsoleRouteImport } from './routes/console'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthSyncRouteImport } from './routes/auth.sync'
+import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
+import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
+import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
+import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
 
 const ConsoleRoute = ConsoleRouteImport.update({
   id: '/console',
   path: '/console',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -22,30 +38,104 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthSyncRoute = AuthSyncRouteImport.update({
+  id: '/sync',
+  path: '/sync',
+  getParentRoute: () => AuthRoute,
+} as any)
+const AuthenticatedUserDashboardRoute =
+  AuthenticatedUserDashboardRouteImport.update({
+    id: '/user/dashboard',
+    path: '/user/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOwnerUsersRoute = AuthenticatedOwnerUsersRouteImport.update({
+  id: '/owner/users',
+  path: '/owner/users',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOwnerDashboardRoute =
+  AuthenticatedOwnerDashboardRouteImport.update({
+    id: '/owner/dashboard',
+    path: '/owner/dashboard',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOwnerAppsRoute = AuthenticatedOwnerAppsRouteImport.update({
+  id: '/owner/apps',
+  path: '/owner/apps',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/auth/sync': typeof AuthSyncRoute
+  '/owner/apps': typeof AuthenticatedOwnerAppsRoute
+  '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/users': typeof AuthenticatedOwnerUsersRoute
+  '/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/auth/sync': typeof AuthSyncRoute
+  '/owner/apps': typeof AuthenticatedOwnerAppsRoute
+  '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/users': typeof AuthenticatedOwnerUsersRoute
+  '/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/auth/sync': typeof AuthSyncRoute
+  '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
+  '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
+  '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/console'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/console'
+    | '/auth/sync'
+    | '/owner/apps'
+    | '/owner/dashboard'
+    | '/owner/users'
+    | '/user/dashboard'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/console'
-  id: '__root__' | '/' | '/console'
+  to:
+    | '/'
+    | '/auth'
+    | '/console'
+    | '/auth/sync'
+    | '/owner/apps'
+    | '/owner/dashboard'
+    | '/owner/users'
+    | '/user/dashboard'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/console'
+    | '/auth/sync'
+    | '/_authenticated/owner/apps'
+    | '/_authenticated/owner/dashboard'
+    | '/_authenticated/owner/users'
+    | '/_authenticated/user/dashboard'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
   ConsoleRoute: typeof ConsoleRoute
 }
 
@@ -58,6 +148,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ConsoleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -65,11 +169,75 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth/sync': {
+      id: '/auth/sync'
+      path: '/sync'
+      fullPath: '/auth/sync'
+      preLoaderRoute: typeof AuthSyncRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/_authenticated/user/dashboard': {
+      id: '/_authenticated/user/dashboard'
+      path: '/user/dashboard'
+      fullPath: '/user/dashboard'
+      preLoaderRoute: typeof AuthenticatedUserDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/owner/users': {
+      id: '/_authenticated/owner/users'
+      path: '/owner/users'
+      fullPath: '/owner/users'
+      preLoaderRoute: typeof AuthenticatedOwnerUsersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/owner/dashboard': {
+      id: '/_authenticated/owner/dashboard'
+      path: '/owner/dashboard'
+      fullPath: '/owner/dashboard'
+      preLoaderRoute: typeof AuthenticatedOwnerDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/owner/apps': {
+      id: '/_authenticated/owner/apps'
+      path: '/owner/apps'
+      fullPath: '/owner/apps'
+      preLoaderRoute: typeof AuthenticatedOwnerAppsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedOwnerAppsRoute: typeof AuthenticatedOwnerAppsRoute
+  AuthenticatedOwnerDashboardRoute: typeof AuthenticatedOwnerDashboardRoute
+  AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
+  AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedOwnerAppsRoute: AuthenticatedOwnerAppsRoute,
+  AuthenticatedOwnerDashboardRoute: AuthenticatedOwnerDashboardRoute,
+  AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
+  AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface AuthRouteChildren {
+  AuthSyncRoute: typeof AuthSyncRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthSyncRoute: AuthSyncRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRouteWithChildren,
   ConsoleRoute: ConsoleRoute,
 }
 export const routeTree = rootRouteImport
