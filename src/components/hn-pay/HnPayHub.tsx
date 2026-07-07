@@ -924,9 +924,9 @@ function InvoiceLedger({
                   {fmtMoney(inv.amount)}
                 </td>
                 <td className={["px-6 py-4", lang === "ar" ? "text-left" : "text-right"].join(" ")}>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-[11px] font-medium text-emerald-300 shadow-[0_0_18px_rgba(16,185,129,0.35)]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,1)]" />
-                    {t("paid")}
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/50 bg-emerald-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300 shadow-[0_0_22px_rgba(16,185,129,0.5)]">
+                    <ShieldCheck className="h-3 w-3 drop-shadow-[0_0_6px_rgba(16,185,129,1)]" />
+                    {t("encStamp")}
                   </span>
                 </td>
               </tr>
