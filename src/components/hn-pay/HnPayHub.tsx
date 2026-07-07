@@ -382,6 +382,14 @@ function TopBar({
           <span className="font-mono text-[11px] text-emerald-300">{t("nodeStatus")}</span>
         </div>
 
+        <a
+          href="/auth"
+          className="inline-flex items-center gap-2 rounded-xl border border-amber-400/40 bg-gradient-to-b from-amber-400/25 to-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-100 shadow-[0_0_20px_-5px_rgba(251,191,36,0.6)] transition hover:from-amber-400/35"
+        >
+          <Lock className="h-3.5 w-3.5" />
+          {lang === "ar" ? "دخول الحساب" : "Sign in"}
+        </a>
+
         <div className="inline-flex items-center overflow-hidden rounded-xl border border-amber-500/25 bg-black/50 shadow-[0_0_20px_rgba(212,175,55,0.15)] backdrop-blur-xl">
           <Languages className="mx-2.5 h-3.5 w-3.5 text-amber-300/80" />
           {(["en", "ar"] as Lang[]).map((l) => {
