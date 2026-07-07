@@ -67,6 +67,21 @@ const T = {
   amount: { en: "Amount", ar: "المبلغ" },
   status: { en: "Status", ar: "الحالة" },
   paid: { en: "Paid", ar: "مدفوعة" },
+  encStamp: { en: "SUCCESSFULLY ENCRYPTED", ar: "تم التشفير بنجاح" },
+  vaultTitle: { en: "3D Vault · Live Session", ar: "الخزنة ثلاثية الأبعاد · جلسة حيّة" },
+  vaultSub: {
+    en: "Neon credit card, token treasury and encrypted expense telemetry.",
+    ar: "بطاقة نيون ائتمانية، خزينة توكنز وقياسات مصاريف مشفّرة.",
+  },
+  tokenBalance: { en: "Token Balance", ar: "رصيد التوكنز" },
+  spendFlow: { en: "Spend Flow · 30d", ar: "تدفق الإنفاق · ٣٠ي" },
+  buyTokens: { en: "Buy Tokens Pack", ar: "شراء حزمة توكنز" },
+  renewPlan: { en: "Renew SaaS Plan", ar: "تجديد باقة الاشتراك" },
+  cryptoSync: { en: "Sync Crypto Wallet", ar: "ربط محفظة الكريبتو" },
+  dialUsage: { en: "Token Usage", ar: "استهلاك التوكنز" },
+  dialSavings: { en: "Cost Savings", ar: "التوفير المالي" },
+  dialSecurity: { en: "Security Index", ar: "مؤشر الأمان" },
+  liveEncrypt: { en: "Live bank-grade encryption", ar: "تشفير مصرفي مباشر" },
   search: { en: "Search invoices…", ar: "ابحث في الفواتير…" },
   export: { en: "Export", ar: "تصدير" },
   context: { en: "Active Portfolio", ar: "المحفظة النشطة" },
@@ -307,6 +322,7 @@ export function HnPayHub() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10">
         <TopBar lang={lang} setLang={setLang} t={t} />
         <HeroDashboard app={app} lang={lang} t={t} kpis={kpis} appId={appId} setAppId={setAppId} />
+        <Vault3D app={app} lang={lang} t={t} onChoose={setCheckoutPlan} />
         <PricingGrid app={app} lang={lang} t={t} onChoose={setCheckoutPlan} />
         <InvoiceLedger app={app} lang={lang} t={t} query={query} setQuery={setQuery} />
 
@@ -908,9 +924,9 @@ function InvoiceLedger({
                   {fmtMoney(inv.amount)}
                 </td>
                 <td className={["px-6 py-4", lang === "ar" ? "text-left" : "text-right"].join(" ")}>
-                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-[11px] font-medium text-emerald-300 shadow-[0_0_18px_rgba(16,185,129,0.35)]">
-                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,1)]" />
-                    {t("paid")}
+                  <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-400/50 bg-emerald-500/10 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-[0.15em] text-emerald-300 shadow-[0_0_22px_rgba(16,185,129,0.5)]">
+                    <ShieldCheck className="h-3 w-3 drop-shadow-[0_0_6px_rgba(16,185,129,1)]" />
+                    {t("encStamp")}
                   </span>
                 </td>
               </tr>
@@ -1123,5 +1139,273 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       </span>
       {children}
     </label>
+  );
+}
+
+/* ─────────────────────── 3D Vault Section ─────────────────────── */
+
+function Vault3D({
+  app,
+  lang,
+  t,
+  onChoose,
+}: {
+  app: AppContext;
+  lang: Lang;
+  t: (k: keyof typeof T) => string;
+  onChoose: (p: PlanTier) => void;
+}) {
+  const tokens = 12480;
+  const cap = 20000;
+  const usagePct = Math.round((tokens / cap) * 100);
+  const savingsPct = 68;
+  const securityPct = 99;
+
+  // deterministic sparkline points
+  const pts = Array.from({ length: 24 }, (_, i) => {
+    const seed = Math.sin((i + 1) * (app.id.length + 3)) * 10000;
+    const v = Math.abs(seed - Math.floor(seed));
+    return 40 - v * 30 - (i % 4) * 1.2;
+  });
+  const path = pts
+    .map((y, i) => `${i === 0 ? "M" : "L"} ${(i / (pts.length - 1)) * 300} ${y + 10}`)
+    .join(" ");
+  const area = `${path} L 300 60 L 0 60 Z`;
+
+  return (
+    <section className="mt-12">
+      <div className="mb-5">
+        <div className="text-[11px] uppercase tracking-[0.28em] text-amber-300/70">
+          {t("vaultTitle")}
+        </div>
+        <h3 className="mt-1 text-2xl font-bold text-white">{t("vaultSub")}</h3>
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-10">
+        {/* Left 70% — Vault + Card + Spend Chart */}
+        <div className="lg:col-span-7">
+          <div
+            className="relative overflow-hidden rounded-3xl border border-amber-400/25 bg-gradient-to-br from-black/80 via-neutral-950/90 to-black shadow-[0_0_60px_-10px_rgba(212,175,55,0.35)] backdrop-blur-2xl"
+            style={{ perspective: "1200px" }}
+          >
+            <div className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-amber-500/20 blur-[110px]" />
+            <div className="pointer-events-none absolute -bottom-32 -right-24 h-80 w-80 rounded-full bg-cyan-400/10 blur-[130px]" />
+            <div className="pointer-events-none absolute inset-0 opacity-[0.06]"
+              style={{
+                backgroundImage:
+                  "linear-gradient(rgba(212,175,55,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(212,175,55,0.4) 1px, transparent 1px)",
+                backgroundSize: "36px 36px",
+              }}
+            />
+            <div className="relative grid gap-6 p-6 md:grid-cols-2 md:p-8">
+              {/* Neon Card */}
+              <div
+                className="group relative aspect-[1.6/1] rounded-2xl border border-amber-300/40 bg-gradient-to-br from-[#1a1305] via-[#0a0a12] to-[#080a18] p-5 shadow-[0_25px_50px_-15px_rgba(212,175,55,0.55),0_0_0_1px_rgba(255,215,120,0.08)_inset] transition-transform duration-500"
+                style={{ transform: "rotateX(6deg) rotateY(-8deg)" }}
+              >
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br from-amber-400/10 via-transparent to-cyan-400/10" />
+                <div className="pointer-events-none absolute inset-x-4 top-4 h-px bg-gradient-to-r from-transparent via-amber-300/60 to-transparent" />
+                <div className="relative flex items-start justify-between">
+                  <div>
+                    <div className="text-[9px] font-semibold uppercase tracking-[0.35em] text-amber-300/80">
+                      HN · Vault Card
+                    </div>
+                    <div className="mt-1 text-[10px] text-neutral-500">{app.name[lang]}</div>
+                  </div>
+                  <div className="flex h-8 w-10 items-center justify-center rounded-md bg-gradient-to-br from-amber-300/70 to-yellow-600/40 shadow-inner">
+                    <div className="h-4 w-6 rounded-sm border border-amber-500/40 bg-black/40" />
+                  </div>
+                </div>
+                <div className="relative mt-6 font-mono text-lg tracking-[0.3em] text-amber-100 drop-shadow-[0_0_10px_rgba(251,191,36,0.55)]">
+                  •••• •••• •••• 8181
+                </div>
+                <div className="relative mt-4 flex items-end justify-between">
+                  <div>
+                    <div className="text-[9px] uppercase tracking-widest text-neutral-500">
+                      {t("tokenBalance")}
+                    </div>
+                    <div className="mt-0.5 bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-400 bg-clip-text font-mono text-2xl font-black text-transparent">
+                      {tokens.toLocaleString()} ◈
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-[9px] uppercase tracking-widest text-neutral-500">
+                      HOLDER
+                    </div>
+                    <div className="mt-0.5 font-mono text-xs text-amber-200">H. MOULAY</div>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+                  <div className="absolute -inset-x-1/2 top-1/3 h-24 -rotate-12 bg-gradient-to-r from-transparent via-white/10 to-transparent blur-md animate-[shimmer_5s_linear_infinite]"
+                    style={{ backgroundSize: "200% 100%" }} />
+                </div>
+              </div>
+
+              {/* Spend Chart */}
+              <div className="relative rounded-2xl border border-amber-500/15 bg-black/60 p-5">
+                <div className="flex items-center justify-between">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.28em] text-amber-300/80">
+                    {t("spendFlow")}
+                  </div>
+                  <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-300">
+                    +{savingsPct}% saved
+                  </span>
+                </div>
+                <svg viewBox="0 0 300 70" className="mt-3 h-32 w-full">
+                  <defs>
+                    <linearGradient id="spendFill" x1="0" x2="0" y1="0" y2="1">
+                      <stop offset="0%" stopColor="rgb(251,191,36)" stopOpacity="0.55" />
+                      <stop offset="100%" stopColor="rgb(251,191,36)" stopOpacity="0" />
+                    </linearGradient>
+                    <linearGradient id="spendLine" x1="0" x2="1" y1="0" y2="0">
+                      <stop offset="0%" stopColor="#fde68a" />
+                      <stop offset="100%" stopColor="#f59e0b" />
+                    </linearGradient>
+                  </defs>
+                  <path d={area} fill="url(#spendFill)" />
+                  <path d={path} fill="none" stroke="url(#spendLine)" strokeWidth="1.8"
+                    strokeLinecap="round" strokeLinejoin="round"
+                    style={{ filter: "drop-shadow(0 0 4px rgba(251,191,36,0.7))" }} />
+                </svg>
+                <div className="mt-2 grid grid-cols-3 gap-2 text-center">
+                  <Metric label="MRR" value={`$${(app.mrr / 1000).toFixed(1)}k`} />
+                  <Metric label="Tx/day" value="428" />
+                  <Metric label="Avg $" value="$42" />
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom dials */}
+            <div className="relative grid gap-4 border-t border-amber-500/10 bg-black/50 p-6 sm:grid-cols-3">
+              <Dial label={t("dialUsage")} value={usagePct} color="#f59e0b" />
+              <Dial label={t("dialSavings")} value={savingsPct} color="#34d399" />
+              <Dial label={t("dialSecurity")} value={securityPct} color="#22d3ee" />
+            </div>
+          </div>
+        </div>
+
+        {/* Right 30% — Action rectangles */}
+        <div className="flex flex-col gap-4 lg:col-span-3">
+          <VaultAction
+            title={t("buyTokens")}
+            hint="1,000 ◈ · $19"
+            icon={<Sparkles className="h-5 w-5" />}
+            onClick={() => onChoose("basic")}
+          />
+          <VaultAction
+            title={t("renewPlan")}
+            hint={`${PLAN_NAMES.pro[lang]} · $${PLAN_PRICES.pro}`}
+            icon={<Crown className="h-5 w-5" />}
+            featured
+            onClick={() => onChoose("pro")}
+          />
+          <VaultAction
+            title={t("cryptoSync")}
+            hint="BTC · ETH · USDT · SOL"
+            icon={<Wallet className="h-5 w-5" />}
+            onClick={() => onChoose("enterprise")}
+          />
+          <div className="mt-auto rounded-2xl border border-emerald-400/25 bg-emerald-500/[0.05] p-4 text-center">
+            <div className="inline-flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.25em] text-emerald-300">
+              <ShieldCheck className="h-3 w-3" />
+              {t("liveEncrypt")}
+            </div>
+            <div className="mt-1 font-mono text-[10px] text-emerald-200/70">
+              AES-256-GCM · TLS 1.3
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes vaultSweep {
+          0% { transform: translateX(-120%); }
+          100% { transform: translateX(220%); }
+        }
+        @keyframes dialRot { to { transform: rotate(360deg); } }
+      `}</style>
+    </section>
+  );
+}
+
+function Metric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg border border-amber-500/10 bg-black/40 py-1.5">
+      <div className="text-[9px] uppercase tracking-widest text-neutral-500">{label}</div>
+      <div className="font-mono text-xs font-semibold text-amber-200">{value}</div>
+    </div>
+  );
+}
+
+function Dial({ label, value, color }: { label: string; value: number; color: string }) {
+  const r = 26;
+  const c = 2 * Math.PI * r;
+  const off = c - (value / 100) * c;
+  return (
+    <div className="flex items-center gap-3">
+      <div className="relative h-16 w-16">
+        <svg viewBox="0 0 64 64" className="h-16 w-16 -rotate-90">
+          <circle cx="32" cy="32" r={r} stroke="rgba(255,255,255,0.06)" strokeWidth="4" fill="none" />
+          <circle cx="32" cy="32" r={r} stroke={color} strokeWidth="4" fill="none"
+            strokeLinecap="round" strokeDasharray={c} strokeDashoffset={off}
+            style={{ filter: `drop-shadow(0 0 6px ${color})`, transition: "stroke-dashoffset 1s ease" }}
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-bold text-white">
+          {value}%
+        </div>
+        <div
+          className="absolute inset-0 rounded-full border border-dashed opacity-40"
+          style={{ borderColor: color, animation: "dialRot 12s linear infinite" }}
+        />
+      </div>
+      <div>
+        <div className="text-[10px] uppercase tracking-[0.22em] text-neutral-500">{label}</div>
+        <div className="text-sm font-semibold text-neutral-200">Live</div>
+      </div>
+    </div>
+  );
+}
+
+function VaultAction({
+  title,
+  hint,
+  icon,
+  onClick,
+  featured,
+}: {
+  title: string;
+  hint: string;
+  icon: React.ReactNode;
+  onClick: () => void;
+  featured?: boolean;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={[
+        "group relative overflow-hidden rounded-2xl border p-5 text-left transition-all hover:-translate-y-0.5",
+        featured
+          ? "border-amber-400/50 bg-gradient-to-br from-amber-500/15 via-black to-black shadow-[0_0_35px_-8px_rgba(212,175,55,0.55)]"
+          : "border-amber-500/20 bg-black/60 hover:border-amber-400/50 hover:shadow-[0_0_30px_-10px_rgba(212,175,55,0.55)]",
+      ].join(" ")}
+    >
+      <div className="relative flex items-center gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-amber-400/40 bg-amber-500/10 text-amber-300 shadow-[0_0_20px_rgba(251,191,36,0.35)]">
+          {icon}
+        </div>
+        <div className="flex-1">
+          <div className="text-sm font-bold text-white">{title}</div>
+          <div className="mt-0.5 font-mono text-[11px] text-amber-200/80">{hint}</div>
+        </div>
+        <ArrowUpRight className="h-4 w-4 text-amber-300/70 transition group-hover:text-amber-200" />
+      </div>
+      {/* Neon sweep */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-2xl">
+        <div className="absolute inset-y-0 -left-1/3 w-1/3 bg-gradient-to-r from-transparent via-amber-300/40 to-transparent opacity-0 blur-md group-hover:opacity-100"
+          style={{ animation: "vaultSweep 1.6s ease-in-out infinite" }} />
+      </div>
+      <div className="pointer-events-none absolute inset-x-4 bottom-2 h-px bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
+    </button>
   );
 }
