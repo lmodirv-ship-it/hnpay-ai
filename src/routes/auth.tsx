@@ -1,19 +1,15 @@
 import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { z } from "zod";
-import { fallback, zodValidator } from "@tanstack/zod-adapter";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { pickPostLoginRoute } from "@/lib/auth/use-session";
 import { Crown, Loader2, Mail, Lock, User as UserIcon, ArrowRight, ShieldCheck } from "lucide-react";
 
-const searchSchema = z.object({
-  next: fallback(z.string(), "").default(""),
-  app: fallback(z.string(), "").default(""),
-});
-
 export const Route = createFileRoute("/auth")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (s: Record<string, unknown>) => ({
+    next: typeof s.next === "string" ? s.next : "",
+    app: typeof s.app === "string" ? s.app : "",
+  }),
   head: () => ({
     meta: [
       { title: "Sign in · HN-Pay Hub" },
