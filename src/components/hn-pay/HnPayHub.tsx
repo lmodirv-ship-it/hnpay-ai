@@ -322,6 +322,7 @@ export function HnPayHub() {
       <div className="relative z-10 mx-auto max-w-7xl px-4 py-8 md:px-8 md:py-10">
         <TopBar lang={lang} setLang={setLang} t={t} />
         <HeroDashboard app={app} lang={lang} t={t} kpis={kpis} appId={appId} setAppId={setAppId} />
+        <Vault3D app={app} lang={lang} t={t} onChoose={setCheckoutPlan} />
         <PricingGrid app={app} lang={lang} t={t} onChoose={setCheckoutPlan} />
         <InvoiceLedger app={app} lang={lang} t={t} query={query} setQuery={setQuery} />
 
