@@ -90,9 +90,10 @@ const T = {
     ar: "معتمد PCI-DSS L1 · SOC2 Type II · ISO/IEC 27001",
   },
   footerCopy: {
-    en: "© 2026 HN-Pay · Private treasury for the HN network of 149 apps.",
-    ar: "© ٢٠٢٦ HN-Pay · خزينة خاصة لشبكة HN المكوّنة من ١٤٩ تطبيقاً.",
+    en: "© 2026 HN-Pay Hub · All rights reserved to Al-Hasani Moulay Ismail — HN Group · Design & Software.",
+    ar: "© ٢٠٢٦ HN-Pay Hub · جميع الحقوق محفوظة للحسني مولاي إسماعيل — مجموعة HN للتصميم والبرمجيات.",
   },
+  ownerConsole: { en: "Open Owner Console", ar: "فتح لوحة المالك" },
 };
 
 /* ─────────────────────────── Data ─────────────────────────── */
