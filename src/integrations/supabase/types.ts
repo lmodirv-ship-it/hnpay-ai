@@ -14,16 +14,152 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      hn_apps: {
+        Row: {
+          active: boolean
+          app_id: string
+          category: string | null
+          created_at: string
+          description: string | null
+          domain: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          app_id: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          domain?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          app_id?: string
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          domain?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
+      hn_subscriptions: {
+        Row: {
+          app_id: string
+          created_at: string
+          id: string
+          plan: string
+          quota: number
+          renews_at: string | null
+          status: string
+          used: number
+          user_id: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          id?: string
+          plan?: string
+          quota?: number
+          renews_at?: string | null
+          status?: string
+          used?: number
+          user_id: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          id?: string
+          plan?: string
+          quota?: number
+          renews_at?: string | null
+          status?: string
+          used?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string | null
+          id: string
+          origin_app: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name?: string | null
+          id: string
+          origin_app?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string | null
+          id?: string
+          origin_app?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          app_id: string
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          app_id: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          app_id?: string
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _app_id: string
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_owner: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role:
+        | "owner"
+        | "admin"
+        | "manager"
+        | "developer"
+        | "subscriber"
+        | "viewer"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +286,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: [
+        "owner",
+        "admin",
+        "manager",
+        "developer",
+        "subscriber",
+        "viewer",
+      ],
+    },
   },
 } as const
