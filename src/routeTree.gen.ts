@@ -18,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
+import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
 
@@ -66,6 +67,11 @@ const AuthenticatedOwnerUsersRoute = AuthenticatedOwnerUsersRouteImport.update({
   path: '/owner/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerRolesRoute = AuthenticatedOwnerRolesRouteImport.update({
+  id: '/owner/roles',
+  path: '/owner/roles',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOwnerDashboardRoute =
   AuthenticatedOwnerDashboardRouteImport.update({
     id: '/owner/dashboard',
@@ -87,6 +93,7 @@ export interface FileRoutesByFullPath {
   '/auth/sync': typeof AuthSyncRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
@@ -99,6 +106,7 @@ export interface FileRoutesByTo {
   '/auth/sync': typeof AuthSyncRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
@@ -113,6 +121,7 @@ export interface FileRoutesById {
   '/auth/sync': typeof AuthSyncRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
 }
@@ -127,6 +136,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/owner/apps'
     | '/owner/dashboard'
+    | '/owner/roles'
     | '/owner/users'
     | '/user/dashboard'
   fileRoutesByTo: FileRoutesByTo
@@ -139,6 +149,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/owner/apps'
     | '/owner/dashboard'
+    | '/owner/roles'
     | '/owner/users'
     | '/user/dashboard'
   id:
@@ -152,6 +163,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
+    | '/_authenticated/owner/roles'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
   fileRoutesById: FileRoutesById
@@ -230,6 +242,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/roles': {
+      id: '/_authenticated/owner/roles'
+      path: '/owner/roles'
+      fullPath: '/owner/roles'
+      preLoaderRoute: typeof AuthenticatedOwnerRolesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/dashboard': {
       id: '/_authenticated/owner/dashboard'
       path: '/owner/dashboard'
@@ -250,6 +269,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerAppsRoute: typeof AuthenticatedOwnerAppsRoute
   AuthenticatedOwnerDashboardRoute: typeof AuthenticatedOwnerDashboardRoute
+  AuthenticatedOwnerRolesRoute: typeof AuthenticatedOwnerRolesRoute
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
 }
@@ -257,6 +277,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerAppsRoute: AuthenticatedOwnerAppsRoute,
   AuthenticatedOwnerDashboardRoute: AuthenticatedOwnerDashboardRoute,
+  AuthenticatedOwnerRolesRoute: AuthenticatedOwnerRolesRoute,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
 }
