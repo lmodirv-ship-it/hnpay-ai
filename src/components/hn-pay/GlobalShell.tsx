@@ -1,4 +1,5 @@
 import { useEffect, useState, type ReactNode } from "react";
+import { Link } from "@tanstack/react-router";
 import { Radio, ShieldCheck, Cpu, Languages, Lock } from "lucide-react";
 
 type Lang = "en" | "ar";
@@ -156,6 +157,21 @@ export function GlobalShell({ children }: { children: ReactNode }) {
           </div>
           <div className="mt-1 text-[11px] text-white/40">
             {t("HN Group — Design & Software", "مجموعة HN للتصميم والبرمجيات")}
+          </div>
+          <div className="mt-4 flex items-center justify-center gap-4 text-[11px]">
+            <Link
+              to="/privacy"
+              className="text-amber-300/70 transition hover:text-amber-200 hover:[text-shadow:0_0_10px_rgba(251,191,36,0.6)]"
+            >
+              {t("Privacy Policy", "سياسة الخصوصية")}
+            </Link>
+            <span className="text-white/20">·</span>
+            <Link
+              to="/terms"
+              className="text-amber-300/70 transition hover:text-amber-200 hover:[text-shadow:0_0_10px_rgba(251,191,36,0.6)]"
+            >
+              {t("Terms of Use", "شروط الاستخدام")}
+            </Link>
           </div>
         </div>
       </footer>
