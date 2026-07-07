@@ -50,6 +50,7 @@ function OwnerDashboardPage() {
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
         <QuickLink to="/owner/users" title="Users & Roles" desc="Promote, demote, invite members." />
         <QuickLink to="/owner/apps" title="Apps Control" desc="Toggle apps and edit metadata." />
+        <QuickLink to="/owner/roles" title="Roles Matrix" desc="Edit per-role permissions." />
         <QuickLink to="/console" title="Mission Console" desc="Registry, keys, monitoring." />
       </div>
     </OwnerShell>
@@ -80,6 +81,7 @@ export function OwnerShell({
             <nav className="ml-8 hidden gap-1 md:flex">
               <NavLink to="/owner/dashboard">Overview</NavLink>
               <NavLink to="/owner/users">Users</NavLink>
+              <NavLink to="/owner/roles">Roles</NavLink>
               <NavLink to="/owner/apps">Apps</NavLink>
               <NavLink to="/console">Mission</NavLink>
             </nav>
