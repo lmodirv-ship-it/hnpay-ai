@@ -150,7 +150,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
           </div>
           <div className="mt-2 text-xs text-white/60">
             © {new Date().getFullYear()} — {t(
-              "All rights reserved to El Hosni Moulay Ismail",
+              "All rights reserved to El Hassani Moulay Ismail",
               "جميع الحقوق محفوظة للحسني مولاي إسماعيل",
             )}
           </div>
