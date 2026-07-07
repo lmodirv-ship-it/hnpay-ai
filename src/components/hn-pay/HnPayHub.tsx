@@ -310,11 +310,18 @@ export function HnPayHub() {
         <PricingGrid app={app} lang={lang} t={t} onChoose={setCheckoutPlan} />
         <InvoiceLedger app={app} lang={lang} t={t} query={query} setQuery={setQuery} />
 
-        <footer className="mt-16 flex flex-col items-center gap-2 border-t border-amber-500/10 pt-8 text-center text-xs text-neutral-500">
+        <footer className="mt-16 flex flex-col items-center gap-3 border-t border-amber-500/10 pt-8 text-center text-xs text-neutral-500">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400/70" />
             <span>{t("footerCompliance")}</span>
           </div>
+          <a
+            href="/console"
+            className="inline-flex items-center gap-2 rounded-full border border-amber-400/30 bg-amber-500/[0.06] px-4 py-1.5 text-[11px] font-medium text-amber-200 transition hover:bg-amber-500/15"
+          >
+            <Crown className="h-3 w-3" />
+            {t("ownerConsole")}
+          </a>
           <div>{t("footerCopy")}</div>
         </footer>
       </div>
