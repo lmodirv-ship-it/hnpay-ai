@@ -1225,7 +1225,7 @@ function Vault3D({
                       {t("tokenBalance")}
                     </div>
                     <div className="mt-0.5 bg-gradient-to-r from-amber-100 via-yellow-200 to-amber-400 bg-clip-text font-mono text-2xl font-black text-transparent">
-                      {tokens.toLocaleString()} ◈
+                      {tokens.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} ◈
                     </div>
                   </div>
                   <div className="text-right">

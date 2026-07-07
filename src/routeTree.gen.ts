@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -19,6 +21,16 @@ import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConsoleRoute = ConsoleRouteImport.update({
   id: '/console',
   path: '/console',
@@ -70,6 +82,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
@@ -80,6 +94,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
@@ -92,6 +108,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
   '/console': typeof ConsoleRoute
+  '/privacy': typeof PrivacyRoute
+  '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
@@ -104,6 +122,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/console'
+    | '/privacy'
+    | '/terms'
     | '/auth/sync'
     | '/owner/apps'
     | '/owner/dashboard'
@@ -114,6 +134,8 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/console'
+    | '/privacy'
+    | '/terms'
     | '/auth/sync'
     | '/owner/apps'
     | '/owner/dashboard'
@@ -125,6 +147,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/console'
+    | '/privacy'
+    | '/terms'
     | '/auth/sync'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
@@ -137,10 +161,26 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   ConsoleRoute: typeof ConsoleRoute
+  PrivacyRoute: typeof PrivacyRoute
+  TermsRoute: typeof TermsRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/console': {
       id: '/console'
       path: '/console'
@@ -239,6 +279,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   ConsoleRoute: ConsoleRoute,
+  PrivacyRoute: PrivacyRoute,
+  TermsRoute: TermsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
