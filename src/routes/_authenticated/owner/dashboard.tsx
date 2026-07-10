@@ -84,11 +84,13 @@ export function OwnerShell({
             </Link>
             <nav className="ml-8 hidden gap-1 md:flex">
               <NavLink to="/owner/dashboard">Overview</NavLink>
+              <NavLink to="/owner/hn-pay/monitor">Monitor</NavLink>
               <NavLink to="/owner/sites">Sites</NavLink>
+              <NavLink to="/owner/portfolios">Portfolios</NavLink>
+              <NavLink to="/owner/hn-pay/integrate">Integrate</NavLink>
               <NavLink to="/owner/users">Users</NavLink>
               <NavLink to="/owner/roles">Roles</NavLink>
               <NavLink to="/owner/apps">Apps</NavLink>
-              <NavLink to="/console">Mission</NavLink>
             </nav>
           </div>
           <div className="flex items-center gap-3">
