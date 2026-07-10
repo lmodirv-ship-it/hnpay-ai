@@ -32,7 +32,7 @@ export const upsertPaymentProvider = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: unknown) => UpsertSchema.parse(data))
   .handler(async ({ data, context }) => {
-    const payload: Record<string, unknown> = {
+    const payload = {
       code: data.code,
       display_name: data.display_name,
       environment: data.environment,
