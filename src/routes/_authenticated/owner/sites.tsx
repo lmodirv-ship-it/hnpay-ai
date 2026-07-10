@@ -192,8 +192,10 @@ function SitesPage() {
           {sites.map((s) => (
             <SiteRow
               key={s.id}
-              site={s}
+              site={s as SiteRowData}
+              portfolios={portfolios}
               onToggle={(active) => toggle.mutate({ id: s.id, active })}
+              onAssign={(portfolioId) => assign.mutate({ siteId: s.id, portfolioId })}
             />
           ))}
         </div>
