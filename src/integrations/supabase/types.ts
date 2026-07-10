@@ -229,6 +229,66 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_providers: {
+        Row: {
+          api_key: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          display_name: string
+          environment: string
+          extra: Json
+          id: string
+          is_default: boolean
+          is_enabled: boolean
+          last_test_message: string | null
+          last_test_status: string | null
+          last_tested_at: string | null
+          merchant_id: string | null
+          secret_key: string | null
+          updated_at: string
+          webhook_secret: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          display_name: string
+          environment?: string
+          extra?: Json
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          last_test_message?: string | null
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          merchant_id?: string | null
+          secret_key?: string | null
+          updated_at?: string
+          webhook_secret?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          display_name?: string
+          environment?: string
+          extra?: Json
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          last_test_message?: string | null
+          last_test_status?: string | null
+          last_tested_at?: string | null
+          merchant_id?: string | null
+          secret_key?: string | null
+          updated_at?: string
+          webhook_secret?: string | null
+        }
+        Relationships: []
+      }
       payments: {
         Row: {
           amount: number
