@@ -48,6 +48,7 @@ function OwnerDashboardPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
+        <QuickLink to="/owner/sites" title="Sites (Payment Hub)" desc="Register sites, generate API keys, manage plans." />
         <QuickLink to="/owner/users" title="Users & Roles" desc="Promote, demote, invite members." />
         <QuickLink to="/owner/apps" title="Apps Control" desc="Toggle apps and edit metadata." />
         <QuickLink to="/owner/roles" title="Roles Matrix" desc="Edit per-role permissions." />

@@ -20,9 +20,11 @@ import { Route as AuthSyncRouteImport } from './routes/auth.sync'
 import { Route as ApiV1CheckoutSessionsRouteImport } from './routes/api/v1/checkout-sessions'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
+import { Route as AuthenticatedOwnerSitesRouteImport } from './routes/_authenticated/owner/sites'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
+import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -79,6 +81,11 @@ const AuthenticatedOwnerUsersRoute = AuthenticatedOwnerUsersRouteImport.update({
   path: '/owner/users',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerSitesRoute = AuthenticatedOwnerSitesRouteImport.update({
+  id: '/owner/sites',
+  path: '/owner/sites',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOwnerRolesRoute = AuthenticatedOwnerRolesRouteImport.update({
   id: '/owner/roles',
   path: '/owner/roles',
@@ -95,6 +102,12 @@ const AuthenticatedOwnerAppsRoute = AuthenticatedOwnerAppsRouteImport.update({
   path: '/owner/apps',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerSitesSiteIdRoute =
+  AuthenticatedOwnerSitesSiteIdRouteImport.update({
+    id: '/$siteId',
+    path: '/$siteId',
+    getParentRoute: () => AuthenticatedOwnerSitesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -107,9 +120,11 @@ export interface FileRoutesByFullPath {
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
+  '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
+  '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -122,9 +137,11 @@ export interface FileRoutesByTo {
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
+  '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
+  '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -139,9 +156,11 @@ export interface FileRoutesById {
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
+  '/_authenticated/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
+  '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,9 +175,11 @@ export interface FileRouteTypes {
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/roles'
+    | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
     | '/api/v1/checkout-sessions'
+    | '/owner/sites/$siteId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -171,9 +192,11 @@ export interface FileRouteTypes {
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/roles'
+    | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
     | '/api/v1/checkout-sessions'
+    | '/owner/sites/$siteId'
   id:
     | '__root__'
     | '/'
@@ -187,9 +210,11 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
     | '/_authenticated/owner/roles'
+    | '/_authenticated/owner/sites'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
     | '/api/v1/checkout-sessions'
+    | '/_authenticated/owner/sites/$siteId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -282,6 +307,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerUsersRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/sites': {
+      id: '/_authenticated/owner/sites'
+      path: '/owner/sites'
+      fullPath: '/owner/sites'
+      preLoaderRoute: typeof AuthenticatedOwnerSitesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/roles': {
       id: '/_authenticated/owner/roles'
       path: '/owner/roles'
@@ -303,13 +335,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerAppsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/sites/$siteId': {
+      id: '/_authenticated/owner/sites/$siteId'
+      path: '/$siteId'
+      fullPath: '/owner/sites/$siteId'
+      preLoaderRoute: typeof AuthenticatedOwnerSitesSiteIdRouteImport
+      parentRoute: typeof AuthenticatedOwnerSitesRoute
+    }
   }
 }
+
+interface AuthenticatedOwnerSitesRouteChildren {
+  AuthenticatedOwnerSitesSiteIdRoute: typeof AuthenticatedOwnerSitesSiteIdRoute
+}
+
+const AuthenticatedOwnerSitesRouteChildren: AuthenticatedOwnerSitesRouteChildren =
+  {
+    AuthenticatedOwnerSitesSiteIdRoute: AuthenticatedOwnerSitesSiteIdRoute,
+  }
+
+const AuthenticatedOwnerSitesRouteWithChildren =
+  AuthenticatedOwnerSitesRoute._addFileChildren(
+    AuthenticatedOwnerSitesRouteChildren,
+  )
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerAppsRoute: typeof AuthenticatedOwnerAppsRoute
   AuthenticatedOwnerDashboardRoute: typeof AuthenticatedOwnerDashboardRoute
   AuthenticatedOwnerRolesRoute: typeof AuthenticatedOwnerRolesRoute
+  AuthenticatedOwnerSitesRoute: typeof AuthenticatedOwnerSitesRouteWithChildren
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
 }
@@ -318,6 +372,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerAppsRoute: AuthenticatedOwnerAppsRoute,
   AuthenticatedOwnerDashboardRoute: AuthenticatedOwnerDashboardRoute,
   AuthenticatedOwnerRolesRoute: AuthenticatedOwnerRolesRoute,
+  AuthenticatedOwnerSitesRoute: AuthenticatedOwnerSitesRouteWithChildren,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
 }
