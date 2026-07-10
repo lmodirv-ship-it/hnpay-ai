@@ -2,13 +2,18 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Plus, Globe, Copy, Check, Power, ArrowRight, Key, Shield } from "lucide-react";
+import { Plus, Globe, Copy, Check, Power, ArrowRight, Key, Shield, Upload, FolderTree } from "lucide-react";
 import {
   listSites,
   createSite,
   toggleSite,
   getSiteWebhookSecret,
 } from "@/lib/hn-pay/sites.functions";
+import {
+  listPortfolios,
+  bulkImportSites,
+  assignSiteToPortfolio,
+} from "@/lib/hn-pay/portfolios.functions";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { useHnSession } from "@/lib/auth/use-session";
 
@@ -25,12 +30,21 @@ function SitesPage() {
   const createFn = useServerFn(createSite);
   const toggleFn = useServerFn(toggleSite);
 
+  const listPortfoliosFn = useServerFn(listPortfolios);
+  const bulkFn = useServerFn(bulkImportSites);
+  const assignFn = useServerFn(assignSiteToPortfolio);
+
   const { data: sites = [], isLoading } = useQuery({
     queryKey: ["hn-pay", "sites"],
     queryFn: () => listFn(),
   });
+  const { data: portfolios = [] } = useQuery({
+    queryKey: ["hn-pay", "portfolios"],
+    queryFn: () => listPortfoliosFn(),
+  });
 
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [form, setForm] = useState({
     slug: "",
     name: "",
@@ -53,6 +67,11 @@ function SitesPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
   });
 
+  const assign = useMutation({
+    mutationFn: (v: { siteId: string; portfolioId: string | null }) => assignFn({ data: v }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
+  });
+
   return (
     <OwnerShell profile={profile} signOut={signOut}>
       <div className="mb-6 flex items-end justify-between">
@@ -65,13 +84,31 @@ function SitesPage() {
             Every site you connect to HN-Pay gets its own API key, webhook secret, and plans.
           </p>
         </div>
-        <button
-          onClick={() => setCreating((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
-        >
-          <Plus className="h-4 w-4" /> New site
-        </button>
+        <div className="flex gap-2">
+          <Link to="/owner/portfolios" className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-neutral-300 hover:bg-white/10">
+            <FolderTree className="h-4 w-4" /> Portfolios
+          </Link>
+          <button
+            onClick={() => setImporting((v) => !v)}
+            className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20"
+          >
+            <Upload className="h-4 w-4" /> Bulk import
+          </button>
+          <button
+            onClick={() => setCreating((v) => !v)}
+            className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
+          >
+            <Plus className="h-4 w-4" /> New site
+          </button>
+        </div>
       </div>
+
+      {importing && (
+        <BulkImportPanel
+          onDone={() => { setImporting(false); qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }); }}
+          runImport={(rows) => bulkFn({ data: { rows } })}
+        />
+      )}
 
       {creating && (
         <div className="mb-6 rounded-2xl border border-amber-500/20 bg-black/40 p-5">
@@ -155,8 +192,10 @@ function SitesPage() {
           {sites.map((s) => (
             <SiteRow
               key={s.id}
-              site={s}
+              site={s as SiteRowData}
+              portfolios={portfolios}
               onToggle={(active) => toggle.mutate({ id: s.id, active })}
+              onAssign={(portfolioId) => assign.mutate({ siteId: s.id, portfolioId })}
             />
           ))}
         </div>
@@ -165,20 +204,29 @@ function SitesPage() {
   );
 }
 
+type SiteRowData = {
+  id: string;
+  slug: string;
+  name: string;
+  domain: string;
+  webhook_url: string | null;
+  is_active: boolean;
+  brand_color: string | null;
+  portfolio_id?: string | null;
+};
+
+type PortfolioLite = { id: string; name: string; slug: string };
+
 function SiteRow({
   site,
+  portfolios,
   onToggle,
+  onAssign,
 }: {
-  site: {
-    id: string;
-    slug: string;
-    name: string;
-    domain: string;
-    webhook_url: string | null;
-    is_active: boolean;
-    brand_color: string | null;
-  };
+  site: SiteRowData;
+  portfolios: PortfolioLite[];
   onToggle: (active: boolean) => void;
+  onAssign: (portfolioId: string | null) => void;
 }) {
   const [showSecret, setShowSecret] = useState(false);
   const [secret, setSecret] = useState<string | null>(null);
@@ -246,8 +294,86 @@ function SiteRow({
           </button>
         )}
       </div>
+      <div className="mt-2 flex items-center gap-2 text-[11px] text-neutral-500">
+        <FolderTree className="h-3 w-3 text-amber-300" /> Portfolio:
+        <select
+          value={site.portfolio_id ?? ""}
+          onChange={(e) => onAssign(e.target.value || null)}
+          className="rounded border border-white/10 bg-black/60 px-2 py-0.5 text-[11px] text-neutral-200"
+        >
+          <option value="">— none —</option>
+          {portfolios.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
       {showSecret && secret && (
         <CopyRow label="webhook_secret" value={secret} />
+      )}
+    </div>
+  );
+}
+
+function BulkImportPanel({ onDone, runImport }: { onDone: () => void; runImport: (rows: Record<string, string>[]) => Promise<{ created: number; failed: number; results: { slug: string; ok: boolean; error?: string }[] }> }) {
+  const [csv, setCsv] = useState("slug,name,domain,webhook_url,portfolio_slug,brand_color,environment\n");
+  const [result, setResult] = useState<{ created: number; failed: number; results: { slug: string; ok: boolean; error?: string }[] } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const parse = (text: string) => {
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return [];
+    const headers = lines[0].split(",").map((h) => h.trim());
+    return lines.slice(1).map((line) => {
+      const cells = line.split(",").map((c) => c.trim());
+      const row: Record<string, string> = {};
+      headers.forEach((h, i) => { row[h] = cells[i] ?? ""; });
+      return row;
+    });
+  };
+
+  const onFile = (f: File) => {
+    const reader = new FileReader();
+    reader.onload = () => setCsv(String(reader.result ?? ""));
+    reader.readAsText(f);
+  };
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      const rows = parse(csv);
+      const r = await runImport(rows);
+      setResult(r);
+      if (r.failed === 0) onDone();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-black/40 p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-bold text-emerald-200">Bulk import sites</div>
+          <div className="text-xs text-neutral-500">CSV columns: slug, name, domain, webhook_url, portfolio_slug, brand_color, environment. Up to 500 rows.</div>
+        </div>
+        <label className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300 hover:bg-white/10">
+          Choose CSV
+          <input type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
+        </label>
+      </div>
+      <textarea value={csv} onChange={(e) => setCsv(e.target.value)} rows={8} className="w-full rounded-lg border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-neutral-200" />
+      <div className="mt-3 flex gap-2">
+        <button onClick={submit} disabled={busy} className="rounded-lg bg-emerald-400 px-4 py-2 text-xs font-bold text-black hover:brightness-110 disabled:opacity-50">
+          {busy ? "Importing…" : "Import"}
+        </button>
+      </div>
+      {result && (
+        <div className="mt-3 rounded-lg border border-white/10 bg-white/[0.02] p-3 text-xs">
+          <div className="text-neutral-300"><span className="text-emerald-300">{result.created}</span> created · <span className="text-red-300">{result.failed}</span> failed</div>
+          {result.results.filter((r) => !r.ok).slice(0, 10).map((r) => (
+            <div key={r.slug} className="mt-1 text-neutral-500"><span className="font-mono text-neutral-300">{r.slug}</span>: {r.error}</div>
+          ))}
+        </div>
       )}
     </div>
   );

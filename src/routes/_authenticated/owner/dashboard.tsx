@@ -48,7 +48,10 @@ function OwnerDashboardPage() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <QuickLink to="/owner/sites" title="Sites (Payment Hub)" desc="Register sites, generate API keys, manage plans." />
+        <QuickLink to="/owner/hn-pay/monitor" title="HN-Pay Monitor" desc="Live revenue, payments, webhooks across the network." />
+        <QuickLink to="/owner/sites" title="Sites (Payment Hub)" desc="Register sites, API keys, plans, bulk import." />
+        <QuickLink to="/owner/portfolios" title="Portfolios" desc="Group sites (HN AI, Commerce, Media…)." />
+        <QuickLink to="/owner/hn-pay/integrate" title="Integrate SDK" desc="Unified checkout SDK, button, webhook template." />
         <QuickLink to="/owner/users" title="Users & Roles" desc="Promote, demote, invite members." />
         <QuickLink to="/owner/apps" title="Apps Control" desc="Toggle apps and edit metadata." />
         <QuickLink to="/owner/roles" title="Roles Matrix" desc="Edit per-role permissions." />
@@ -81,11 +84,13 @@ export function OwnerShell({
             </Link>
             <nav className="ml-8 hidden gap-1 md:flex">
               <NavLink to="/owner/dashboard">Overview</NavLink>
+              <NavLink to="/owner/hn-pay/monitor">Monitor</NavLink>
               <NavLink to="/owner/sites">Sites</NavLink>
+              <NavLink to="/owner/portfolios">Portfolios</NavLink>
+              <NavLink to="/owner/hn-pay/integrate">Integrate</NavLink>
               <NavLink to="/owner/users">Users</NavLink>
               <NavLink to="/owner/roles">Roles</NavLink>
               <NavLink to="/owner/apps">Apps</NavLink>
-              <NavLink to="/console">Mission</NavLink>
             </nav>
           </div>
           <div className="flex items-center gap-3">
