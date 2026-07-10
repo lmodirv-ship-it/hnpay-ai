@@ -28,6 +28,9 @@ export type Database = {
           id: string
           metadata: Json | null
           plan_id: string
+          provider: string
+          provider_checkout_url: string | null
+          provider_session_id: string | null
           public_id: string
           site_id: string
           status: string
@@ -47,6 +50,9 @@ export type Database = {
           id?: string
           metadata?: Json | null
           plan_id: string
+          provider?: string
+          provider_checkout_url?: string | null
+          provider_session_id?: string | null
           public_id?: string
           site_id: string
           status?: string
@@ -66,6 +72,9 @@ export type Database = {
           id?: string
           metadata?: Json | null
           plan_id?: string
+          provider?: string
+          provider_checkout_url?: string | null
+          provider_session_id?: string | null
           public_id?: string
           site_id?: string
           status?: string
@@ -97,6 +106,8 @@ export type Database = {
           id: string
           metadata: Json | null
           name: string | null
+          provider: string
+          provider_customer_id: string | null
           site_id: string
           updated_at: string
         }
@@ -107,6 +118,8 @@ export type Database = {
           id?: string
           metadata?: Json | null
           name?: string | null
+          provider?: string
+          provider_customer_id?: string | null
           site_id: string
           updated_at?: string
         }
@@ -117,6 +130,8 @@ export type Database = {
           id?: string
           metadata?: Json | null
           name?: string | null
+          provider?: string
+          provider_customer_id?: string | null
           site_id?: string
           updated_at?: string
         }
@@ -210,6 +225,8 @@ export type Database = {
           metadata: Json | null
           plan_id: string | null
           provider: string | null
+          provider_invoice_id: string | null
+          provider_payment_id: string | null
           provider_ref: string | null
           public_id: string
           site_id: string
@@ -225,6 +242,8 @@ export type Database = {
           metadata?: Json | null
           plan_id?: string | null
           provider?: string | null
+          provider_invoice_id?: string | null
+          provider_payment_id?: string | null
           provider_ref?: string | null
           public_id?: string
           site_id: string
@@ -240,6 +259,8 @@ export type Database = {
           metadata?: Json | null
           plan_id?: string | null
           provider?: string | null
+          provider_invoice_id?: string | null
+          provider_payment_id?: string | null
           provider_ref?: string | null
           public_id?: string
           site_id?: string
@@ -287,6 +308,9 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          provider: string
+          provider_price_id: string | null
+          provider_product_id: string | null
           site_id: string
           trial_days: number | null
           updated_at: string
@@ -301,6 +325,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          provider?: string
+          provider_price_id?: string | null
+          provider_product_id?: string | null
           site_id: string
           trial_days?: number | null
           updated_at?: string
@@ -315,6 +342,9 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          provider?: string
+          provider_price_id?: string | null
+          provider_product_id?: string | null
           site_id?: string
           trial_days?: number | null
           updated_at?: string
@@ -322,6 +352,48 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "plans_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      portal_tokens: {
+        Row: {
+          created_at: string
+          customer_id: string
+          expires_at: string
+          site_id: string
+          token: string
+          used_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          customer_id: string
+          expires_at?: string
+          site_id: string
+          token: string
+          used_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          customer_id?: string
+          expires_at?: string
+          site_id?: string
+          token?: string
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "portal_tokens_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_tokens_site_id_fkey"
             columns: ["site_id"]
             isOneToOne: false
             referencedRelation: "sites"
@@ -374,6 +446,33 @@ export type Database = {
           id?: string
           origin_app?: string | null
           updated_at?: string
+        }
+        Relationships: []
+      }
+      provider_events: {
+        Row: {
+          event_type: string
+          id: string
+          payload: Json
+          processed_at: string
+          provider: string
+          provider_event_id: string
+        }
+        Insert: {
+          event_type: string
+          id?: string
+          payload: Json
+          processed_at?: string
+          provider: string
+          provider_event_id: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          payload?: Json
+          processed_at?: string
+          provider?: string
+          provider_event_id?: string
         }
         Relationships: []
       }
@@ -504,6 +603,8 @@ export type Database = {
           id: string
           metadata: Json | null
           plan_id: string
+          provider: string
+          provider_subscription_id: string | null
           public_id: string
           site_id: string
           status: string
@@ -519,6 +620,8 @@ export type Database = {
           id?: string
           metadata?: Json | null
           plan_id: string
+          provider?: string
+          provider_subscription_id?: string | null
           public_id?: string
           site_id: string
           status?: string
@@ -534,6 +637,8 @@ export type Database = {
           id?: string
           metadata?: Json | null
           plan_id?: string
+          provider?: string
+          provider_subscription_id?: string | null
           public_id?: string
           site_id?: string
           status?: string
