@@ -204,20 +204,29 @@ function SitesPage() {
   );
 }
 
+type SiteRowData = {
+  id: string;
+  slug: string;
+  name: string;
+  domain: string;
+  webhook_url: string | null;
+  is_active: boolean;
+  brand_color: string | null;
+  portfolio_id?: string | null;
+};
+
+type PortfolioLite = { id: string; name: string; slug: string };
+
 function SiteRow({
   site,
+  portfolios,
   onToggle,
+  onAssign,
 }: {
-  site: {
-    id: string;
-    slug: string;
-    name: string;
-    domain: string;
-    webhook_url: string | null;
-    is_active: boolean;
-    brand_color: string | null;
-  };
+  site: SiteRowData;
+  portfolios: PortfolioLite[];
   onToggle: (active: boolean) => void;
+  onAssign: (portfolioId: string | null) => void;
 }) {
   const [showSecret, setShowSecret] = useState(false);
   const [secret, setSecret] = useState<string | null>(null);
