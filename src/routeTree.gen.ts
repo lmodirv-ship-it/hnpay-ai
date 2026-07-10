@@ -15,7 +15,9 @@ import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
+import { Route as ApiV1CheckoutSessionsRouteImport } from './routes/api/v1/checkout-sessions'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
@@ -51,10 +53,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CheckoutSessionIdRoute = CheckoutSessionIdRouteImport.update({
+  id: '/checkout/$sessionId',
+  path: '/checkout/$sessionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthSyncRoute = AuthSyncRouteImport.update({
   id: '/sync',
   path: '/sync',
   getParentRoute: () => AuthRoute,
+} as any)
+const ApiV1CheckoutSessionsRoute = ApiV1CheckoutSessionsRouteImport.update({
+  id: '/api/v1/checkout-sessions',
+  path: '/api/v1/checkout-sessions',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedUserDashboardRoute =
   AuthenticatedUserDashboardRouteImport.update({
@@ -91,11 +103,13 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
+  '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -104,11 +118,13 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
+  '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -119,11 +135,13 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
+  '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -134,11 +152,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/sync'
+    | '/checkout/$sessionId'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/roles'
     | '/owner/users'
     | '/user/dashboard'
+    | '/api/v1/checkout-sessions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -147,11 +167,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/sync'
+    | '/checkout/$sessionId'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/roles'
     | '/owner/users'
     | '/user/dashboard'
+    | '/api/v1/checkout-sessions'
   id:
     | '__root__'
     | '/'
@@ -161,11 +183,13 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/terms'
     | '/auth/sync'
+    | '/checkout/$sessionId'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
     | '/_authenticated/owner/roles'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
+    | '/api/v1/checkout-sessions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -175,6 +199,8 @@ export interface RootRouteChildren {
   ConsoleRoute: typeof ConsoleRoute
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
+  CheckoutSessionIdRoute: typeof CheckoutSessionIdRoute
+  ApiV1CheckoutSessionsRoute: typeof ApiV1CheckoutSessionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -221,12 +247,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/checkout/$sessionId': {
+      id: '/checkout/$sessionId'
+      path: '/checkout/$sessionId'
+      fullPath: '/checkout/$sessionId'
+      preLoaderRoute: typeof CheckoutSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth/sync': {
       id: '/auth/sync'
       path: '/sync'
       fullPath: '/auth/sync'
       preLoaderRoute: typeof AuthSyncRouteImport
       parentRoute: typeof AuthRoute
+    }
+    '/api/v1/checkout-sessions': {
+      id: '/api/v1/checkout-sessions'
+      path: '/api/v1/checkout-sessions'
+      fullPath: '/api/v1/checkout-sessions'
+      preLoaderRoute: typeof ApiV1CheckoutSessionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/user/dashboard': {
       id: '/_authenticated/user/dashboard'
@@ -302,6 +342,8 @@ const rootRouteChildren: RootRouteChildren = {
   ConsoleRoute: ConsoleRoute,
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
+  CheckoutSessionIdRoute: CheckoutSessionIdRoute,
+  ApiV1CheckoutSessionsRoute: ApiV1CheckoutSessionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
