@@ -294,8 +294,86 @@ function SiteRow({
           </button>
         )}
       </div>
+      <div className="mt-2 flex items-center gap-2 text-[11px] text-neutral-500">
+        <FolderTree className="h-3 w-3 text-amber-300" /> Portfolio:
+        <select
+          value={site.portfolio_id ?? ""}
+          onChange={(e) => onAssign(e.target.value || null)}
+          className="rounded border border-white/10 bg-black/60 px-2 py-0.5 text-[11px] text-neutral-200"
+        >
+          <option value="">— none —</option>
+          {portfolios.map((p) => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
+        </select>
+      </div>
       {showSecret && secret && (
         <CopyRow label="webhook_secret" value={secret} />
+      )}
+    </div>
+  );
+}
+
+function BulkImportPanel({ onDone, runImport }: { onDone: () => void; runImport: (rows: Record<string, string>[]) => Promise<{ created: number; failed: number; results: { slug: string; ok: boolean; error?: string }[] }> }) {
+  const [csv, setCsv] = useState("slug,name,domain,webhook_url,portfolio_slug,brand_color,environment\n");
+  const [result, setResult] = useState<{ created: number; failed: number; results: { slug: string; ok: boolean; error?: string }[] } | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  const parse = (text: string) => {
+    const lines = text.trim().split(/\r?\n/).filter(Boolean);
+    if (lines.length < 2) return [];
+    const headers = lines[0].split(",").map((h) => h.trim());
+    return lines.slice(1).map((line) => {
+      const cells = line.split(",").map((c) => c.trim());
+      const row: Record<string, string> = {};
+      headers.forEach((h, i) => { row[h] = cells[i] ?? ""; });
+      return row;
+    });
+  };
+
+  const onFile = (f: File) => {
+    const reader = new FileReader();
+    reader.onload = () => setCsv(String(reader.result ?? ""));
+    reader.readAsText(f);
+  };
+
+  const submit = async () => {
+    setBusy(true);
+    try {
+      const rows = parse(csv);
+      const r = await runImport(rows);
+      setResult(r);
+      if (r.failed === 0) onDone();
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mb-6 rounded-2xl border border-emerald-500/20 bg-black/40 p-5">
+      <div className="mb-3 flex items-center justify-between">
+        <div>
+          <div className="text-sm font-bold text-emerald-200">Bulk import sites</div>
+          <div className="text-xs text-neutral-500">CSV columns: slug, name, domain, webhook_url, portfolio_slug, brand_color, environment. Up to 500 rows.</div>
+        </div>
+        <label className="cursor-pointer rounded-lg border border-white/10 bg-white/5 px-3 py-1.5 text-xs text-neutral-300 hover:bg-white/10">
+          Choose CSV
+          <input type="file" accept=".csv,text/csv" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
+        </label>
+      </div>
+      <textarea value={csv} onChange={(e) => setCsv(e.target.value)} rows={8} className="w-full rounded-lg border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-neutral-200" />
+      <div className="mt-3 flex gap-2">
+        <button onClick={submit} disabled={busy} className="rounded-lg bg-emerald-400 px-4 py-2 text-xs font-bold text-black hover:brightness-110 disabled:opacity-50">
+          {busy ? "Importing…" : "Import"}
+        </button>
+      </div>
+      {result && (
+        <div className="mt-3 rounded-lg border border-white/10 bg-white/[0.02] p-3 text-xs">
+          <div className="text-neutral-300"><span className="text-emerald-300">{result.created}</span> created · <span className="text-red-300">{result.failed}</span> failed</div>
+          {result.results.filter((r) => !r.ok).slice(0, 10).map((r) => (
+            <div key={r.slug} className="mt-1 text-neutral-500"><span className="font-mono text-neutral-300">{r.slug}</span>: {r.error}</div>
+          ))}
+        </div>
       )}
     </div>
   );
