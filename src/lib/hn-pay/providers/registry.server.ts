@@ -1,10 +1,12 @@
 import { manualProvider } from "./manual.server";
 import { stripeProvider } from "./stripe.server";
+import { mockProvider } from "./mock.server";
 import type { PaymentProvider, ProviderCode } from "./types";
 
 const REGISTRY: Record<string, PaymentProvider> = {
   manual: manualProvider,
   stripe: stripeProvider,
+  mock: mockProvider,
 };
 
 export function getProvider(code: string): PaymentProvider {
