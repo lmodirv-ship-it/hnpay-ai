@@ -437,6 +437,84 @@ const { checkout_url } = await res.json();
   );
 }
 
+/* ────────── Awaiting confirmations (manual settlement) ────────── */
+
+function AwaitingPanel({ siteId, qc }: { siteId: string; qc: ReturnType<typeof useQueryClient> }) {
+  const listFn = useServerFn(listAwaitingSessions);
+  const settleFn = useServerFn(settleManualPayment);
+  const { data: rows = [] } = useQuery({
+    queryKey: ["hn-pay", "awaiting", siteId],
+    queryFn: () => listFn({ data: { siteId } }),
+    refetchInterval: 15000,
+  });
+  const [refs, setRefs] = useState<Record<string, string>>({});
+
+  const settle = useMutation({
+    mutationFn: (v: { sessionId: string; providerRef: string }) => settleFn({ data: v }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["hn-pay", "awaiting", siteId] });
+      qc.invalidateQueries({ queryKey: ["hn-pay", "payments", siteId] });
+      qc.invalidateQueries({ queryKey: ["hn-pay", "events", siteId] });
+    },
+  });
+
+  return (
+    <Panel
+      title="Awaiting confirmation"
+      desc="Sessions where the customer chose bank transfer / manual payment. Confirming here fires the webhook to the site."
+    >
+      <div className="space-y-2">
+        {rows.map((r) => (
+          <div key={r.id} className="rounded-lg border border-amber-500/20 bg-amber-500/[0.03] p-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <div className="text-xs font-semibold text-white">
+                  {Number(r.amount).toFixed(2)} {r.currency}
+                  <span className="ml-2 rounded bg-amber-500/20 px-1.5 py-0.5 text-[9px] uppercase text-amber-300">
+                    {r.status}
+                  </span>
+                </div>
+                <div className="text-[11px] text-neutral-500">
+                  {r.customer_email ?? r.customer_external_id ?? "guest"} ·{" "}
+                  <span className="font-mono">{r.public_id}</span>
+                </div>
+                {r.awaiting_reference && (
+                  <div className="mt-1 text-[10px] text-amber-200">
+                    Reference: <span className="font-mono">{r.awaiting_reference}</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex gap-2">
+                <input
+                  value={refs[r.id] ?? r.awaiting_reference ?? ""}
+                  onChange={(e) => setRefs({ ...refs, [r.id]: e.target.value })}
+                  placeholder="Bank ref / receipt #"
+                  className="w-40 rounded border border-white/10 bg-black/60 px-2 py-1 text-[11px]"
+                />
+                <button
+                  onClick={() =>
+                    settle.mutate({
+                      sessionId: r.id,
+                      providerRef: refs[r.id] ?? r.awaiting_reference ?? "manual",
+                    })
+                  }
+                  disabled={settle.isPending}
+                  className="inline-flex items-center gap-1 rounded bg-emerald-500/90 px-2 py-1 text-[11px] font-bold text-black hover:brightness-110 disabled:opacity-50"
+                >
+                  <CheckCircle2 className="h-3 w-3" /> Confirm paid
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+        {rows.length === 0 && (
+          <div className="text-xs text-neutral-500">No pending confirmations.</div>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
 function Panel({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
