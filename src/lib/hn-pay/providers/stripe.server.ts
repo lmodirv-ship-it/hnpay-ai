@@ -9,10 +9,12 @@ export const stripeProvider: PaymentProvider = {
   code: "stripe",
   displayName: "Credit / Debit Card (Stripe)",
   async initiate({ session, site }) {
-    const key = process.env.STRIPE_SECRET_KEY;
+    const { loadProviderConfig } = await import("./registry.server");
+    const cfg = await loadProviderConfig("stripe");
+    const key = cfg?.secret_key ?? process.env.STRIPE_SECRET_KEY;
     if (!key) {
       throw new Error(
-        "Stripe is not configured. Add STRIPE_SECRET_KEY in Cloud secrets to enable card payments.",
+        "Stripe is not configured. Add a Stripe entry in Payment Providers (Owner console) or set STRIPE_SECRET_KEY.",
       );
     }
 
