@@ -21,11 +21,14 @@ import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authen
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
 import { Route as AuthenticatedOwnerSitesRouteImport } from './routes/_authenticated/owner/sites'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
+import { Route as AuthenticatedOwnerPortfoliosRouteImport } from './routes/_authenticated/owner/portfolios'
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
+import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_authenticated/owner/hn-pay.monitor'
+import { Route as AuthenticatedOwnerHnPayIntegrateRouteImport } from './routes/_authenticated/owner/hn-pay.integrate'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -87,6 +90,12 @@ const AuthenticatedOwnerRolesRoute = AuthenticatedOwnerRolesRouteImport.update({
   path: '/owner/roles',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerPortfoliosRoute =
+  AuthenticatedOwnerPortfoliosRouteImport.update({
+    id: '/owner/portfolios',
+    path: '/owner/portfolios',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOwnerDashboardRoute =
   AuthenticatedOwnerDashboardRouteImport.update({
     id: '/owner/dashboard',
@@ -115,6 +124,18 @@ const AuthenticatedOwnerSitesSiteIdRoute =
     path: '/$siteId',
     getParentRoute: () => AuthenticatedOwnerSitesRoute,
   } as any)
+const AuthenticatedOwnerHnPayMonitorRoute =
+  AuthenticatedOwnerHnPayMonitorRouteImport.update({
+    id: '/owner/hn-pay/monitor',
+    path: '/owner/hn-pay/monitor',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedOwnerHnPayIntegrateRoute =
+  AuthenticatedOwnerHnPayIntegrateRouteImport.update({
+    id: '/owner/hn-pay/integrate',
+    path: '/owner/hn-pay/integrate',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -126,10 +147,13 @@ export interface FileRoutesByFullPath {
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
+  '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -144,10 +168,13 @@ export interface FileRoutesByTo {
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
+  '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -164,10 +191,13 @@ export interface FileRoutesById {
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
+  '/_authenticated/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/_authenticated/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
+  '/_authenticated/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
+  '/_authenticated/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -184,10 +214,13 @@ export interface FileRouteTypes {
     | '/checkout/$sessionId'
     | '/owner/apps'
     | '/owner/dashboard'
+    | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
+    | '/owner/hn-pay/integrate'
+    | '/owner/hn-pay/monitor'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -202,10 +235,13 @@ export interface FileRouteTypes {
     | '/checkout/$sessionId'
     | '/owner/apps'
     | '/owner/dashboard'
+    | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
+    | '/owner/hn-pay/integrate'
+    | '/owner/hn-pay/monitor'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -221,10 +257,13 @@ export interface FileRouteTypes {
     | '/checkout/$sessionId'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
+    | '/_authenticated/owner/portfolios'
     | '/_authenticated/owner/roles'
     | '/_authenticated/owner/sites'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
+    | '/_authenticated/owner/hn-pay/integrate'
+    | '/_authenticated/owner/hn-pay/monitor'
     | '/_authenticated/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -328,6 +367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerRolesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/portfolios': {
+      id: '/_authenticated/owner/portfolios'
+      path: '/owner/portfolios'
+      fullPath: '/owner/portfolios'
+      preLoaderRoute: typeof AuthenticatedOwnerPortfoliosRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/dashboard': {
       id: '/_authenticated/owner/dashboard'
       path: '/owner/dashboard'
@@ -363,6 +409,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerSitesSiteIdRouteImport
       parentRoute: typeof AuthenticatedOwnerSitesRoute
     }
+    '/_authenticated/owner/hn-pay/monitor': {
+      id: '/_authenticated/owner/hn-pay/monitor'
+      path: '/owner/hn-pay/monitor'
+      fullPath: '/owner/hn-pay/monitor'
+      preLoaderRoute: typeof AuthenticatedOwnerHnPayMonitorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/owner/hn-pay/integrate': {
+      id: '/_authenticated/owner/hn-pay/integrate'
+      path: '/owner/hn-pay/integrate'
+      fullPath: '/owner/hn-pay/integrate'
+      preLoaderRoute: typeof AuthenticatedOwnerHnPayIntegrateRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -383,19 +443,25 @@ const AuthenticatedOwnerSitesRouteWithChildren =
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerAppsRoute: typeof AuthenticatedOwnerAppsRoute
   AuthenticatedOwnerDashboardRoute: typeof AuthenticatedOwnerDashboardRoute
+  AuthenticatedOwnerPortfoliosRoute: typeof AuthenticatedOwnerPortfoliosRoute
   AuthenticatedOwnerRolesRoute: typeof AuthenticatedOwnerRolesRoute
   AuthenticatedOwnerSitesRoute: typeof AuthenticatedOwnerSitesRouteWithChildren
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
+  AuthenticatedOwnerHnPayIntegrateRoute: typeof AuthenticatedOwnerHnPayIntegrateRoute
+  AuthenticatedOwnerHnPayMonitorRoute: typeof AuthenticatedOwnerHnPayMonitorRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerAppsRoute: AuthenticatedOwnerAppsRoute,
   AuthenticatedOwnerDashboardRoute: AuthenticatedOwnerDashboardRoute,
+  AuthenticatedOwnerPortfoliosRoute: AuthenticatedOwnerPortfoliosRoute,
   AuthenticatedOwnerRolesRoute: AuthenticatedOwnerRolesRoute,
   AuthenticatedOwnerSitesRoute: AuthenticatedOwnerSitesRouteWithChildren,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
+  AuthenticatedOwnerHnPayIntegrateRoute: AuthenticatedOwnerHnPayIntegrateRoute,
+  AuthenticatedOwnerHnPayMonitorRoute: AuthenticatedOwnerHnPayMonitorRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
