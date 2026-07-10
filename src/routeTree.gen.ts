@@ -15,6 +15,7 @@ import { Route as ConsoleRouteImport } from './routes/console'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DemoEmbedRouteImport } from './routes/demo.embed'
 import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
 import { Route as PayEmbedSessionIdRouteImport } from './routes/pay/embed.$sessionId'
@@ -60,6 +61,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DemoEmbedRoute = DemoEmbedRouteImport.update({
+  id: '/demo/embed',
+  path: '/demo/embed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutSessionIdRoute = CheckoutSessionIdRouteImport.update({
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
+  '/demo/embed': typeof DemoEmbedRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -188,6 +195,7 @@ export interface FileRoutesByTo {
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
+  '/demo/embed': typeof DemoEmbedRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -214,6 +222,7 @@ export interface FileRoutesById {
   '/terms': typeof TermsRoute
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
+  '/demo/embed': typeof DemoEmbedRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/_authenticated/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -240,6 +249,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/auth/sync'
     | '/checkout/$sessionId'
+    | '/demo/embed'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/portfolios'
@@ -264,6 +274,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/auth/sync'
     | '/checkout/$sessionId'
+    | '/demo/embed'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/portfolios'
@@ -289,6 +300,7 @@ export interface FileRouteTypes {
     | '/terms'
     | '/auth/sync'
     | '/checkout/$sessionId'
+    | '/demo/embed'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
     | '/_authenticated/owner/portfolios'
@@ -314,6 +326,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   CheckoutSessionIdRoute: typeof CheckoutSessionIdRoute
+  DemoEmbedRoute: typeof DemoEmbedRoute
   PayEmbedSessionIdRoute: typeof PayEmbedSessionIdRoute
   ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
@@ -362,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/demo/embed': {
+      id: '/demo/embed'
+      path: '/demo/embed'
+      fullPath: '/demo/embed'
+      preLoaderRoute: typeof DemoEmbedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/checkout/$sessionId': {
@@ -560,6 +580,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   CheckoutSessionIdRoute: CheckoutSessionIdRoute,
+  DemoEmbedRoute: DemoEmbedRoute,
   PayEmbedSessionIdRoute: PayEmbedSessionIdRoute,
   ApiPublicV1CheckoutSessionsRoute:
     ApiPublicV1CheckoutSessionsRouteWithChildren,
