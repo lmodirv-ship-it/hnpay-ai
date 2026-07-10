@@ -25,14 +25,14 @@ export type SiteRow = {
   domain: string;
   enabled_providers: string[];
   manual_instructions: string | null;
-  manual_bank_details: Record<string, unknown>;
+  manual_bank_details: Record<string, string>;
   brand_color: string | null;
 };
 
 /** Result returned when a checkout is initiated. */
 export type InitiateResult =
   | { kind: "redirect"; url: string; providerSessionId?: string }
-  | { kind: "manual"; instructions: string; bankDetails: Record<string, unknown>; referenceHint: string }
+  | { kind: "manual"; instructions: string; bankDetails: Record<string, string>; referenceHint: string }
   | { kind: "immediate_success" };
 
 export interface PaymentProvider {

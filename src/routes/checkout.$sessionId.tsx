@@ -98,10 +98,14 @@ export const initiateCheckout = createServerFn({ method: "POST" })
       domain: site.domain,
       enabled_providers: site.enabled_providers ?? [],
       manual_instructions: site.manual_instructions,
-      manual_bank_details: (site.manual_bank_details as Record<string, unknown>) ?? {},
+      manual_bank_details: (site.manual_bank_details ?? {}) as Record<string, string>,
       brand_color: site.brand_color,
     };
-    return await provider.initiate({ session: sessionRow, site: siteRow });
+    const result = await provider.initiate({ session: sessionRow, site: siteRow });
+    return result as
+      | { kind: "redirect"; url: string; providerSessionId?: string }
+      | { kind: "manual"; instructions: string; bankDetails: Record<string, string>; referenceHint: string }
+      | { kind: "immediate_success" };
   });
 
 /* ─────────── route ─────────── */
@@ -153,7 +157,7 @@ function CheckoutPage() {
   const { data } = useSuspenseQuery(sessionQuery(params.sessionId));
   const [manualResult, setManualResult] = useState<null | {
     instructions: string;
-    bankDetails: Record<string, unknown>;
+    bankDetails: Record<string, string>;
     referenceHint: string;
   }>(null);
 
@@ -219,7 +223,19 @@ function CheckoutPage() {
             <div className="mt-1 text-xs text-neutral-400">You can safely close this page.</div>
           </div>
         ) : awaiting ? (
-          <ManualPending brand={brand} session={session} manualResult={manualResult} site={site} />
+          <ManualPending
+            brand={brand}
+            session={session}
+            manualResult={manualResult}
+            site={
+              site
+                ? {
+                    manual_instructions: site.manual_instructions,
+                    manual_bank_details: (site.manual_bank_details ?? {}) as Record<string, string>,
+                  }
+                : null
+            }
+          />
         ) : (
           <div className="mt-6 space-y-2">
             {enabled.map((code) => {
@@ -275,15 +291,15 @@ function ManualPending({
 }: {
   brand: string;
   session: { awaiting_reference: string | null; amount: number | string; currency: string };
-  manualResult: null | { instructions: string; bankDetails: Record<string, unknown>; referenceHint: string };
-  site: { manual_instructions?: string | null; manual_bank_details?: Record<string, unknown> | null } | null;
+  manualResult: null | { instructions: string; bankDetails: Record<string, string>; referenceHint: string };
+  site: { manual_instructions?: string | null; manual_bank_details?: Record<string, string> | null } | null;
 }) {
   const ref = manualResult?.referenceHint ?? session.awaiting_reference ?? "—";
   const instructions =
     manualResult?.instructions ??
     site?.manual_instructions ??
     "Please transfer the exact amount and include the reference code in your transfer memo. The merchant will confirm within 24h.";
-  const bank = (manualResult?.bankDetails ?? site?.manual_bank_details ?? {}) as Record<string, unknown>;
+  const bank = (manualResult?.bankDetails ?? site?.manual_bank_details ?? {}) as Record<string, string>;
 
   return (
     <div className="mt-6 space-y-4">
