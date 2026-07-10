@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { hashApiKey } from "@/lib/hn-pay/crypto.server";
+import { randomBytes } from "node:crypto";
 
 const BodySchema = z.object({
   plan_code: z.string().min(1).max(64),
@@ -11,6 +12,7 @@ const BodySchema = z.object({
       name: z.string().max(255).optional(),
     })
     .optional(),
+  display_mode: z.enum(["embedded", "redirect"]).optional(),
   success_url: z.string().url().max(2048).optional(),
   cancel_url: z.string().url().max(2048).optional(),
   metadata: z.record(z.string(), z.unknown()).optional(),
