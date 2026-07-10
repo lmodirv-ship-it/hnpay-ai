@@ -91,7 +91,12 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
           .update({ last_used_at: new Date().toISOString() })
           .eq("id", keyRow.id);
 
-        // 6) create checkout session
+        // 6) mint client_token (short-lived, one-time use)
+        const clientToken = `ct_${randomBytes(24).toString("hex")}`;
+        const clientTokenExpiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 min
+        const displayMode = parsed.data.display_mode ?? "embedded";
+
+        // 7) create checkout session
         const { data: session, error } = await supabaseAdmin
           .from("checkout_sessions")
           .insert({
@@ -104,6 +109,9 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
             currency: plan.currency,
             success_url: parsed.data.success_url ?? null,
             cancel_url: parsed.data.cancel_url ?? null,
+            display_mode: displayMode,
+            client_token: clientToken,
+            client_token_expires_at: clientTokenExpiresAt,
             metadata: (parsed.data.metadata ?? {}) as never,
           })
           .select("public_id, status, expires_at, amount, currency")
@@ -119,6 +127,10 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
         return new Response(
           JSON.stringify({
             checkout_id: session.public_id,
+            client_token: clientToken,
+            client_token_expires_at: clientTokenExpiresAt,
+            display_mode: displayMode,
+            embed_url: `${origin}/pay/embed/${session.public_id}?ct=${clientToken}`,
             checkout_url: `${origin}/checkout/${session.public_id}`,
             status: session.status,
             amount: session.amount,
