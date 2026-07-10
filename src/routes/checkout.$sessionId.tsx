@@ -1,8 +1,8 @@
-import { createFileRoute, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useMutation, useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { ShieldCheck, Lock, Loader2, CheckCircle2, CreditCard } from "lucide-react";
+import { ShieldCheck, Lock, Loader2, CheckCircle2, CreditCard, Landmark, Copy } from "lucide-react";
 import { useState } from "react";
 
 /* ─────────── server functions ─────────── */
@@ -16,7 +16,7 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
     const { data: s } = await supabaseAdmin
       .from("checkout_sessions")
       .select(
-        "public_id, status, amount, currency, customer_email, customer_name, expires_at, success_url, cancel_url, site_id, plan_id",
+        "public_id, status, amount, currency, customer_email, customer_name, expires_at, success_url, cancel_url, site_id, plan_id, awaiting_reference, provider, provider_checkout_url",
       )
       .eq("public_id", data.publicId)
       .maybeSingle();
@@ -26,7 +26,7 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
     const [{ data: site }, { data: plan }] = await Promise.all([
       supabaseAdmin
         .from("sites")
-        .select("name, domain, logo_url, brand_color")
+        .select("id, name, domain, logo_url, brand_color, enabled_providers, manual_instructions, manual_bank_details")
         .eq("id", s.site_id)
         .maybeSingle(),
       supabaseAdmin
@@ -36,147 +36,76 @@ export const getCheckoutSession = createServerFn({ method: "GET" })
         .maybeSingle(),
     ]);
 
-    return {
-      public_id: s.public_id,
-      status: s.status,
-      amount: s.amount,
-      currency: s.currency,
-      customer_email: s.customer_email,
-      customer_name: s.customer_name,
-      expires_at: s.expires_at,
-      success_url: s.success_url,
-      cancel_url: s.cancel_url,
-      site,
-      plan,
-    };
+    return { session: s, site, plan };
   });
 
-export const confirmCheckoutSession = createServerFn({ method: "POST" })
-  .inputValidator((data: { publicId: string }) =>
-    z.object({ publicId: z.string().min(3).max(64) }).parse(data),
+export const initiateCheckout = createServerFn({ method: "POST" })
+  .inputValidator((data: { publicId: string; provider: string }) =>
+    z
+      .object({
+        publicId: z.string().min(3).max(64),
+        provider: z.enum(["manual", "stripe", "paypal", "cmi", "payzone", "naps"]),
+      })
+      .parse(data),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { enqueueAndDeliver } = await import("@/lib/hn-pay/webhooks.server");
+    const { getProvider } = await import("@/lib/hn-pay/providers/registry.server");
 
     const { data: session } = await supabaseAdmin
       .from("checkout_sessions")
       .select("*")
       .eq("public_id", data.publicId)
       .maybeSingle();
-
     if (!session) throw new Error("Session not found");
-    if (session.status === "succeeded") {
-      return { ok: true, already: true, redirect: session.success_url };
-    }
-    if (session.status !== "pending") {
+    if (session.status !== "pending" && session.status !== "awaiting_confirmation") {
       throw new Error(`Session is ${session.status}`);
     }
-    if (new Date(session.expires_at) < new Date()) {
-      await supabaseAdmin
-        .from("checkout_sessions")
-        .update({ status: "expired" })
-        .eq("id", session.id);
+    if (new Date(session.expires_at) < new Date() && session.status === "pending") {
+      await supabaseAdmin.from("checkout_sessions").update({ status: "expired" }).eq("id", session.id);
       throw new Error("Session expired");
     }
 
-    // upsert customer
-    let customerId: string | null = null;
-    if (session.customer_external_id) {
-      const { data: existing } = await supabaseAdmin
-        .from("customers")
-        .select("id")
-        .eq("site_id", session.site_id)
-        .eq("external_id", session.customer_external_id)
-        .maybeSingle();
-      if (existing) {
-        customerId = existing.id;
-      } else {
-        const { data: created } = await supabaseAdmin
-          .from("customers")
-          .insert({
-            site_id: session.site_id,
-            external_id: session.customer_external_id,
-            email: session.customer_email,
-            name: session.customer_name,
-          })
-          .select("id")
-          .single();
-        customerId = created?.id ?? null;
-      }
-    }
-
-    // insert payment
-    const { data: payment } = await supabaseAdmin
-      .from("payments")
-      .insert({
-        site_id: session.site_id,
-        checkout_session_id: session.id,
-        customer_id: customerId,
-        plan_id: session.plan_id,
-        amount: session.amount,
-        currency: session.currency,
-        status: "succeeded",
-        provider: "hn-pay-test",
-        provider_ref: `test_${Date.now()}`,
-      })
-      .select("public_id")
-      .single();
-
-    // upsert subscription if plan is recurring
-    let subscriptionPublicId: string | null = null;
-    const { data: plan } = await supabaseAdmin
-      .from("plans")
-      .select("billing_interval")
-      .eq("id", session.plan_id)
+    const { data: site } = await supabaseAdmin
+      .from("sites")
+      .select("id, name, domain, brand_color, enabled_providers, manual_instructions, manual_bank_details")
+      .eq("id", session.site_id)
       .maybeSingle();
-
-    if (plan?.billing_interval && customerId) {
-      const periodEnd = new Date();
-      if (plan.billing_interval === "month") periodEnd.setMonth(periodEnd.getMonth() + 1);
-      else if (plan.billing_interval === "year") periodEnd.setFullYear(periodEnd.getFullYear() + 1);
-
-      const { data: sub } = await supabaseAdmin
-        .from("subscriptions")
-        .insert({
-          site_id: session.site_id,
-          customer_id: customerId,
-          plan_id: session.plan_id,
-          status: "active",
-          current_period_start: new Date().toISOString(),
-          current_period_end: periodEnd.toISOString(),
-        })
-        .select("public_id")
-        .single();
-      subscriptionPublicId = sub?.public_id ?? null;
+    if (!site) throw new Error("Site not found");
+    if (!(site.enabled_providers ?? []).includes(data.provider)) {
+      throw new Error(`Provider '${data.provider}' is not enabled for this site`);
     }
 
-    await supabaseAdmin
-      .from("checkout_sessions")
-      .update({ status: "succeeded", completed_at: new Date().toISOString() })
-      .eq("id", session.id);
-
-    // dispatch webhook (best effort)
-    try {
-      await enqueueAndDeliver({
-        admin: supabaseAdmin,
-        siteId: session.site_id,
-        eventType: "payment.succeeded",
-        data: {
-          payment_id: payment?.public_id,
-          site_id: session.site_id,
-          customer_external_id: session.customer_external_id,
-          amount: session.amount,
-          currency: session.currency,
-          subscription_id: subscriptionPublicId,
-          checkout_id: session.public_id,
-        },
-      });
-    } catch (err) {
-      console.error("[hn-pay] webhook dispatch failed", err);
-    }
-
-    return { ok: true, already: false, redirect: session.success_url };
+    const provider = getProvider(data.provider);
+    const sessionRow = {
+      id: session.id,
+      public_id: session.public_id,
+      site_id: session.site_id,
+      plan_id: session.plan_id,
+      amount: Number(session.amount),
+      currency: session.currency,
+      customer_email: session.customer_email,
+      customer_name: session.customer_name,
+      customer_external_id: session.customer_external_id,
+      success_url: session.success_url,
+      cancel_url: session.cancel_url,
+      metadata: (session.metadata as Record<string, unknown>) ?? {},
+      provider: session.provider,
+    };
+    const siteRow = {
+      id: site.id,
+      name: site.name,
+      domain: site.domain,
+      enabled_providers: site.enabled_providers ?? [],
+      manual_instructions: site.manual_instructions,
+      manual_bank_details: (site.manual_bank_details ?? {}) as Record<string, string>,
+      brand_color: site.brand_color,
+    };
+    const result = await provider.initiate({ session: sessionRow, site: siteRow });
+    return result as
+      | { kind: "redirect"; url: string; providerSessionId?: string }
+      | { kind: "manual"; instructions: string; bankDetails: Record<string, string>; referenceHint: string }
+      | { kind: "immediate_success" };
   });
 
 /* ─────────── route ─────────── */
@@ -200,9 +129,7 @@ export const Route = createFileRoute("/checkout/$sessionId")({
     <Shell>
       <div className="text-center">
         <div className="text-lg font-bold">Checkout session not found</div>
-        <div className="mt-2 text-sm text-neutral-400">
-          The link is invalid, expired, or already used.
-        </div>
+        <div className="mt-2 text-sm text-neutral-400">The link is invalid, expired, or already used.</div>
       </div>
     </Shell>
   ),
@@ -216,42 +143,59 @@ export const Route = createFileRoute("/checkout/$sessionId")({
   ),
 });
 
+const PROVIDER_META: Record<string, { label: string; sub: string; Icon: typeof CreditCard }> = {
+  stripe: { label: "Card (Stripe)", sub: "Visa · Mastercard · Amex", Icon: CreditCard },
+  manual: { label: "Bank Transfer", sub: "RIB · Wire · Cash", Icon: Landmark },
+  paypal: { label: "PayPal", sub: "Coming soon", Icon: CreditCard },
+  cmi: { label: "CMI (Maroc)", sub: "Coming soon", Icon: CreditCard },
+  payzone: { label: "Payzone", sub: "Coming soon", Icon: CreditCard },
+  naps: { label: "NAPS", sub: "Coming soon", Icon: CreditCard },
+};
+
 function CheckoutPage() {
   const params = Route.useParams();
   const { data } = useSuspenseQuery(sessionQuery(params.sessionId));
-  const navigate = useNavigate();
-  const [succeeded, setSucceeded] = useState(false);
+  const [manualResult, setManualResult] = useState<null | {
+    instructions: string;
+    bankDetails: Record<string, string>;
+    referenceHint: string;
+  }>(null);
 
-  const confirm = useMutation({
-    mutationFn: () => confirmCheckoutSession({ data: { publicId: params.sessionId } }),
+  const initiate = useMutation({
+    mutationFn: (provider: string) => initiateCheckout({ data: { publicId: params.sessionId, provider } }),
     onSuccess: (res) => {
-      setSucceeded(true);
-      setTimeout(() => {
-        if (res.redirect) window.location.href = res.redirect;
-      }, 1800);
+      if (res.kind === "redirect") {
+        window.location.href = res.url;
+      } else if (res.kind === "manual") {
+        setManualResult({
+          instructions: res.instructions,
+          bankDetails: res.bankDetails,
+          referenceHint: res.referenceHint,
+        });
+      }
     },
   });
 
   if (!data) return null;
+  const { session, site, plan } = data;
+  const brand = site?.brand_color ?? "#f59e0b";
+  const enabled = (site?.enabled_providers ?? ["manual"]) as string[];
 
-  const brand = data.site?.brand_color ?? "#f59e0b";
+  const succeeded = session.status === "succeeded";
+  const awaiting = session.status === "awaiting_confirmation" || Boolean(manualResult);
 
   return (
     <Shell>
       <div className="mb-6 flex items-center gap-3">
-        {data.site?.logo_url ? (
-          <img src={data.site.logo_url} alt="" className="h-10 w-10 rounded-lg" />
-        ) : (
-          <div
-            className="flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold"
-            style={{ borderColor: `${brand}66`, color: brand, background: `${brand}15` }}
-          >
-            {(data.site?.name ?? "?").slice(0, 2).toUpperCase()}
-          </div>
-        )}
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-lg border text-sm font-bold"
+          style={{ borderColor: `${brand}66`, color: brand, background: `${brand}15` }}
+        >
+          {(site?.name ?? "?").slice(0, 2).toUpperCase()}
+        </div>
         <div>
-          <div className="text-sm font-semibold">{data.site?.name ?? "Site"}</div>
-          <div className="text-xs text-neutral-500">{data.site?.domain}</div>
+          <div className="text-sm font-semibold">{site?.name ?? "Site"}</div>
+          <div className="text-xs text-neutral-500">{site?.domain}</div>
         </div>
       </div>
 
@@ -259,70 +203,144 @@ function CheckoutPage() {
         <div className="text-[11px] uppercase tracking-[0.25em] text-neutral-400">You are paying</div>
         <div className="mt-2 flex items-baseline gap-2">
           <div className="text-4xl font-black text-white">
-            {Number(data.amount).toFixed(2)} <span className="text-lg font-semibold">{data.currency}</span>
+            {Number(session.amount).toFixed(2)} <span className="text-lg font-semibold">{session.currency}</span>
           </div>
-          {data.plan?.billing_interval && (
-            <div className="text-sm text-neutral-400">/ {data.plan.billing_interval}</div>
-          )}
+          {plan?.billing_interval && <div className="text-sm text-neutral-400">/ {plan.billing_interval}</div>}
         </div>
         <div className="mt-1 text-sm text-neutral-300">
-          {data.plan?.name} <span className="text-neutral-500">· {data.plan?.code}</span>
+          {plan?.name} <span className="text-neutral-500">· {plan?.code}</span>
         </div>
-        {data.customer_email && (
+        {session.customer_email && (
           <div className="mt-4 rounded-lg border border-white/5 bg-black/30 px-3 py-2 text-xs text-neutral-400">
-            Billing to <span className="text-neutral-200">{data.customer_email}</span>
+            Billing to <span className="text-neutral-200">{session.customer_email}</span>
           </div>
         )}
 
-        {succeeded || data.status === "succeeded" ? (
+        {succeeded ? (
           <div className="mt-6 flex flex-col items-center py-6">
             <CheckCircle2 className="h-14 w-14 text-emerald-400" />
-            <div className="mt-3 text-lg font-bold text-white">Payment successful</div>
-            <div className="mt-1 text-xs text-neutral-400">Redirecting back to {data.site?.name}…</div>
+            <div className="mt-3 text-lg font-bold text-white">Payment confirmed</div>
+            <div className="mt-1 text-xs text-neutral-400">You can safely close this page.</div>
           </div>
+        ) : awaiting ? (
+          <ManualPending
+            brand={brand}
+            session={session}
+            manualResult={manualResult}
+            site={
+              site
+                ? {
+                    manual_instructions: site.manual_instructions,
+                    manual_bank_details: (site.manual_bank_details ?? {}) as Record<string, string>,
+                  }
+                : null
+            }
+          />
         ) : (
-          <>
-            <button
-              onClick={() => confirm.mutate()}
-              disabled={confirm.isPending}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-bold text-black shadow-[0_0_30px_-5px_rgba(251,191,36,0.6)] transition hover:brightness-110 disabled:opacity-60"
-              style={{ background: `linear-gradient(180deg, ${brand} 0%, #b45309 100%)` }}
-            >
-              {confirm.isPending ? (
-                <>
-                  <Loader2 className="h-4 w-4 animate-spin" /> Processing…
-                </>
-              ) : (
-                <>
-                  <CreditCard className="h-4 w-4" /> Pay {Number(data.amount).toFixed(2)} {data.currency}
-                </>
-              )}
-            </button>
-            {confirm.isError && (
+          <div className="mt-6 space-y-2">
+            {enabled.map((code) => {
+              const m = PROVIDER_META[code] ?? PROVIDER_META.manual;
+              const isPrimary = code === enabled[0];
+              return (
+                <button
+                  key={code}
+                  onClick={() => initiate.mutate(code)}
+                  disabled={initiate.isPending}
+                  className="group flex w-full items-center justify-between rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-left hover:border-white/25 hover:bg-white/[0.03] disabled:opacity-60"
+                  style={isPrimary ? { boxShadow: `0 0 0 1px ${brand}55 inset` } : undefined}
+                >
+                  <div className="flex items-center gap-3">
+                    <m.Icon className="h-5 w-5" style={{ color: brand }} />
+                    <div>
+                      <div className="text-sm font-semibold text-white">{m.label}</div>
+                      <div className="text-[11px] text-neutral-500">{m.sub}</div>
+                    </div>
+                  </div>
+                  {initiate.isPending && initiate.variables === code ? (
+                    <Loader2 className="h-4 w-4 animate-spin text-neutral-400" />
+                  ) : (
+                    <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500 group-hover:text-neutral-300">
+                      Pay →
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+            {initiate.isError && (
               <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 p-3 text-xs text-red-300">
-                {String(confirm.error)}
+                {String(initiate.error)}
               </div>
             )}
-            {data.cancel_url && (
-              <button
-                onClick={() => (window.location.href = data.cancel_url!)}
-                className="mt-2 w-full rounded-xl border border-white/10 px-4 py-2.5 text-xs text-neutral-400 hover:bg-white/5"
-              >
-                Cancel and return
-              </button>
-            )}
-          </>
+          </div>
         )}
       </div>
 
       <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-neutral-500">
         <Lock className="h-3 w-3" />
-        Secured by HN-Pay · TLS 1.3 · No card data stored
-      </div>
-      <div className="mt-1 text-center text-[10px] text-neutral-600">
-        Test mode — no real charge will occur until a payment provider is connected.
+        Secured by HN-Pay · TLS 1.3 · No card data stored on our servers
       </div>
     </Shell>
+  );
+}
+
+function ManualPending({
+  brand,
+  session,
+  manualResult,
+  site,
+}: {
+  brand: string;
+  session: { awaiting_reference: string | null; amount: number | string; currency: string };
+  manualResult: null | { instructions: string; bankDetails: Record<string, string>; referenceHint: string };
+  site: { manual_instructions?: string | null; manual_bank_details?: Record<string, string> | null } | null;
+}) {
+  const ref = manualResult?.referenceHint ?? session.awaiting_reference ?? "—";
+  const instructions =
+    manualResult?.instructions ??
+    site?.manual_instructions ??
+    "Please transfer the exact amount and include the reference code in your transfer memo. The merchant will confirm within 24h.";
+  const bank = (manualResult?.bankDetails ?? site?.manual_bank_details ?? {}) as Record<string, string>;
+
+  return (
+    <div className="mt-6 space-y-4">
+      <div className="rounded-xl border border-amber-500/30 bg-amber-500/5 p-4">
+        <div className="text-[10px] font-bold uppercase tracking-widest" style={{ color: brand }}>
+          Awaiting confirmation
+        </div>
+        <p className="mt-2 text-sm text-neutral-200">{instructions}</p>
+      </div>
+
+      <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+        <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Reference code</div>
+        <div className="mt-1 flex items-center justify-between">
+          <div className="font-mono text-xl font-bold text-white">{ref}</div>
+          <button
+            onClick={() => navigator.clipboard.writeText(ref)}
+            className="inline-flex items-center gap-1 rounded-md border border-white/10 px-2 py-1 text-[10px] text-neutral-300 hover:bg-white/5"
+          >
+            <Copy className="h-3 w-3" /> Copy
+          </button>
+        </div>
+      </div>
+
+      {Object.keys(bank).length > 0 && (
+        <div className="rounded-xl border border-white/10 bg-black/40 p-4">
+          <div className="text-[10px] font-bold uppercase tracking-widest text-neutral-500">Payment details</div>
+          <div className="mt-2 space-y-1.5 text-xs">
+            {Object.entries(bank).map(([k, v]) => (
+              <div key={k} className="flex items-center justify-between border-b border-white/5 py-1">
+                <span className="text-neutral-500 uppercase">{k}</span>
+                <span className="font-mono text-neutral-200">{String(v)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div className="text-center text-[11px] text-neutral-500">
+        This page will update automatically once the merchant confirms your payment.
+      </div>
+    </div>
   );
 }
 
