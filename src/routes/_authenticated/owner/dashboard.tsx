@@ -81,6 +81,7 @@ export function OwnerShell({
             </Link>
             <nav className="ml-8 hidden gap-1 md:flex">
               <NavLink to="/owner/dashboard">Overview</NavLink>
+              <NavLink to="/owner/sites">Sites</NavLink>
               <NavLink to="/owner/users">Users</NavLink>
               <NavLink to="/owner/roles">Roles</NavLink>
               <NavLink to="/owner/apps">Apps</NavLink>
