@@ -53,7 +53,7 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
         const eventKey = `mock:${parsed.event}:${parsed.provider_ref}`;
         const { data: existing } = await supabaseAdmin
           .from("processed_webhook_events")
-          .select("event_key")
+          .select("event_id")
           .eq("event_id", eventKey)
           .eq("source", "mock")
           .maybeSingle();
