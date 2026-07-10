@@ -17,6 +17,7 @@ export type Database = {
       checkout_sessions: {
         Row: {
           amount: number
+          awaiting_reference: string | null
           cancel_url: string | null
           completed_at: string | null
           created_at: string
@@ -30,6 +31,7 @@ export type Database = {
           plan_id: string
           provider: string
           provider_checkout_url: string | null
+          provider_details: Json
           provider_session_id: string | null
           public_id: string
           site_id: string
@@ -39,6 +41,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          awaiting_reference?: string | null
           cancel_url?: string | null
           completed_at?: string | null
           created_at?: string
@@ -52,6 +55,7 @@ export type Database = {
           plan_id: string
           provider?: string
           provider_checkout_url?: string | null
+          provider_details?: Json
           provider_session_id?: string | null
           public_id?: string
           site_id: string
@@ -61,6 +65,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          awaiting_reference?: string | null
           cancel_url?: string | null
           completed_at?: string | null
           created_at?: string
@@ -74,6 +79,7 @@ export type Database = {
           plan_id?: string
           provider?: string
           provider_checkout_url?: string | null
+          provider_details?: Json
           provider_session_id?: string | null
           public_id?: string
           site_id?: string
@@ -223,12 +229,15 @@ export type Database = {
           customer_id: string | null
           id: string
           metadata: Json | null
+          notes: string | null
           plan_id: string | null
           provider: string | null
           provider_invoice_id: string | null
           provider_payment_id: string | null
           provider_ref: string | null
           public_id: string
+          settled_at: string | null
+          settled_by: string | null
           site_id: string
           status: string
         }
@@ -240,12 +249,15 @@ export type Database = {
           customer_id?: string | null
           id?: string
           metadata?: Json | null
+          notes?: string | null
           plan_id?: string | null
           provider?: string | null
           provider_invoice_id?: string | null
           provider_payment_id?: string | null
           provider_ref?: string | null
           public_id?: string
+          settled_at?: string | null
+          settled_by?: string | null
           site_id: string
           status?: string
         }
@@ -257,12 +269,15 @@ export type Database = {
           customer_id?: string | null
           id?: string
           metadata?: Json | null
+          notes?: string | null
           plan_id?: string | null
           provider?: string | null
           provider_invoice_id?: string | null
           provider_payment_id?: string | null
           provider_ref?: string | null
           public_id?: string
+          settled_at?: string | null
+          settled_by?: string | null
           site_id?: string
           status?: string
         }
@@ -553,9 +568,12 @@ export type Database = {
           created_at: string
           created_by: string | null
           domain: string
+          enabled_providers: string[]
           id: string
           is_active: boolean
           logo_url: string | null
+          manual_bank_details: Json
+          manual_instructions: string | null
           name: string
           slug: string
           updated_at: string
@@ -567,9 +585,12 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           domain: string
+          enabled_providers?: string[]
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          manual_bank_details?: Json
+          manual_instructions?: string | null
           name: string
           slug: string
           updated_at?: string
@@ -581,9 +602,12 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           domain?: string
+          enabled_providers?: string[]
           id?: string
           is_active?: boolean
           logo_url?: string | null
+          manual_bank_details?: Json
+          manual_instructions?: string | null
           name?: string
           slug?: string
           updated_at?: string
