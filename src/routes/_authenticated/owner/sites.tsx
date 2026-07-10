@@ -84,13 +84,31 @@ function SitesPage() {
             Every site you connect to HN-Pay gets its own API key, webhook secret, and plans.
           </p>
         </div>
-        <button
-          onClick={() => setCreating((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
-        >
-          <Plus className="h-4 w-4" /> New site
-        </button>
+        <div className="flex gap-2">
+          <Link to="/owner/portfolios" className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs text-neutral-300 hover:bg-white/10">
+            <FolderTree className="h-4 w-4" /> Portfolios
+          </Link>
+          <button
+            onClick={() => setImporting((v) => !v)}
+            className="inline-flex items-center gap-2 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-3 py-2 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20"
+          >
+            <Upload className="h-4 w-4" /> Bulk import
+          </button>
+          <button
+            onClick={() => setCreating((v) => !v)}
+            className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
+          >
+            <Plus className="h-4 w-4" /> New site
+          </button>
+        </div>
       </div>
+
+      {importing && (
+        <BulkImportPanel
+          onDone={() => { setImporting(false); qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }); }}
+          runImport={(rows) => bulkFn({ data: { rows } })}
+        />
+      )}
 
       {creating && (
         <div className="mb-6 rounded-2xl border border-amber-500/20 bg-black/40 p-5">
