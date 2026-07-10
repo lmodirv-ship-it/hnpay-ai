@@ -1,8 +1,7 @@
 import { signWebhookPayload } from "./crypto.server";
+import type { supabaseAdmin } from "@/integrations/supabase/client.server";
 
-type SupabaseAdmin = Awaited<
-  ReturnType<typeof import("@/integrations/supabase/client.server").getSupabaseAdmin>
->;
+type SupabaseAdmin = typeof supabaseAdmin;
 
 type EnqueueArgs = {
   admin: SupabaseAdmin;
