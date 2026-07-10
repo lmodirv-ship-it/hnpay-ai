@@ -54,7 +54,8 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
         const { data: existing } = await supabaseAdmin
           .from("processed_webhook_events")
           .select("event_key")
-          .eq("event_key", eventKey)
+          .eq("event_id", eventKey)
+          .eq("source", "mock")
           .maybeSingle();
 
         if (existing) {
@@ -75,7 +76,7 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
             .from("checkout_sessions")
             .update({ status: "failed" })
             .eq("id", session.id);
-          await supabaseAdmin.from("processed_webhook_events").insert({ event_key: eventKey });
+          await supabaseAdmin.from("processed_webhook_events").insert({ event_id: eventKey, source: "mock" });
           return json(200, { ok: true, status: "failed" });
         }
 
@@ -88,7 +89,7 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
           providerRef: parsed.provider_ref,
         });
 
-        await supabaseAdmin.from("processed_webhook_events").insert({ event_key: eventKey });
+        await supabaseAdmin.from("processed_webhook_events").insert({ event_id: eventKey, source: "mock" });
 
         return json(200, { ok: true, ...result });
       },
