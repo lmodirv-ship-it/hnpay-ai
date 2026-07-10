@@ -1,103 +1,93 @@
-# خطة التطوير: تحويل HN-Pay إلى بوابة دفع حقيقية
+# خطة إكمال HN-PAY
 
-## التشخيص
-HN-Pay يحتوي حالياً على:
-- واجهة فوترة فاخرة بالكامل (Obsidian/Gold) مع لوحة KPIs، خطط أسعار، سجل فواتير، وخزنة 3D.
-- نظام مصادقة وأدوار (Owner/Admin/Developer/Subscriber) مرتبط بـ Lovable Cloud.
-- **لكن**: الدفع ما زال وهمياً (mock). النموذج الحالي يُدخل بيانات البطاقة في حقل نصي مخصص، وهذا يخالف متطلبات PCI-DSS ولا يُحوّل أي أموال.
+## الوضع الحالي (ما تم بناؤه فعلاً)
 
-لذلك لم تصلك أي سنت: العميل يضغط "دفع" لكن لا يوجد بوابة مالية حقيقية خلف الزر.
+| المكوّن | الحالة |
+|---|---|
+| Checkout API (`POST /api/public/v1/checkout-sessions`) | ✅ موجود |
+| Developer API Keys (`sk_live_*` + hashing + إدارة UI) | ✅ موجود |
+| صفحة الدفع `/checkout/:sessionId` | ✅ موجودة لكن **وهمية** — تحاكي النجاح بدون معالج بطاقات حقيقي |
+| Webhooks صادرة موقّعة (HMAC) | ✅ موجودة لكنها لا تُطلق إلا من الوضع الوهمي |
+| جداول Subscriptions + Payments + Customers | ✅ موجودة |
+| Subscription API | ❌ غير موجود |
+| Customer Portal | ❌ غير موجود |
+| معالج دفعات حقيقي (Stripe/Paddle) | ❌ غير موجود — **السبب الرئيسي لعدم استلامك أي سنت** |
 
-## الهدف
-ربط HN-Pay ببوابة دفع حقيقية (Merchant of Record) تتيح:
-1. تحصيل اشتراكات شهرية/سنوة لكل تطبيق.
-2. تحصيل حزم توكنز أو رصيد استخدام لمرة واحدة.
-3. إصدار فواتير وتسجيلها في قاعدة البيانات.
-4. توجيه العملاء إلى صفحة دفع آمنة ومتوافقة.
-5. تفعيل الدفع على كل التطبيقات الـ 140+ عبر رابط/ـAPI موحد.
+## المرحلة 1 — تفعيل معالج دفعات حقيقي (الأهم)
 
-## توصية مزوّد الدفع
-بناءً على تحليل المشروع، المنتج مؤهل لـ **Paddle** (Merchant of Record). Paddle يناسبك لأنه:
-- يتولى الضرائب والامتثال والفوترة الدولية.
-- يدعم الاشتراكات المتكررة والمنتجات الرقمية.
-- لا يحتاج حساب Stripe منفصل؛ يُنشأ بيئة اختبار فوراً.
-- يتكامل مع Lovable Payments بشكل مدمج.
+بدون هذا الجزء تبقى كل الطبقات مجرد واجهات. سأشغّل `recommend_payment_provider` لاختيار Paddle أو Stripe المناسب لطبيعة HN-PAY (SaaS B2B متعدد المستأجرين لـ 149 تطبيقاً). التوصية غالباً ستكون **Stripe مع Managed Payments** لأنه يدعم subscription infrastructure عميقاً ويسمح بـ multi-tenant حيث أنت (المالك) تستقبل الأموال ثم توزّعها.
 
-**ملاحظة أمنية مهمة**: يجب إزالة نموذج إدخال البطاقة الحالي (رقم البطاقة + CVV + Expiry) واستبداله بصفحة checkout آمنة من Paddle أو Stripe. جمع البطاقات في حقل نصي عادي يُخالف PCI-DSS.
+بعد التفعيل:
+- استبدال نموذج البطاقة الوهمي في `/checkout/:sessionId` بـ **Stripe Elements** آمن (PCI-compliant).
+- إنشاء منتجات وأسعار Stripe مطابقة لجدول `plans`.
 
-## المراحل
+## المرحلة 2 — Inbound Webhook (Stripe → HN-PAY)
 
-### المرحلة 1: الأساس والامتثال (1-2 أيام)
-- ترقية/التأكد من خطة Lovable Pro (المدفوعات تتطلب Pro على الأقل).
-- تفعيل Paddle Payments عبر Lovable بعد موافقتك.
-- إنشاء بيئة اختبار (sandbox) وتجربة حساب تجريبي.
-- إزالة/تحويل نموذج البطاقة الحالي إلى زر "Proceed to Secure Checkout".
-- إضافة صفحة شروط دفع واضحة وسياسة استرداد.
+مسار جديد: `POST /api/public/webhooks/stripe`
+- التحقق من `Stripe-Signature` (HMAC).
+- معالجة أحداث: `checkout.session.completed`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.updated`, `customer.subscription.deleted`.
+- تحديث `payments` + `subscriptions` + تصفير Idempotency عبر `processed_webhook_events`.
+- إطلاق **outbound webhook** الموقّع إلى موقع العميل (`payment.succeeded`, `subscription.activated`, `subscription.canceled`).
 
-### المرحلة 2: نموذج المنتجات والأسعار (2-3 أيام)
-- تصميم هيكل منتجات Paddle لكل تطبيق:
-  - Basic — $19/شهر
-  - Pro — $49/شهر
-  - Enterprise — $249/شهر
-  - Token Pack — $9 / $49 / $199 (استخدام مرن)
-- إنشاء المنتجات والأسعار في Paddle (sandbox أولاً).
-- تخزين `paddle_product_id` و `paddle_price_id` في جدول `hn_apps` أو جدول جديد `hn_app_plans`.
-- إضافة migration لجدول `hn_invoices` و `hn_transactions` مع RLS.
+## المرحلة 3 — Subscription API (للمواقع الخارجية)
 
-### المرحلة 3: Checkout آمن وموحد (3-4 أيام)
-- إنشاء `createServerFn` لإنشاء Paddle Checkout Session:
-  - يستقبل `appId` + `plan` + `userId`.
-  - يختار الـ price_id المناسب.
-  - يعيد رابط Paddle Checkout الآمن.
-- تحديث `HnPayHub.tsx` و `MiniCheckout` و `UnifiedCheckoutPage` لتوجيه المستخدم إلى رابط Paddle بدلاً من حقل البطاقة.
-- دعم اللغتين AR/EN في رسائل الدفع.
+نقاط نهاية جديدة تحت `/api/public/v1/`:
 
-### المرحلة 4: Webhooks وتسجيل الإيرادات (2-3 أيام)
-- إنشاء server route عام: `/api/public/webhooks/paddle`.
-- التحقق من توقيع Paddle قبل معالجة أي حدث.
-- معالجة أحداث:
-  - `checkout.completed` → إنشاء/تحديث `hn_subscriptions`.
-  - `subscription.activated` / `subscription.updated` / `subscription.cancelled`.
-  - `payment.succeeded` / `payment.failed` → إدخال `hn_transactions` و `hn_invoices`.
-- تحديث لوحة Owner Dashboard لعرض:
-  - إجمالي الإيرادات الحقيقية.
-  - عدد الاشتراكات النشطة حسب التطبيق.
-  - MRR و Churn Rate المحسوبين من البيانات.
+| Method | Path | الوظيفة |
+|---|---|---|
+| GET | `/subscriptions/:id` | جلب حالة اشتراك |
+| GET | `/customers/:external_id/subscriptions` | كل اشتراكات عميل |
+| POST | `/subscriptions/:id/cancel` | إلغاء (فوري أو نهاية الفترة) |
+| POST | `/subscriptions/:id/resume` | استئناف قبل انتهاء الفترة |
+| POST | `/customer-portal-sessions` | إنشاء رابط بوابة العميل |
 
-### المرحلة 5: التكامل مع التطبيقات الـ 140+ (3-5 أيام)
-- بناء endpoint موحد: `/api/public/v1/checkout` (أو server function) يستقبل `appId` + `apiKey`.
-- نظام API Keys لكل تطبيق (جدول `hn_app_keys`) للتحقق من هوية التطبيق الطالب.
-- توفير مقتطف JS (`hn-pay.js`) يُضاف في أي موقع من مواقعك:
-  - يقرأ `data-hn-app-id`.
-  - يفتح نافذة checkout موحدة عند الضغط على "اشترك الآن".
-- توثيق الربط في صفحة Owner Console › Unified Checkout.
+كلها تتحقق من `sk_live_*` وتقيّد الوصول لبيانات نفس الـ `site_id` فقط.
 
-### المرحلة 6: الإيصالات والبريد والتحليلات (2-3 أيام)
-- إعداد Lovable Email لإرسال:
-  - إيصال الدفع.
-  - تذكير بتجديد الاشتراك.
-  - تنبيه فشل الدفع.
-- إضافة صفحة `/owner/revenue` بمخططات بيانية (Recharts) لكل تطبيق.
-- إضافة صفحة `/owner/invoices` لعرض وتحميل الفواتير.
+## المرحلة 4 — Customer Portal (واجهة نهائية للعميل)
 
-### المرحلة 7: الاختبار والإطلاق (2 أيام)
-- اختبار sandbox لكل خطة على 2-3 تطبيقات.
-- التحقق من Webhook signatures والاشتراكات.
-- التبديل إلى Live mode في Paddle.
-- نشر المشروع ومراقبة أول معاملة حقيقية.
+مسار عام مؤقت: `/portal/:token` (توكن قصير الأمد صالح 30 دقيقة، يُنشأ عبر Subscription API).
 
-## النتيجة المتوقعة
-بعد التنفيذ، سيصبح HN-Pay:
-- بوابة دفع حقيقية تجمع أموالاً من العملاء.
-- مركزاً لإدارة اشتراكات 140+ تطبيق.
-- منصة تدعم اللغتين العربية/الإنجليزية مع فواتير وإيصالات.
-- متوافقاً مع معايير الامتثال الدولية (PCI + MoR).
+يعرض للعميل:
+- اشتراكاته النشطة عبر جميع مواقعك (خيار: عرض فقط اشتراكات الموقع الذي أنشأ الرابط).
+- تغيير خطة / ترقية / تخفيض.
+- تحديث وسيلة الدفع (عبر Stripe Billing Portal مدمج).
+- تنزيل الفواتير.
+- إلغاء الاشتراك.
 
-## المخرجات الرئيسية
-- `paddle` مفعّل في المشروع.
-- جداول جديدة: `hn_invoices`, `hn_transactions`, `hn_app_plans`, `hn_app_keys`.
-- Routes جديدة: `/api/public/webhooks/paddle`, `/owner/revenue`, `/owner/invoices`.
-- مكون `SecureCheckoutButton` يحل محل نموذج البطاقة الحالي.
-- مقتطف `hn-pay.js` قابل للتضمين في المواقع الخارجية.
+بتصميم Obsidian/Gold المطابق للمشروع + دعم AR/EN.
 
-هل تريد الموافقة على هذه الخطة لنبدأ بتفعيل Paddle وتحويل الدفع إلى نظام حقيقي؟
+## المرحلة 5 — تحسينات Owner Console
+
+- **صفحة Revenue**: MRR/ARR فعلي من `subscriptions` + `payments`، مقسّم لكل موقع.
+- **Payout Splits** (اختياري): تحديد نسبة عمولة HN لكل موقع، وإنشاء تقارير تحويل شهرية.
+- **Webhook Retry Console**: إعادة إرسال يدوي لأي حدث فاشل.
+
+## القسم التقني
+
+**الأمان**
+- كل API عام تحت `/api/public/*` (يتجاوز auth wall).
+- المفاتيح تُخزن SHA-256 hash فقط + عرض prefix.
+- HMAC-SHA256 على كل الـ webhooks الواردة والصادرة.
+- Idempotency-Key header اختياري على `POST /checkout-sessions` لمنع التكرار.
+- Rate limit مبني على `site_id` (اختياري في phase لاحق).
+
+**قاعدة البيانات — تعديلات مطلوبة**
+- إضافة `stripe_customer_id`, `stripe_subscription_id`, `stripe_price_id` لجداول `customers`, `subscriptions`, `plans`.
+- جدول جديد `portal_tokens (token, subscription_id, expires_at)`.
+- عمود `stripe_event_id` في `processed_webhook_events` للـ idempotency.
+
+**البنية**
+- Server functions مصادَق عليها للـ Owner UI.
+- Server routes عامة (`api/public/*`) للـ APIs الخارجية.
+- التوقيع/التشفير في `src/lib/hn-pay/crypto.server.ts` (موجود).
+- منطق Stripe في `src/lib/hn-pay/stripe.server.ts` (جديد).
+
+## ترتيب التنفيذ
+
+1. اختيار المعالج (Stripe/Paddle) → التفعيل.
+2. Inbound webhook + استبدال checkout الوهمي.
+3. Subscription API.
+4. Customer Portal.
+5. تحسينات Owner Console.
+
+**سؤال قبل البدء**: هل تريد **Stripe** (الأنسب لـ SaaS متعدد المستأجرين وتخصيص كامل) أم **Paddle** (Merchant of Record — يتكفّل بالضرائب والامتثال العالمي مقابل عمولة أعلى)؟ إذا لم تحدد، سأشغّل أداة التوصية وأختار الأنسب تلقائياً.
