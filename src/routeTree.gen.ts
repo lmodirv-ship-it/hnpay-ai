@@ -17,13 +17,13 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
-import { Route as ApiV1CheckoutSessionsRouteImport } from './routes/api/v1/checkout-sessions'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
 import { Route as AuthenticatedOwnerSitesRouteImport } from './routes/_authenticated/owner/sites'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
+import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
 
 const TermsRoute = TermsRouteImport.update({
@@ -65,11 +65,6 @@ const AuthSyncRoute = AuthSyncRouteImport.update({
   path: '/sync',
   getParentRoute: () => AuthRoute,
 } as any)
-const ApiV1CheckoutSessionsRoute = ApiV1CheckoutSessionsRouteImport.update({
-  id: '/api/v1/checkout-sessions',
-  path: '/api/v1/checkout-sessions',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedUserDashboardRoute =
   AuthenticatedUserDashboardRouteImport.update({
     id: '/user/dashboard',
@@ -102,6 +97,12 @@ const AuthenticatedOwnerAppsRoute = AuthenticatedOwnerAppsRouteImport.update({
   path: '/owner/apps',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiPublicV1CheckoutSessionsRoute =
+  ApiPublicV1CheckoutSessionsRouteImport.update({
+    id: '/api/public/v1/checkout-sessions',
+    path: '/api/public/v1/checkout-sessions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedOwnerSitesSiteIdRoute =
   AuthenticatedOwnerSitesSiteIdRouteImport.update({
     id: '/$siteId',
@@ -123,8 +124,8 @@ export interface FileRoutesByFullPath {
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
-  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -140,8 +141,8 @@ export interface FileRoutesByTo {
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
-  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,8 +160,8 @@ export interface FileRoutesById {
   '/_authenticated/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
-  '/api/v1/checkout-sessions': typeof ApiV1CheckoutSessionsRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -178,8 +179,8 @@ export interface FileRouteTypes {
     | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
-    | '/api/v1/checkout-sessions'
     | '/owner/sites/$siteId'
+    | '/api/public/v1/checkout-sessions'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -195,8 +196,8 @@ export interface FileRouteTypes {
     | '/owner/sites'
     | '/owner/users'
     | '/user/dashboard'
-    | '/api/v1/checkout-sessions'
     | '/owner/sites/$siteId'
+    | '/api/public/v1/checkout-sessions'
   id:
     | '__root__'
     | '/'
@@ -213,8 +214,8 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/sites'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
-    | '/api/v1/checkout-sessions'
     | '/_authenticated/owner/sites/$siteId'
+    | '/api/public/v1/checkout-sessions'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -225,7 +226,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   CheckoutSessionIdRoute: typeof CheckoutSessionIdRoute
-  ApiV1CheckoutSessionsRoute: typeof ApiV1CheckoutSessionsRoute
+  ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -286,13 +287,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSyncRouteImport
       parentRoute: typeof AuthRoute
     }
-    '/api/v1/checkout-sessions': {
-      id: '/api/v1/checkout-sessions'
-      path: '/api/v1/checkout-sessions'
-      fullPath: '/api/v1/checkout-sessions'
-      preLoaderRoute: typeof ApiV1CheckoutSessionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/user/dashboard': {
       id: '/_authenticated/user/dashboard'
       path: '/user/dashboard'
@@ -334,6 +328,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/owner/apps'
       preLoaderRoute: typeof AuthenticatedOwnerAppsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/api/public/v1/checkout-sessions': {
+      id: '/api/public/v1/checkout-sessions'
+      path: '/api/public/v1/checkout-sessions'
+      fullPath: '/api/public/v1/checkout-sessions'
+      preLoaderRoute: typeof ApiPublicV1CheckoutSessionsRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/owner/sites/$siteId': {
       id: '/_authenticated/owner/sites/$siteId'
@@ -398,7 +399,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   CheckoutSessionIdRoute: CheckoutSessionIdRoute,
-  ApiV1CheckoutSessionsRoute: ApiV1CheckoutSessionsRoute,
+  ApiPublicV1CheckoutSessionsRoute: ApiPublicV1CheckoutSessionsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

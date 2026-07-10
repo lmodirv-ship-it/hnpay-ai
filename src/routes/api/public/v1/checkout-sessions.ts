@@ -34,7 +34,7 @@ async function readOrigin(request: Request): Promise<string> {
   return `${url.protocol}//${url.host}`;
 }
 
-export const Route = createFileRoute("/api/v1/checkout-sessions")({
+export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
   server: {
     handlers: {
       OPTIONS: async () => new Response(null, { status: 204, headers: CORS }),
