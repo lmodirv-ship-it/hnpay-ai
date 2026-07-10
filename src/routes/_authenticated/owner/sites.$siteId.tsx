@@ -373,7 +373,7 @@ function IntegrationSnippet({ siteId: _siteId, domain }: { siteId: string; domai
   const origin = typeof window !== "undefined" ? window.location.origin : "https://your-hnpay-hub";
   const [tab, setTab] = useState<"node" | "curl">("node");
   const nodeSnippet = `// On your site's SERVER (never in the browser)
-const res = await fetch("${origin}/api/v1/checkout-sessions", {
+const res = await fetch("${origin}/api/public/v1/checkout-sessions", {
   method: "POST",
   headers: {
     "content-type": "application/json",
@@ -390,7 +390,7 @@ const res = await fetch("${origin}/api/v1/checkout-sessions", {
 const { checkout_url } = await res.json();
 // then redirect the user to checkout_url`;
 
-  const curlSnippet = `curl -X POST ${origin}/api/v1/checkout-sessions \\
+  const curlSnippet = `curl -X POST ${origin}/api/public/v1/checkout-sessions \\
   -H "authorization: Bearer sk_live_..." \\
   -H "content-type: application/json" \\
   -d '{"plan_code":"pro_monthly","customer":{"external_id":"user_123","email":"a@b.com"}}'`;
