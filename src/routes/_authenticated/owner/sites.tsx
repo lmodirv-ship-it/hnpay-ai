@@ -30,12 +30,21 @@ function SitesPage() {
   const createFn = useServerFn(createSite);
   const toggleFn = useServerFn(toggleSite);
 
+  const listPortfoliosFn = useServerFn(listPortfolios);
+  const bulkFn = useServerFn(bulkImportSites);
+  const assignFn = useServerFn(assignSiteToPortfolio);
+
   const { data: sites = [], isLoading } = useQuery({
     queryKey: ["hn-pay", "sites"],
     queryFn: () => listFn(),
   });
+  const { data: portfolios = [] } = useQuery({
+    queryKey: ["hn-pay", "portfolios"],
+    queryFn: () => listPortfoliosFn(),
+  });
 
   const [creating, setCreating] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [form, setForm] = useState({
     slug: "",
     name: "",
@@ -55,6 +64,11 @@ function SitesPage() {
 
   const toggle = useMutation({
     mutationFn: (v: { id: string; active: boolean }) => toggleFn({ data: v }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
+  });
+
+  const assign = useMutation({
+    mutationFn: (v: { siteId: string; portfolioId: string | null }) => assignFn({ data: v }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
   });
 
