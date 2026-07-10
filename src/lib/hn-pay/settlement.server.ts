@@ -112,6 +112,13 @@ export async function settleCheckoutSession({
     .update({ status: "succeeded", completed_at: new Date().toISOString() })
     .eq("id", session.id);
 
+  // Load plan_code for the outbound webhook payload
+  const { data: planRow } = await admin
+    .from("plans")
+    .select("code, billing_interval")
+    .eq("id", session.plan_id)
+    .maybeSingle();
+
   try {
     await enqueueAndDeliver({
       admin,
@@ -125,10 +132,36 @@ export async function settleCheckoutSession({
         currency: session.currency,
         subscription_id: subscriptionPublicId,
         checkout_id: session.public_id,
+        plan_code: planRow?.code ?? null,
         provider,
         provider_ref: providerRef,
       },
     });
+
+    // Fire subscription.activated too, so sites can flip the user's plan
+    if (subscriptionPublicId) {
+      const { data: subRow } = await admin
+        .from("subscriptions")
+        .select("current_period_end, status")
+        .eq("public_id", subscriptionPublicId)
+        .maybeSingle();
+      await enqueueAndDeliver({
+        admin,
+        siteId: session.site_id,
+        eventType: "subscription.activated",
+        data: {
+          subscription_id: subscriptionPublicId,
+          site_id: session.site_id,
+          customer_external_id: session.customer_external_id,
+          plan_code: planRow?.code ?? null,
+          status: subRow?.status ?? "active",
+          current_period_end: subRow?.current_period_end ?? null,
+          payment_id: payment?.public_id,
+          checkout_id: session.public_id,
+          provider,
+        },
+      });
+    }
   } catch (err) {
     console.error("[hn-pay] webhook dispatch failed", err);
   }
