@@ -416,6 +416,45 @@ export type Database = {
           },
         ]
       }
+      portfolios: {
+        Row: {
+          brand_color: string | null
+          created_at: string
+          created_by: string | null
+          default_currency: string
+          default_provider: string | null
+          description: string | null
+          id: string
+          name: string
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          brand_color?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_currency?: string
+          default_provider?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          brand_color?: string | null
+          created_at?: string
+          created_by?: string | null
+          default_currency?: string
+          default_provider?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       processed_webhook_events: {
         Row: {
           event_id: string
@@ -569,12 +608,14 @@ export type Database = {
           created_by: string | null
           domain: string
           enabled_providers: string[]
+          environment: string
           id: string
           is_active: boolean
           logo_url: string | null
           manual_bank_details: Json
           manual_instructions: string | null
           name: string
+          portfolio_id: string | null
           slug: string
           updated_at: string
           webhook_secret: string
@@ -586,12 +627,14 @@ export type Database = {
           created_by?: string | null
           domain: string
           enabled_providers?: string[]
+          environment?: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
           manual_bank_details?: Json
           manual_instructions?: string | null
           name: string
+          portfolio_id?: string | null
           slug: string
           updated_at?: string
           webhook_secret?: string
@@ -603,18 +646,28 @@ export type Database = {
           created_by?: string | null
           domain?: string
           enabled_providers?: string[]
+          environment?: string
           id?: string
           is_active?: boolean
           logo_url?: string | null
           manual_bank_details?: Json
           manual_instructions?: string | null
           name?: string
+          portfolio_id?: string | null
           slug?: string
           updated_at?: string
           webhook_secret?: string
           webhook_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "sites_portfolio_id_fkey"
+            columns: ["portfolio_id"]
+            isOneToOne: false
+            referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       subscriptions: {
         Row: {
