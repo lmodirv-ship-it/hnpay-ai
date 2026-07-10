@@ -19,12 +19,15 @@ export type Database = {
           amount: number
           awaiting_reference: string | null
           cancel_url: string | null
+          client_token: string | null
+          client_token_expires_at: string | null
           completed_at: string | null
           created_at: string
           currency: string
           customer_email: string | null
           customer_external_id: string | null
           customer_name: string | null
+          display_mode: string
           expires_at: string
           id: string
           metadata: Json | null
@@ -43,12 +46,15 @@ export type Database = {
           amount: number
           awaiting_reference?: string | null
           cancel_url?: string | null
+          client_token?: string | null
+          client_token_expires_at?: string | null
           completed_at?: string | null
           created_at?: string
           currency: string
           customer_email?: string | null
           customer_external_id?: string | null
           customer_name?: string | null
+          display_mode?: string
           expires_at?: string
           id?: string
           metadata?: Json | null
@@ -67,12 +73,15 @@ export type Database = {
           amount?: number
           awaiting_reference?: string | null
           cancel_url?: string | null
+          client_token?: string | null
+          client_token_expires_at?: string | null
           completed_at?: string | null
           created_at?: string
           currency?: string
           customer_email?: string | null
           customer_external_id?: string | null
           customer_name?: string | null
+          display_mode?: string
           expires_at?: string
           id?: string
           metadata?: Json | null
@@ -681,6 +690,7 @@ export type Database = {
           metadata: Json | null
           plan_id: string
           provider: string
+          provider_ref: string | null
           provider_subscription_id: string | null
           public_id: string
           site_id: string
@@ -698,6 +708,7 @@ export type Database = {
           metadata?: Json | null
           plan_id: string
           provider?: string
+          provider_ref?: string | null
           provider_subscription_id?: string | null
           public_id?: string
           site_id: string
@@ -715,6 +726,7 @@ export type Database = {
           metadata?: Json | null
           plan_id?: string
           provider?: string
+          provider_ref?: string | null
           provider_subscription_id?: string | null
           public_id?: string
           site_id?: string
