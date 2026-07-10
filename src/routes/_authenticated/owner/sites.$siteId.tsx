@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ArrowLeft, Plus, Copy, Check, Trash2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle2 } from "lucide-react";
 import {
   listApiKeys,
   createApiKey,
@@ -14,6 +14,7 @@ import {
   listSitePayments,
   listSiteWebhookEvents,
 } from "@/lib/hn-pay/sites.functions";
+import { listAwaitingSessions, settleManualPayment } from "@/lib/hn-pay/settlement.functions";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { CopyRow } from "@/routes/_authenticated/owner/sites";
 import { useHnSession } from "@/lib/auth/use-session";
@@ -52,6 +53,10 @@ function SiteDetail() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <ApiKeysPanel siteId={siteId} qc={qc} />
         <PlansPanel siteId={siteId} qc={qc} />
+      </div>
+
+      <div className="mt-6">
+        <AwaitingPanel siteId={siteId} qc={qc} />
       </div>
 
       <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
