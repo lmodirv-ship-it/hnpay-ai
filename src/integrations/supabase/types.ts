@@ -14,6 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
+      checkout_sessions: {
+        Row: {
+          amount: number
+          cancel_url: string | null
+          completed_at: string | null
+          created_at: string
+          currency: string
+          customer_email: string | null
+          customer_external_id: string | null
+          customer_name: string | null
+          expires_at: string
+          id: string
+          metadata: Json | null
+          plan_id: string
+          public_id: string
+          site_id: string
+          status: string
+          success_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          cancel_url?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency: string
+          customer_email?: string | null
+          customer_external_id?: string | null
+          customer_name?: string | null
+          expires_at?: string
+          id?: string
+          metadata?: Json | null
+          plan_id: string
+          public_id?: string
+          site_id: string
+          status?: string
+          success_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          cancel_url?: string | null
+          completed_at?: string | null
+          created_at?: string
+          currency?: string
+          customer_email?: string | null
+          customer_external_id?: string | null
+          customer_name?: string | null
+          expires_at?: string
+          id?: string
+          metadata?: Json | null
+          plan_id?: string
+          public_id?: string
+          site_id?: string
+          status?: string
+          success_url?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "checkout_sessions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_sessions_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      customers: {
+        Row: {
+          created_at: string
+          email: string | null
+          external_id: string
+          id: string
+          metadata: Json | null
+          name: string | null
+          site_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          external_id: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          site_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          external_id?: string
+          id?: string
+          metadata?: Json | null
+          name?: string | null
+          site_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customers_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hn_apps: {
         Row: {
           active: boolean
@@ -83,6 +199,154 @@ export type Database = {
         }
         Relationships: []
       }
+      payments: {
+        Row: {
+          amount: number
+          checkout_session_id: string | null
+          created_at: string
+          currency: string
+          customer_id: string | null
+          id: string
+          metadata: Json | null
+          plan_id: string | null
+          provider: string | null
+          provider_ref: string | null
+          public_id: string
+          site_id: string
+          status: string
+        }
+        Insert: {
+          amount: number
+          checkout_session_id?: string | null
+          created_at?: string
+          currency: string
+          customer_id?: string | null
+          id?: string
+          metadata?: Json | null
+          plan_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          public_id?: string
+          site_id: string
+          status?: string
+        }
+        Update: {
+          amount?: number
+          checkout_session_id?: string | null
+          created_at?: string
+          currency?: string
+          customer_id?: string | null
+          id?: string
+          metadata?: Json | null
+          plan_id?: string | null
+          provider?: string | null
+          provider_ref?: string | null
+          public_id?: string
+          site_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_checkout_session_id_fkey"
+            columns: ["checkout_session_id"]
+            isOneToOne: false
+            referencedRelation: "checkout_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      plans: {
+        Row: {
+          amount: number
+          billing_interval: string | null
+          code: string
+          created_at: string
+          currency: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          site_id: string
+          trial_days: number | null
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          billing_interval?: string | null
+          code: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          site_id: string
+          trial_days?: number | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          billing_interval?: string | null
+          code?: string
+          created_at?: string
+          currency?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          site_id?: string
+          trial_days?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plans_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      processed_webhook_events: {
+        Row: {
+          event_id: string
+          processed_at: string
+          source: string
+        }
+        Insert: {
+          event_id: string
+          processed_at?: string
+          source: string
+        }
+        Update: {
+          event_id?: string
+          processed_at?: string
+          source?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -140,6 +404,165 @@ export type Database = {
         }
         Relationships: []
       }
+      site_api_keys: {
+        Row: {
+          created_at: string
+          id: string
+          key_hash: string
+          key_prefix: string
+          label: string
+          last_used_at: string | null
+          mode: string
+          revoked_at: string | null
+          site_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          key_hash: string
+          key_prefix: string
+          label?: string
+          last_used_at?: string | null
+          mode?: string
+          revoked_at?: string | null
+          site_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          key_hash?: string
+          key_prefix?: string
+          label?: string
+          last_used_at?: string | null
+          mode?: string
+          revoked_at?: string | null
+          site_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "site_api_keys_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sites: {
+        Row: {
+          brand_color: string | null
+          created_at: string
+          created_by: string | null
+          domain: string
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          slug: string
+          updated_at: string
+          webhook_secret: string
+          webhook_url: string | null
+        }
+        Insert: {
+          brand_color?: string | null
+          created_at?: string
+          created_by?: string | null
+          domain: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          slug: string
+          updated_at?: string
+          webhook_secret?: string
+          webhook_url?: string | null
+        }
+        Update: {
+          brand_color?: string | null
+          created_at?: string
+          created_by?: string | null
+          domain?: string
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          updated_at?: string
+          webhook_secret?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string
+          customer_id: string
+          id: string
+          metadata: Json | null
+          plan_id: string
+          public_id: string
+          site_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string
+          customer_id: string
+          id?: string
+          metadata?: Json | null
+          plan_id: string
+          public_id?: string
+          site_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string
+          customer_id?: string
+          id?: string
+          metadata?: Json | null
+          plan_id?: string
+          public_id?: string
+          site_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           app_id: string
@@ -163,6 +586,59 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      webhook_events: {
+        Row: {
+          attempts: number
+          created_at: string
+          delivered: boolean
+          delivered_at: string | null
+          event_type: string
+          id: string
+          last_attempt_at: string | null
+          last_response_body: string | null
+          last_response_status: number | null
+          payload: Json
+          public_id: string
+          site_id: string
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          delivered?: boolean
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          last_attempt_at?: string | null
+          last_response_body?: string | null
+          last_response_status?: number | null
+          payload: Json
+          public_id?: string
+          site_id: string
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          delivered?: boolean
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          last_attempt_at?: string | null
+          last_response_body?: string | null
+          last_response_status?: number | null
+          payload?: Json
+          public_id?: string
+          site_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_events_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
