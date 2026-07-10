@@ -28,7 +28,7 @@ export async function enqueueAndDeliver({
 
   const { data: inserted, error } = await admin
     .from("webhook_events")
-    .insert({ site_id: siteId, event_type: eventType, payload })
+    .insert({ site_id: siteId, event_type: eventType, payload: payload as never })
     .select("id, public_id, payload")
     .single();
 
