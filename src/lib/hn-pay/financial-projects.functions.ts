@@ -67,8 +67,9 @@ export const listFinancialProjects = createServerFn({ method: "GET" })
 
     return (domains ?? []).map((d: any): FinancialProjectRow => {
       const project = projMap.get(d.project_id) as any;
+      const domainProduct = prodByDomain.get(d.id) ?? null;
       const projProducts = prodByProject.get(d.project_id) ?? [];
-      const primary = projProducts[0] ?? null;
+      const primary = domainProduct ?? projProducts[0] ?? null;
       const agg = projProducts.reduce(
         (acc, p) => {
           acc.sales += Number(p.sales_count || 0);
