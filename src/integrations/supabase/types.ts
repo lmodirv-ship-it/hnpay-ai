@@ -1103,7 +1103,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      is_hnpay_staff: { Args: { _user_id: string }; Returns: boolean }
       is_protected_owner: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
