@@ -29,6 +29,7 @@ import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authentica
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
+import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
 import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_authenticated/owner/hn-pay.monitor'
 import { Route as AuthenticatedOwnerHnPayIntegrateRouteImport } from './routes/_authenticated/owner/hn-pay.integrate'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
@@ -138,6 +139,12 @@ const AuthenticatedOwnerSitesSiteIdRoute =
     path: '/$siteId',
     getParentRoute: () => AuthenticatedOwnerSitesRoute,
   } as any)
+const AuthenticatedOwnerHnPayProvidersRoute =
+  AuthenticatedOwnerHnPayProvidersRouteImport.update({
+    id: '/owner/hn-pay/providers',
+    path: '/owner/hn-pay/providers',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedOwnerHnPayMonitorRoute =
   AuthenticatedOwnerHnPayMonitorRouteImport.update({
     id: '/owner/hn-pay/monitor',
@@ -181,6 +188,7 @@ export interface FileRoutesByFullPath {
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
+  '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -206,6 +214,7 @@ export interface FileRoutesByTo {
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
+  '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -233,6 +242,7 @@ export interface FileRoutesById {
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/_authenticated/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/_authenticated/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
+  '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/pay/embed/$sessionId'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
+    | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -285,6 +296,7 @@ export interface FileRouteTypes {
     | '/pay/embed/$sessionId'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
+    | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -311,6 +323,7 @@ export interface FileRouteTypes {
     | '/pay/embed/$sessionId'
     | '/_authenticated/owner/hn-pay/integrate'
     | '/_authenticated/owner/hn-pay/monitor'
+    | '/_authenticated/owner/hn-pay/providers'
     | '/_authenticated/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/webhooks/stripe'
@@ -475,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerSitesSiteIdRouteImport
       parentRoute: typeof AuthenticatedOwnerSitesRoute
     }
+    '/_authenticated/owner/hn-pay/providers': {
+      id: '/_authenticated/owner/hn-pay/providers'
+      path: '/owner/hn-pay/providers'
+      fullPath: '/owner/hn-pay/providers'
+      preLoaderRoute: typeof AuthenticatedOwnerHnPayProvidersRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/hn-pay/monitor': {
       id: '/_authenticated/owner/hn-pay/monitor'
       path: '/owner/hn-pay/monitor'
@@ -530,6 +550,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
   AuthenticatedOwnerHnPayIntegrateRoute: typeof AuthenticatedOwnerHnPayIntegrateRoute
   AuthenticatedOwnerHnPayMonitorRoute: typeof AuthenticatedOwnerHnPayMonitorRoute
+  AuthenticatedOwnerHnPayProvidersRoute: typeof AuthenticatedOwnerHnPayProvidersRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -542,6 +563,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
   AuthenticatedOwnerHnPayIntegrateRoute: AuthenticatedOwnerHnPayIntegrateRoute,
   AuthenticatedOwnerHnPayMonitorRoute: AuthenticatedOwnerHnPayMonitorRoute,
+  AuthenticatedOwnerHnPayProvidersRoute: AuthenticatedOwnerHnPayProvidersRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -590,13 +612,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
