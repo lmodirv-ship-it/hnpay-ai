@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { AdminShell, Card } from "@/components/admin/AdminShell";
@@ -79,11 +79,12 @@ function WebhookTester() {
     [sitesQuery.data, siteId],
   );
 
-  // Auto-select first site with a webhook_url
-  if (!siteId && sitesQuery.data && sitesQuery.data.length > 0) {
-    const withHook = sitesQuery.data.find((s) => s.webhook_url) ?? sitesQuery.data[0];
-    setSiteId(withHook.id);
-  }
+  useEffect(() => {
+    if (!siteId && sitesQuery.data && sitesQuery.data.length > 0) {
+      const withHook = sitesQuery.data.find((s) => s.webhook_url) ?? sitesQuery.data[0];
+      setSiteId(withHook.id);
+    }
+  }, [siteId, sitesQuery.data]);
 
   const mutation = useMutation({
     mutationFn: async (input: {
