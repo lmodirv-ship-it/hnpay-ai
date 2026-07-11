@@ -699,6 +699,7 @@ export type Database = {
           customers_count: number
           description: string | null
           display_order: number
+          domain_id: string | null
           id: string
           image_url: string | null
           is_renewable: boolean
@@ -735,6 +736,7 @@ export type Database = {
           customers_count?: number
           description?: string | null
           display_order?: number
+          domain_id?: string | null
           id?: string
           image_url?: string | null
           is_renewable?: boolean
@@ -771,6 +773,7 @@ export type Database = {
           customers_count?: number
           description?: string | null
           display_order?: number
+          domain_id?: string | null
           id?: string
           image_url?: string | null
           is_renewable?: boolean
@@ -802,6 +805,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_services_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
             referencedColumns: ["id"]
           },
           {

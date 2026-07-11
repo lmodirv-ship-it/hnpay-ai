@@ -40,9 +40,9 @@ export const listFinancialProjects = createServerFn({ method: "GET" })
     const { supabase } = context;
 
     const [{ data: domains, error: dErr }, { data: projects, error: pErr }, { data: products, error: prErr }, { data: providers }] = await Promise.all([
-      supabase.from("project_domains").select("*").order("created_at", { ascending: false }),
+      supabase.from("project_domains").select("*").order("domain", { ascending: true }),
       supabase.from("hn_projects").select("id,name,code,category,brand_color,default_currency,default_provider_id"),
-      supabase.from("products_services").select("id,project_id,site_id,product_code,type,billing_type,is_taxable,is_renewable,subscription_interval,visible_in_store,requires_approval,display_order,keywords,sales_count,total_revenue,customers_count"),
+      supabase.from("products_services").select("id,project_id,site_id,domain_id,product_code,type,billing_type,is_taxable,is_renewable,subscription_interval,visible_in_store,requires_approval,display_order,keywords,sales_count,total_revenue,customers_count") as any,
       supabase.from("payment_providers").select("id,name"),
     ]);
 
@@ -53,19 +53,23 @@ export const listFinancialProjects = createServerFn({ method: "GET" })
     const projMap = new Map((projects ?? []).map((p: any) => [p.id, p]));
     const provMap = new Map((providers ?? []).map((p: any) => [p.id, p.name]));
 
-    // aggregate products by project_id (fallback when no site_id linkage)
+    // index products by domain_id (primary) and by project_id (fallback aggregate)
+    const prodByDomain = new Map<string, any>();
     const prodByProject = new Map<string, any[]>();
     for (const pr of products ?? []) {
-      if (!pr.project_id) continue;
-      const arr = prodByProject.get(pr.project_id) ?? [];
-      arr.push(pr);
-      prodByProject.set(pr.project_id, arr);
+      if ((pr as any).domain_id) prodByDomain.set((pr as any).domain_id, pr);
+      if (pr.project_id) {
+        const arr = prodByProject.get(pr.project_id) ?? [];
+        arr.push(pr);
+        prodByProject.set(pr.project_id, arr);
+      }
     }
 
     return (domains ?? []).map((d: any): FinancialProjectRow => {
       const project = projMap.get(d.project_id) as any;
+      const domainProduct = prodByDomain.get(d.id) ?? null;
       const projProducts = prodByProject.get(d.project_id) ?? [];
-      const primary = projProducts[0] ?? null;
+      const primary = domainProduct ?? projProducts[0] ?? null;
       const agg = projProducts.reduce(
         (acc, p) => {
           acc.sales += Number(p.sales_count || 0);
