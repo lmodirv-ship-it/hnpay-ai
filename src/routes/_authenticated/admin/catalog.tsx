@@ -345,6 +345,7 @@ function CatalogPage() {
         <FormDrawer
           initial={editing}
           projects={projects}
+          categories={categories}
           onClose={() => { setShowForm(false); setEditing(null); }}
           onSave={async (payload) => { await upsert({ data: payload }); setShowForm(false); setEditing(null); reload(); }}
         />
