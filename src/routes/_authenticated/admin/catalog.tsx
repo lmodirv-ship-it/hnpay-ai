@@ -434,13 +434,23 @@ function FormDrawer({
           <Field label="الاسم *"><input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="input" /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="المشروع">
-              <select value={f.project_id} onChange={(e) => setF({ ...f, project_id: e.target.value })} className="input">
+              <select value={f.project_id} onChange={(e) => setF({ ...f, project_id: e.target.value, category_id: "" })} className="input">
                 <option value="">— بدون —</option>
                 {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </Field>
-            <Field label="الفئة"><input value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className="input" placeholder="SaaS, متجر, دورة..." /></Field>
+            <Field label="الفئة (Category)">
+              <select value={f.category_id} onChange={(e) => setF({ ...f, category_id: e.target.value })} className="input">
+                <option value="">— بدون —</option>
+                {categories.filter((c) => !f.project_id || c.project_id === f.project_id).map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </Field>
           </div>
+          <Field label="تصنيف نصي حر (اختياري)">
+            <input value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className="input" placeholder="SaaS, متجر, دورة..." />
+          </Field>
           <div className="grid grid-cols-3 gap-3">
             <Field label="النوع">
               <select value={f.type} onChange={(e) => setF({ ...f, type: e.target.value })} className="input">
