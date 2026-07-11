@@ -201,9 +201,13 @@ function CatalogPage() {
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="بحث بالاسم/المعرف/المشروع..."
               className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2 pr-9 text-xs outline-none focus:border-amber-400/50" />
           </div>
-          <select value={fProject} onChange={(e) => setFProject(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
+          <select value={fProject} onChange={(e) => { setFProject(e.target.value); setFCategory(""); }} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
             <option value="">كل المشاريع</option>
             {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+          <select value={fCategory} onChange={(e) => setFCategory(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
+            <option value="">كل الفئات</option>
+            {categories.filter((c) => !fProject || c.project_id === fProject).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select value={fType} onChange={(e) => setFType(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
             <option value="">كل الأنواع</option>
