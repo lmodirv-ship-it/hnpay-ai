@@ -2,7 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
-import { Crown, LogOut, Users, Boxes, Wallet, Activity } from "lucide-react";
+import { Crown, LogOut, Users, Boxes, Wallet, Activity, Sparkles, Handshake, FileText, Smartphone, BrainCircuit } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/owner/dashboard")({
   ssr: false,
@@ -58,7 +58,75 @@ function OwnerDashboardPage() {
         <QuickLink to="/owner/roles" title="Roles Matrix" desc="Edit per-role permissions." />
         <QuickLink to="/console" title="Mission Console" desc="Registry, keys, monitoring." />
       </div>
+
+      <FutureRoadmap />
     </OwnerShell>
+  );
+}
+
+const FUTURE_PHASE = [
+  {
+    icon: <Wallet className="h-5 w-5" />,
+    title: "HN Wallet",
+    desc: "محفظة رقمية موحّدة تُستخدم عبر جميع مشاريع مجموعة HN، مع شحن ورصيد ومكافآت.",
+  },
+  {
+    icon: <Handshake className="h-5 w-5" />,
+    title: "Affiliates & Commissions",
+    desc: "نظام عمولات للشركاء والمسوقين مع تتبّع الروابط، وحساب العمولات، والدفعات التلقائية.",
+  },
+  {
+    icon: <FileText className="h-5 w-5" />,
+    title: "E-Invoicing",
+    desc: "دعم الفواتير الإلكترونية وفق المتطلبات المحلية (المغرب/الخليج) وربط الأنظمة الضريبية.",
+  },
+  {
+    icon: <Smartphone className="h-5 w-5" />,
+    title: "Mobile Apps (iOS & Android)",
+    desc: "تطبيقات جوّال أصلية لإدارة المدفوعات، الإشعارات الفورية، والاعتماد بالبصمة.",
+  },
+  {
+    icon: <BrainCircuit className="h-5 w-5" />,
+    title: "AI Analytics",
+    desc: "لوحة تحليلات ذكية للتنبؤ بالإيرادات، اكتشاف الاحتيال، وتحليل سلوك العملاء.",
+  },
+] as const;
+
+function FutureRoadmap() {
+  return (
+    <section className="mt-12">
+      <div className="mb-4 flex items-center gap-2">
+        <Sparkles className="h-4 w-4 text-amber-300" />
+        <div className="text-[10px] font-semibold uppercase tracking-[0.35em] text-amber-300/80">Phase 8 · Future Roadmap</div>
+      </div>
+      <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/[0.06] via-white/[0.02] to-violet-500/[0.06] p-6">
+        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold">ميزات مؤسسية قادمة</h2>
+            <p className="mt-1 max-w-2xl text-sm text-neutral-400">
+              بعد اكتمال المراحل السبع الحالية، ستنقل هذه المرحلة HN-PAY إلى منصة مالية مركزية قابلة للتوسع لخدمة مواقع المجموعة والجهات الخارجية.
+            </p>
+          </div>
+          <span className="rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-300">
+            Planned
+          </span>
+        </div>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+          {FUTURE_PHASE.map((f) => (
+            <div key={f.title} className="rounded-xl border border-white/10 bg-black/30 p-4 transition hover:border-amber-400/30">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-300">
+                  {f.icon}
+                </div>
+                <div className="text-sm font-semibold">{f.title}</div>
+              </div>
+              <p className="mt-3 text-xs leading-relaxed text-neutral-400">{f.desc}</p>
+              <div className="mt-3 text-[10px] uppercase tracking-widest text-neutral-500">Coming soon</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 }
 
