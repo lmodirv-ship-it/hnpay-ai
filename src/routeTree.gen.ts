@@ -18,6 +18,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as DemoEmbedRouteImport } from './routes/demo.embed'
 import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
+import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as PayEmbedSessionIdRouteImport } from './routes/pay/embed.$sessionId'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
@@ -26,6 +28,21 @@ import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authentic
 import { Route as AuthenticatedOwnerPortfoliosRouteImport } from './routes/_authenticated/owner/portfolios'
 import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authenticated/owner/dashboard'
 import { Route as AuthenticatedOwnerAppsRouteImport } from './routes/_authenticated/owner/apps'
+import { Route as AuthenticatedAdminUnauthorizedRouteImport } from './routes/_authenticated/admin/unauthorized'
+import { Route as AuthenticatedAdminTeamRouteImport } from './routes/_authenticated/admin/team'
+import { Route as AuthenticatedAdminSupportRouteImport } from './routes/_authenticated/admin/support'
+import { Route as AuthenticatedAdminSubscriptionsRouteImport } from './routes/_authenticated/admin/subscriptions'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
+import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminProductsRouteImport } from './routes/_authenticated/admin/products'
+import { Route as AuthenticatedAdminPlansRouteImport } from './routes/_authenticated/admin/plans'
+import { Route as AuthenticatedAdminPaymentsRouteImport } from './routes/_authenticated/admin/payments'
+import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenticated/admin/orders'
+import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
+import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
+import { Route as AuthenticatedAdminIntegrationRouteImport } from './routes/_authenticated/admin/integration'
+import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
+import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin/activity'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
@@ -79,6 +96,16 @@ const AuthSyncRoute = AuthSyncRouteImport.update({
   path: '/sync',
   getParentRoute: () => AuthRoute,
 } as any)
+const AuthenticatedAdminRouteRoute = AuthenticatedAdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const PayEmbedSessionIdRoute = PayEmbedSessionIdRouteImport.update({
   id: '/pay/embed/$sessionId',
   path: '/pay/embed/$sessionId',
@@ -122,6 +149,94 @@ const AuthenticatedOwnerAppsRoute = AuthenticatedOwnerAppsRouteImport.update({
   path: '/owner/apps',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminUnauthorizedRoute =
+  AuthenticatedAdminUnauthorizedRouteImport.update({
+    id: '/unauthorized',
+    path: '/unauthorized',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminTeamRoute = AuthenticatedAdminTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminSupportRoute =
+  AuthenticatedAdminSupportRouteImport.update({
+    id: '/support',
+    path: '/support',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSubscriptionsRoute =
+  AuthenticatedAdminSubscriptionsRouteImport.update({
+    id: '/subscriptions',
+    path: '/subscriptions',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminReportsRoute =
+  AuthenticatedAdminReportsRouteImport.update({
+    id: '/reports',
+    path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminProductsRoute =
+  AuthenticatedAdminProductsRouteImport.update({
+    id: '/products',
+    path: '/products',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminPlansRoute = AuthenticatedAdminPlansRouteImport.update({
+  id: '/plans',
+  path: '/plans',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminPaymentsRoute =
+  AuthenticatedAdminPaymentsRouteImport.update({
+    id: '/payments',
+    path: '/payments',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminOrdersRoute =
+  AuthenticatedAdminOrdersRouteImport.update({
+    id: '/orders',
+    path: '/orders',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminNotificationsRoute =
+  AuthenticatedAdminNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminInvoicesRoute =
+  AuthenticatedAdminInvoicesRouteImport.update({
+    id: '/invoices',
+    path: '/invoices',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminIntegrationRoute =
+  AuthenticatedAdminIntegrationRouteImport.update({
+    id: '/integration',
+    path: '/integration',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminCustomersRoute =
+  AuthenticatedAdminCustomersRouteImport.update({
+    id: '/customers',
+    path: '/customers',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminActivityRoute =
+  AuthenticatedAdminActivityRouteImport.update({
+    id: '/activity',
+    path: '/activity',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   id: '/api/public/webhooks/stripe',
   path: '/api/public/webhooks/stripe',
@@ -175,9 +290,25 @@ export interface FileRoutesByFullPath {
   '/console': typeof ConsoleRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/plans': typeof AuthenticatedAdminPlansRoute
+  '/admin/products': typeof AuthenticatedAdminProductsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/admin/unauthorized': typeof AuthenticatedAdminUnauthorizedRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -186,6 +317,7 @@ export interface FileRoutesByFullPath {
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -204,6 +336,21 @@ export interface FileRoutesByTo {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
+  '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/admin/plans': typeof AuthenticatedAdminPlansRoute
+  '/admin/products': typeof AuthenticatedAdminProductsRoute
+  '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/admin/unauthorized': typeof AuthenticatedAdminUnauthorizedRoute
   '/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -212,6 +359,7 @@ export interface FileRoutesByTo {
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -229,9 +377,25 @@ export interface FileRoutesById {
   '/console': typeof ConsoleRoute
   '/privacy': typeof PrivacyRoute
   '/terms': typeof TermsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
+  '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/integration': typeof AuthenticatedAdminIntegrationRoute
+  '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
+  '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
+  '/_authenticated/admin/orders': typeof AuthenticatedAdminOrdersRoute
+  '/_authenticated/admin/payments': typeof AuthenticatedAdminPaymentsRoute
+  '/_authenticated/admin/plans': typeof AuthenticatedAdminPlansRoute
+  '/_authenticated/admin/products': typeof AuthenticatedAdminProductsRoute
+  '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
+  '/_authenticated/admin/subscriptions': typeof AuthenticatedAdminSubscriptionsRoute
+  '/_authenticated/admin/support': typeof AuthenticatedAdminSupportRoute
+  '/_authenticated/admin/team': typeof AuthenticatedAdminTeamRoute
+  '/_authenticated/admin/unauthorized': typeof AuthenticatedAdminUnauthorizedRoute
   '/_authenticated/owner/apps': typeof AuthenticatedOwnerAppsRoute
   '/_authenticated/owner/dashboard': typeof AuthenticatedOwnerDashboardRoute
   '/_authenticated/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
@@ -240,6 +404,7 @@ export interface FileRoutesById {
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/_authenticated/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -257,9 +422,25 @@ export interface FileRouteTypes {
     | '/console'
     | '/privacy'
     | '/terms'
+    | '/admin'
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/admin/activity'
+    | '/admin/customers'
+    | '/admin/integration'
+    | '/admin/invoices'
+    | '/admin/notifications'
+    | '/admin/orders'
+    | '/admin/payments'
+    | '/admin/plans'
+    | '/admin/products'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/subscriptions'
+    | '/admin/support'
+    | '/admin/team'
+    | '/admin/unauthorized'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/portfolios'
@@ -268,6 +449,7 @@ export interface FileRouteTypes {
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
+    | '/admin/'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
@@ -286,6 +468,21 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/admin/activity'
+    | '/admin/customers'
+    | '/admin/integration'
+    | '/admin/invoices'
+    | '/admin/notifications'
+    | '/admin/orders'
+    | '/admin/payments'
+    | '/admin/plans'
+    | '/admin/products'
+    | '/admin/reports'
+    | '/admin/settings'
+    | '/admin/subscriptions'
+    | '/admin/support'
+    | '/admin/team'
+    | '/admin/unauthorized'
     | '/owner/apps'
     | '/owner/dashboard'
     | '/owner/portfolios'
@@ -294,6 +491,7 @@ export interface FileRouteTypes {
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
+    | '/admin'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
@@ -310,9 +508,25 @@ export interface FileRouteTypes {
     | '/console'
     | '/privacy'
     | '/terms'
+    | '/_authenticated/admin'
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/_authenticated/admin/activity'
+    | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/integration'
+    | '/_authenticated/admin/invoices'
+    | '/_authenticated/admin/notifications'
+    | '/_authenticated/admin/orders'
+    | '/_authenticated/admin/payments'
+    | '/_authenticated/admin/plans'
+    | '/_authenticated/admin/products'
+    | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/settings'
+    | '/_authenticated/admin/subscriptions'
+    | '/_authenticated/admin/support'
+    | '/_authenticated/admin/team'
+    | '/_authenticated/admin/unauthorized'
     | '/_authenticated/owner/apps'
     | '/_authenticated/owner/dashboard'
     | '/_authenticated/owner/portfolios'
@@ -321,6 +535,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
     | '/pay/embed/$sessionId'
+    | '/_authenticated/admin/'
     | '/_authenticated/owner/hn-pay/integrate'
     | '/_authenticated/owner/hn-pay/monitor'
     | '/_authenticated/owner/hn-pay/providers'
@@ -411,6 +626,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthSyncRouteImport
       parentRoute: typeof AuthRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/pay/embed/$sessionId': {
       id: '/pay/embed/$sessionId'
       path: '/pay/embed/$sessionId'
@@ -466,6 +695,111 @@ declare module '@tanstack/react-router' {
       fullPath: '/owner/apps'
       preLoaderRoute: typeof AuthenticatedOwnerAppsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/unauthorized': {
+      id: '/_authenticated/admin/unauthorized'
+      path: '/unauthorized'
+      fullPath: '/admin/unauthorized'
+      preLoaderRoute: typeof AuthenticatedAdminUnauthorizedRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/team': {
+      id: '/_authenticated/admin/team'
+      path: '/team'
+      fullPath: '/admin/team'
+      preLoaderRoute: typeof AuthenticatedAdminTeamRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/support': {
+      id: '/_authenticated/admin/support'
+      path: '/support'
+      fullPath: '/admin/support'
+      preLoaderRoute: typeof AuthenticatedAdminSupportRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/subscriptions': {
+      id: '/_authenticated/admin/subscriptions'
+      path: '/subscriptions'
+      fullPath: '/admin/subscriptions'
+      preLoaderRoute: typeof AuthenticatedAdminSubscriptionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/reports': {
+      id: '/_authenticated/admin/reports'
+      path: '/reports'
+      fullPath: '/admin/reports'
+      preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/products': {
+      id: '/_authenticated/admin/products'
+      path: '/products'
+      fullPath: '/admin/products'
+      preLoaderRoute: typeof AuthenticatedAdminProductsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/plans': {
+      id: '/_authenticated/admin/plans'
+      path: '/plans'
+      fullPath: '/admin/plans'
+      preLoaderRoute: typeof AuthenticatedAdminPlansRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/payments': {
+      id: '/_authenticated/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AuthenticatedAdminPaymentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/orders': {
+      id: '/_authenticated/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AuthenticatedAdminOrdersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/notifications': {
+      id: '/_authenticated/admin/notifications'
+      path: '/notifications'
+      fullPath: '/admin/notifications'
+      preLoaderRoute: typeof AuthenticatedAdminNotificationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/invoices': {
+      id: '/_authenticated/admin/invoices'
+      path: '/invoices'
+      fullPath: '/admin/invoices'
+      preLoaderRoute: typeof AuthenticatedAdminInvoicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/integration': {
+      id: '/_authenticated/admin/integration'
+      path: '/integration'
+      fullPath: '/admin/integration'
+      preLoaderRoute: typeof AuthenticatedAdminIntegrationRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/customers': {
+      id: '/_authenticated/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AuthenticatedAdminCustomersRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/activity': {
+      id: '/_authenticated/admin/activity'
+      path: '/activity'
+      fullPath: '/admin/activity'
+      preLoaderRoute: typeof AuthenticatedAdminActivityRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/api/public/webhooks/stripe': {
       id: '/api/public/webhooks/stripe'
@@ -526,6 +860,50 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteRouteChildren {
+  AuthenticatedAdminActivityRoute: typeof AuthenticatedAdminActivityRoute
+  AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminIntegrationRoute: typeof AuthenticatedAdminIntegrationRoute
+  AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
+  AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
+  AuthenticatedAdminOrdersRoute: typeof AuthenticatedAdminOrdersRoute
+  AuthenticatedAdminPaymentsRoute: typeof AuthenticatedAdminPaymentsRoute
+  AuthenticatedAdminPlansRoute: typeof AuthenticatedAdminPlansRoute
+  AuthenticatedAdminProductsRoute: typeof AuthenticatedAdminProductsRoute
+  AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
+  AuthenticatedAdminSubscriptionsRoute: typeof AuthenticatedAdminSubscriptionsRoute
+  AuthenticatedAdminSupportRoute: typeof AuthenticatedAdminSupportRoute
+  AuthenticatedAdminTeamRoute: typeof AuthenticatedAdminTeamRoute
+  AuthenticatedAdminUnauthorizedRoute: typeof AuthenticatedAdminUnauthorizedRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
+  {
+    AuthenticatedAdminActivityRoute: AuthenticatedAdminActivityRoute,
+    AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+    AuthenticatedAdminIntegrationRoute: AuthenticatedAdminIntegrationRoute,
+    AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
+    AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
+    AuthenticatedAdminOrdersRoute: AuthenticatedAdminOrdersRoute,
+    AuthenticatedAdminPaymentsRoute: AuthenticatedAdminPaymentsRoute,
+    AuthenticatedAdminPlansRoute: AuthenticatedAdminPlansRoute,
+    AuthenticatedAdminProductsRoute: AuthenticatedAdminProductsRoute,
+    AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+    AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
+    AuthenticatedAdminSubscriptionsRoute: AuthenticatedAdminSubscriptionsRoute,
+    AuthenticatedAdminSupportRoute: AuthenticatedAdminSupportRoute,
+    AuthenticatedAdminTeamRoute: AuthenticatedAdminTeamRoute,
+    AuthenticatedAdminUnauthorizedRoute: AuthenticatedAdminUnauthorizedRoute,
+    AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  }
+
+const AuthenticatedAdminRouteRouteWithChildren =
+  AuthenticatedAdminRouteRoute._addFileChildren(
+    AuthenticatedAdminRouteRouteChildren,
+  )
+
 interface AuthenticatedOwnerSitesRouteChildren {
   AuthenticatedOwnerSitesSiteIdRoute: typeof AuthenticatedOwnerSitesSiteIdRoute
 }
@@ -541,6 +919,7 @@ const AuthenticatedOwnerSitesRouteWithChildren =
   )
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRouteRoute: typeof AuthenticatedAdminRouteRouteWithChildren
   AuthenticatedOwnerAppsRoute: typeof AuthenticatedOwnerAppsRoute
   AuthenticatedOwnerDashboardRoute: typeof AuthenticatedOwnerDashboardRoute
   AuthenticatedOwnerPortfoliosRoute: typeof AuthenticatedOwnerPortfoliosRoute
@@ -554,6 +933,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRouteRoute: AuthenticatedAdminRouteRouteWithChildren,
   AuthenticatedOwnerAppsRoute: AuthenticatedOwnerAppsRoute,
   AuthenticatedOwnerDashboardRoute: AuthenticatedOwnerDashboardRoute,
   AuthenticatedOwnerPortfoliosRoute: AuthenticatedOwnerPortfoliosRoute,
