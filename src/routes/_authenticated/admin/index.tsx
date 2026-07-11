@@ -136,9 +136,9 @@ function OverviewPage() {
       const wh = (whQ.data ?? []).filter(filterFn);
       setWebhookStats({
         total: wh.length,
-        ok: wh.filter((w) => w.status === "delivered" || w.status === "success").length,
-        fail: wh.filter((w) => w.status === "failed").length,
-        pending: wh.filter((w) => w.status === "pending" || w.status === "retrying").length,
+        ok: wh.filter((w) => w.delivered).length,
+        fail: wh.filter((w) => !w.delivered && (w.attempts ?? 0) > 0 && (w.last_response_status ?? 0) >= 400).length,
+        pending: wh.filter((w) => !w.delivered && ((w.attempts ?? 0) === 0 || (w.last_response_status ?? 0) < 400)).length,
       });
 
       // Alerts
@@ -149,7 +149,7 @@ function OverviewPage() {
         const rate = (failed.length / (failed.length + succeeded.length)) * 100;
         if (rate > 15) a.push({ level: "critical", title: `نسبة فشل المدفوعات مرتفعة (${rate.toFixed(1)}%)`, desc: `${failed.length} فاشلة من أصل ${failed.length + succeeded.length}` });
       }
-      const whFail = wh.filter((w) => w.status === "failed").length;
+      const whFail = wh.filter((w) => !w.delivered && (w.attempts ?? 0) > 2).length;
       if (whFail > 0) a.push({ level: "warn", title: `${whFail} Webhook فاشل في آخر ${days} يوم` });
       const inactiveSites = sitesArr.filter((s: any) => !s.is_active).length;
       if (inactiveSites) a.push({ level: "warn", title: `${inactiveSites} موقع غير نشط` });
