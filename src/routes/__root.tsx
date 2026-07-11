@@ -80,11 +80,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { title: "HN-Pay Hub — Cloud Payment & Subscription Portal" },
       { name: "description", content: "Centralized premium payment microservice gateway for the HN distributed application network." },
       { name: "author", content: "HN-Pay" },
-      { property: "og:title", content: "HN-Pay Hub — Cloud Payment Gateway" },
-      { property: "og:description", content: "Premium subscription & payment portal for 149 distributed HN applications." },
+      { property: "og:title", content: "HN-Pay Hub — Cloud Payment & Subscription Portal" },
+      { property: "og:description", content: "Centralized premium payment microservice gateway for the HN distributed application network." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "HN-Pay Hub — Cloud Payment & Subscription Portal" },
+      { name: "twitter:description", content: "Centralized premium payment microservice gateway for the HN distributed application network." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a2080e7-1f0b-4dd3-b2d4-e59440ba78d2/id-preview-679b16a9--82f4a15a-7d3b-4dca-911f-9d7cd802fbf7.lovable.app-1783810936609.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/8a2080e7-1f0b-4dd3-b2d4-e59440ba78d2/id-preview-679b16a9--82f4a15a-7d3b-4dca-911f-9d7cd802fbf7.lovable.app-1783810936609.png" },
     ],
     links: [
       {
