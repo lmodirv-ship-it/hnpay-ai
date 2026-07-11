@@ -59,6 +59,7 @@ const upsertSchema = z.object({
   project_id: z.string().uuid().nullable().optional(),
   site_id: z.string().uuid().nullable().optional(),
   type: z.enum(PRODUCT_TYPES),
+  category_id: z.string().uuid().nullable().optional(),
   category: z.string().max(80).optional().or(z.literal("")),
   tags: z.array(z.string()).optional(),
   billing_type: z.enum(BILLING_TYPES),
