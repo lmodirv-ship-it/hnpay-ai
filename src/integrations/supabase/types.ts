@@ -444,6 +444,7 @@ export type Database = {
         Row: {
           amount: number
           billing_interval: string | null
+          category_id: string | null
           code: string
           created_at: string
           currency: string
@@ -451,6 +452,7 @@ export type Database = {
           id: string
           is_active: boolean
           name: string
+          project_id: string | null
           provider: string
           provider_price_id: string | null
           provider_product_id: string | null
@@ -461,6 +463,7 @@ export type Database = {
         Insert: {
           amount: number
           billing_interval?: string | null
+          category_id?: string | null
           code: string
           created_at?: string
           currency?: string
@@ -468,6 +471,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name: string
+          project_id?: string | null
           provider?: string
           provider_price_id?: string | null
           provider_product_id?: string | null
@@ -478,6 +482,7 @@ export type Database = {
         Update: {
           amount?: number
           billing_interval?: string | null
+          category_id?: string | null
           code?: string
           created_at?: string
           currency?: string
@@ -485,6 +490,7 @@ export type Database = {
           id?: string
           is_active?: boolean
           name?: string
+          project_id?: string | null
           provider?: string
           provider_price_id?: string | null
           provider_product_id?: string | null
@@ -493,6 +499,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "plans_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plans_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "plans_site_id_fkey"
             columns: ["site_id"]
@@ -601,11 +621,78 @@ export type Database = {
         }
         Relationships: []
       }
+      product_categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          is_active: boolean
+          metadata: Json
+          name: string
+          parent_id: string | null
+          project_id: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          name: string
+          parent_id?: string | null
+          project_id?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          metadata?: Json
+          name?: string
+          parent_id?: string | null
+          project_id?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_categories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products_services: {
         Row: {
           allowed_providers: string[]
           billing_type: string
           category: string | null
+          category_id: string | null
           created_at: string
           created_by: string | null
           currency: string
@@ -641,6 +728,7 @@ export type Database = {
           allowed_providers?: string[]
           billing_type?: string
           category?: string | null
+          category_id?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -676,6 +764,7 @@ export type Database = {
           allowed_providers?: string[]
           billing_type?: string
           category?: string | null
+          category_id?: string | null
           created_at?: string
           created_by?: string | null
           currency?: string
@@ -708,6 +797,13 @@ export type Database = {
           visible_in_store?: boolean
         }
         Relationships: [
+          {
+            foreignKeyName: "products_services_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "products_services_project_id_fkey"
             columns: ["project_id"]

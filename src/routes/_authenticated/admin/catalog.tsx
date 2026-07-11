@@ -77,6 +77,7 @@ function CatalogPage() {
 
   const [rows, setRows] = useState<Row[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string; project_id: string | null; color: string | null }[]>([]);
   const [stats, setStats] = useState({
     total: 0, products: 0, services: 0, subscriptions: 0,
     active: 0, inactive: 0, totalRevenue: 0, totalSales: 0,
@@ -85,6 +86,7 @@ function CatalogPage() {
   const [view, setView] = useState<"table" | "cards">("table");
   const [q, setQ] = useState("");
   const [fProject, setFProject] = useState("");
+  const [fCategory, setFCategory] = useState("");
   const [fType, setFType] = useState("");
   const [fBilling, setFBilling] = useState("");
   const [fStatus, setFStatus] = useState("");
@@ -99,6 +101,7 @@ function CatalogPage() {
       const res = await list();
       setRows(res.rows as Row[]);
       setProjects(res.projects as Project[]);
+      setCategories((res as any).categories ?? []);
       setStats(res.stats);
     } finally { setLoading(false); }
   };
@@ -107,6 +110,7 @@ function CatalogPage() {
   const filtered = useMemo(() => {
     return rows.filter((r) => {
       if (fProject && r.project_id !== fProject) return false;
+      if (fCategory && (r as any).category_id !== fCategory) return false;
       if (fType && r.type !== fType) return false;
       if (fBilling && r.billing_type !== fBilling) return false;
       if (fStatus && r.status !== fStatus) return false;
@@ -121,7 +125,7 @@ function CatalogPage() {
       }
       return true;
     });
-  }, [rows, q, fProject, fType, fBilling, fStatus]);
+  }, [rows, q, fProject, fCategory, fType, fBilling, fStatus]);
 
   const exportCsv = () => {
     const headers = ["product_code","name","project_code","type","category","billing_type","price","currency","status","sales_count","total_revenue"];
@@ -197,9 +201,13 @@ function CatalogPage() {
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="بحث بالاسم/المعرف/المشروع..."
               className="w-full rounded-lg border border-white/10 bg-black/40 px-4 py-2 pr-9 text-xs outline-none focus:border-amber-400/50" />
           </div>
-          <select value={fProject} onChange={(e) => setFProject(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
+          <select value={fProject} onChange={(e) => { setFProject(e.target.value); setFCategory(""); }} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
             <option value="">كل المشاريع</option>
             {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+          </select>
+          <select value={fCategory} onChange={(e) => setFCategory(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
+            <option value="">كل الفئات</option>
+            {categories.filter((c) => !fProject || c.project_id === fProject).map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
           <select value={fType} onChange={(e) => setFType(e.target.value)} className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-xs">
             <option value="">كل الأنواع</option>
@@ -337,6 +345,7 @@ function CatalogPage() {
         <FormDrawer
           initial={editing}
           projects={projects}
+          categories={categories}
           onClose={() => { setShowForm(false); setEditing(null); }}
           onSave={async (payload) => { await upsert({ data: payload }); setShowForm(false); setEditing(null); reload(); }}
         />
@@ -356,8 +365,14 @@ function CatalogPage() {
 /* ─────── Form ─────── */
 
 function FormDrawer({
-  initial, projects, onClose, onSave,
-}: { initial: Row | null; projects: Project[]; onClose: () => void; onSave: (p: any) => Promise<void> }) {
+  initial, projects, categories, onClose, onSave,
+}: {
+  initial: Row | null;
+  projects: Project[];
+  categories: { id: string; name: string; slug: string; project_id: string | null; color: string | null }[];
+  onClose: () => void;
+  onSave: (p: any) => Promise<void>;
+}) {
   const [f, setF] = useState({
     id: initial?.id,
     name: initial?.name ?? "",
@@ -365,6 +380,7 @@ function FormDrawer({
     description: initial?.description ?? "",
     image_url: initial?.image_url ?? "",
     project_id: initial?.project_id ?? "",
+    category_id: (initial as any)?.category_id ?? "",
     type: initial?.type ?? "product",
     category: initial?.category ?? "",
     billing_type: initial?.billing_type ?? "one_time",
@@ -394,6 +410,7 @@ function FormDrawer({
       await onSave({
         ...f,
         project_id: f.project_id || null,
+        category_id: f.category_id || null,
         price: Number(f.price),
         tax_rate: Number(f.tax_rate),
         setup_fee: Number(f.setup_fee),
@@ -417,13 +434,23 @@ function FormDrawer({
           <Field label="الاسم *"><input value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} className="input" /></Field>
           <div className="grid grid-cols-2 gap-3">
             <Field label="المشروع">
-              <select value={f.project_id} onChange={(e) => setF({ ...f, project_id: e.target.value })} className="input">
+              <select value={f.project_id} onChange={(e) => setF({ ...f, project_id: e.target.value, category_id: "" })} className="input">
                 <option value="">— بدون —</option>
                 {projects.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </Field>
-            <Field label="الفئة"><input value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className="input" placeholder="SaaS, متجر, دورة..." /></Field>
+            <Field label="الفئة (Category)">
+              <select value={f.category_id} onChange={(e) => setF({ ...f, category_id: e.target.value })} className="input">
+                <option value="">— بدون —</option>
+                {categories.filter((c) => !f.project_id || c.project_id === f.project_id).map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </Field>
           </div>
+          <Field label="تصنيف نصي حر (اختياري)">
+            <input value={f.category} onChange={(e) => setF({ ...f, category: e.target.value })} className="input" placeholder="SaaS, متجر, دورة..." />
+          </Field>
           <div className="grid grid-cols-3 gap-3">
             <Field label="النوع">
               <select value={f.type} onChange={(e) => setF({ ...f, type: e.target.value })} className="input">
