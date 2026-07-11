@@ -410,6 +410,7 @@ function FormDrawer({
       await onSave({
         ...f,
         project_id: f.project_id || null,
+        category_id: f.category_id || null,
         price: Number(f.price),
         tax_rate: Number(f.tax_rate),
         setup_fee: Number(f.setup_fee),
