@@ -48,6 +48,7 @@ import { Route as AuthenticatedAdminOrdersRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
 import { Route as AuthenticatedAdminIntegrationRouteImport } from './routes/_authenticated/admin/integration'
+import { Route as AuthenticatedAdminFinancialProjectsRouteImport } from './routes/_authenticated/admin/financial-projects'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
 import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin/categories'
 import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authenticated/admin/catalog'
@@ -277,6 +278,12 @@ const AuthenticatedAdminIntegrationRoute =
     path: '/integration',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminFinancialProjectsRoute =
+  AuthenticatedAdminFinancialProjectsRouteImport.update({
+    id: '/financial-projects',
+    path: '/financial-projects',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminCustomersRoute =
   AuthenticatedAdminCustomersRouteImport.update({
     id: '/customers',
@@ -369,6 +376,7 @@ export interface FileRoutesByFullPath {
   '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -421,6 +429,7 @@ export interface FileRoutesByTo {
   '/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -476,6 +485,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/catalog': typeof AuthenticatedAdminCatalogRoute
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
+  '/_authenticated/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
   '/_authenticated/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -531,6 +541,7 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/categories'
     | '/admin/customers'
+    | '/admin/financial-projects'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -583,6 +594,7 @@ export interface FileRouteTypes {
     | '/admin/catalog'
     | '/admin/categories'
     | '/admin/customers'
+    | '/admin/financial-projects'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -637,6 +649,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/catalog'
     | '/_authenticated/admin/categories'
     | '/_authenticated/admin/customers'
+    | '/_authenticated/admin/financial-projects'
     | '/_authenticated/admin/integration'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/notifications'
@@ -966,6 +979,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIntegrationRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/financial-projects': {
+      id: '/_authenticated/admin/financial-projects'
+      path: '/financial-projects'
+      fullPath: '/admin/financial-projects'
+      preLoaderRoute: typeof AuthenticatedAdminFinancialProjectsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/customers': {
       id: '/_authenticated/admin/customers'
       path: '/customers'
@@ -1066,6 +1086,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCatalogRoute: typeof AuthenticatedAdminCatalogRoute
   AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
   AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
+  AuthenticatedAdminFinancialProjectsRoute: typeof AuthenticatedAdminFinancialProjectsRoute
   AuthenticatedAdminIntegrationRoute: typeof AuthenticatedAdminIntegrationRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
@@ -1096,6 +1117,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminCatalogRoute: AuthenticatedAdminCatalogRoute,
     AuthenticatedAdminCategoriesRoute: AuthenticatedAdminCategoriesRoute,
     AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
+    AuthenticatedAdminFinancialProjectsRoute:
+      AuthenticatedAdminFinancialProjectsRoute,
     AuthenticatedAdminIntegrationRoute: AuthenticatedAdminIntegrationRoute,
     AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
     AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,

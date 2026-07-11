@@ -91,10 +91,10 @@ function FinancialProjectsPage() {
       }
     >
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <Card><Section title="إجمالي المواقع" value={String(data.length)} /></Card>
-        <Card><Section title="مواقع مطابقة للفلتر" value={String(rows.length)} /></Card>
-        <Card><Section title="إجمالي المبيعات" value={String(totals.sales)} /></Card>
-        <Card><Section title="إجمالي الإيرادات" value={totals.revenue.toLocaleString()} /></Card>
+        <Card><Section title="إجمالي المواقع"><div className="text-2xl font-bold text-white">{data.length}</div></Section></Card>
+        <Card><Section title="مواقع مطابقة للفلتر"><div className="text-2xl font-bold text-white">{rows.length}</div></Section></Card>
+        <Card><Section title="إجمالي المبيعات"><div className="text-2xl font-bold text-white">{totals.sales}</div></Section></Card>
+        <Card><Section title="إجمالي الإيرادات"><div className="text-2xl font-bold text-amber-300">{totals.revenue.toLocaleString()}</div></Section></Card>
       </div>
 
       <Card className="mt-4">
@@ -167,7 +167,7 @@ function FinancialProjectsPage() {
                     <a href={`https://${r.domain}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sky-300 hover:underline">
                       <Globe className="h-3 w-3" />{r.domain}
                     </a>
-                    {r.is_primary && <Badge tone="amber" className="mr-1">أساسي</Badge>}
+                    {r.is_primary && <span className="mr-1"><Badge tone="amber">أساسي</Badge></span>}
                   </td>
                   <td className="px-2 py-2">{r.service_type ?? "—"}</td>
                   <td className="px-2 py-2">{r.billing_type ?? "—"}</td>
@@ -183,7 +183,7 @@ function FinancialProjectsPage() {
                   <td className="px-2 py-2 text-center">{r.total_revenue.toLocaleString()} {r.default_currency}</td>
                   <td className="px-2 py-2 text-center">{r.customers_count}</td>
                   <td className="px-2 py-2 text-center">
-                    <Badge tone={r.environment === "production" ? "emerald" : "neutral"}>{r.environment}</Badge>
+                    <Badge tone={r.environment === "production" ? "green" : "neutral"}>{r.environment}</Badge>
                   </td>
                 </tr>
               ))}
