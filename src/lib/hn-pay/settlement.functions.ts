@@ -33,6 +33,17 @@ export const settleManualPayment = createServerFn({ method: "POST" })
       .parse(data),
   )
   .handler(async ({ data, context }) => {
+    // Authorize: the caller must be able to read this checkout session via
+    // RLS. Owner-only policy on checkout_sessions ensures non-owners cannot
+    // settle arbitrary payments even if they know a session UUID.
+    const { data: sessionRow, error: authErr } = await context.supabase
+      .from("checkout_sessions")
+      .select("id, site_id")
+      .eq("id", data.sessionId)
+      .maybeSingle();
+    if (authErr) throw new Error(authErr.message);
+    if (!sessionRow) throw new Error("Not authorized for this checkout session");
+
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { settleCheckoutSession } = await import("./settlement.server");
     return await settleCheckoutSession({

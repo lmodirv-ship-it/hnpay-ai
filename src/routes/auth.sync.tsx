@@ -6,7 +6,6 @@ import { Loader2, ShieldCheck, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/auth/sync")({
   validateSearch: (s: Record<string, unknown>) => ({
-    token: typeof s.token === "string" ? s.token : "",
     targetApp: typeof s.targetApp === "string" ? s.targetApp : "",
     next: typeof s.next === "string" ? s.next : "",
   }),
@@ -14,8 +13,23 @@ export const Route = createFileRoute("/auth/sync")({
   component: SyncBridge,
 });
 
+/**
+ * Read the refresh token from the URL fragment (`#token=...`) rather than
+ * the query string. Fragments are never sent to servers, don't appear in
+ * server logs / referrer headers, and are stripped from the URL after use.
+ */
+function readTokenFromHash(): string {
+  if (typeof window === "undefined") return "";
+  const raw = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
+  if (!raw) return "";
+  const params = new URLSearchParams(raw);
+  return params.get("token") ?? "";
+}
+
 function SyncBridge() {
-  const { token, targetApp, next } = useSearch({ from: "/auth/sync" });
+  const { targetApp, next } = useSearch({ from: "/auth/sync" });
   const navigate = useNavigate();
   const [status, setStatus] = useState<"working" | "ok" | "err">("working");
   const [msg, setMsg] = useState("Verifying identity bridge…");
@@ -23,9 +37,16 @@ function SyncBridge() {
   useEffect(() => {
     (async () => {
       try {
-        // If a JWT token was passed from another HN app, hydrate the session with it.
-        // We accept a refresh token in `token`. Missing → fall back to existing session.
+        const token = readTokenFromHash();
         if (token) {
+          // Strip the token from the URL immediately so it can't leak via
+          // browser history, screenshots, or copy/paste of the address bar.
+          try {
+            const url = new URL(window.location.href);
+            window.history.replaceState({}, "", `${url.pathname}${url.search}`);
+          } catch {
+            // ignore
+          }
           const { error } = await supabase.auth.refreshSession({ refresh_token: token });
           if (error) throw error;
         }
@@ -48,7 +69,7 @@ function SyncBridge() {
         setMsg(e.message ?? "Bridge failed. Please sign in again.");
       }
     })();
-  }, [token, targetApp, next]);
+  }, [targetApp, next]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#05060d] px-4 font-[Inter,ui-sans-serif,system-ui] text-white">

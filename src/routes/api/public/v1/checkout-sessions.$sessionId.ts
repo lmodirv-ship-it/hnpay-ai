@@ -69,26 +69,34 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions/$sessionI
           );
         }
 
-        // If succeeded, include subscription (if any)
+        // If succeeded, include the subscription created for THIS session
+        // (looked up via the payment row that references the session).
         let subscriptionPublicId: string | null = null;
         if (session.status === "succeeded") {
-          const { data: pay } = await supabaseAdmin
-            .from("payments")
-            .select("id")
-            .eq("checkout_session_id", (await supabaseAdmin
-              .from("checkout_sessions")
-              .select("id")
-              .eq("public_id", session.public_id)
-              .single()
-            ).data?.id ?? "")
-            .maybeSingle();
-          void pay;
-          const { data: sub } = await supabaseAdmin
-            .from("subscriptions")
-            .select("public_id")
-            .order("created_at", { ascending: false })
-            .limit(1);
-          subscriptionPublicId = sub?.[0]?.public_id ?? null;
+          const { data: sessionRow } = await supabaseAdmin
+            .from("checkout_sessions")
+            .select("id, plan_id, site_id")
+            .eq("public_id", session.public_id)
+            .single();
+          if (sessionRow) {
+            const { data: pay } = await supabaseAdmin
+              .from("payments")
+              .select("customer_id")
+              .eq("checkout_session_id", sessionRow.id)
+              .maybeSingle();
+            if (pay?.customer_id) {
+              const { data: sub } = await supabaseAdmin
+                .from("subscriptions")
+                .select("public_id")
+                .eq("site_id", sessionRow.site_id)
+                .eq("customer_id", pay.customer_id)
+                .eq("plan_id", sessionRow.plan_id)
+                .order("created_at", { ascending: false })
+                .limit(1)
+                .maybeSingle();
+              subscriptionPublicId = sub?.public_id ?? null;
+            }
+          }
         }
 
         return new Response(

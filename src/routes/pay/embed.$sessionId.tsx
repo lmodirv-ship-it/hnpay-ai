@@ -149,34 +149,12 @@ function EmbedPage() {
     post({ type: "hnpay:status", status: "processing", checkout_id: params.sessionId });
 
     if (provider === "mock") {
-      // Simulate provider round-trip via the mock inbound webhook
+      // Server-side sandbox settlement — no shared secret in the browser.
       try {
-        // 1) mark session processing (via provider initiate)
-        const { initiateCheckout } = await import("@/routes/checkout.$sessionId");
-        const init = await initiateCheckout({
-          data: { publicId: params.sessionId, provider: "mock" },
+        const { runMockSandboxPayment } = await import("@/lib/hn-pay/sandbox.functions");
+        await runMockSandboxPayment({
+          data: { publicId: params.sessionId, outcome: "succeeded" },
         });
-        const providerRef =
-          (init as { kind: "redirect"; providerSessionId?: string }).providerSessionId ??
-          `mock_ref_${Date.now()}`;
-
-        // 2) simulate the async gateway callback
-        const res = await fetch("/api/public/v1/webhooks/mock", {
-          method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-mock-secret": "mock_dev_secret",
-          },
-          body: JSON.stringify({
-            event: "charge.succeeded",
-            provider_ref: providerRef,
-            checkout_public_id: params.sessionId,
-          }),
-        });
-        if (!res.ok) {
-          const j = await res.json().catch(() => ({}));
-          throw new Error(j?.error ?? `Provider ${res.status}`);
-        }
         // status effect above will detect succeeded on next poll
       } catch (err) {
         setStatus("failed");

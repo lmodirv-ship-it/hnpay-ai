@@ -1,21 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
+import { timingSafeEqual } from "node:crypto";
 
 /**
  * Simulated payment-provider inbound webhook.
  *
  * Auth: a shared secret sent as `x-mock-secret` header, compared against
- * env HN_PAY_MOCK_SECRET (falls back to a dev default so first-run works).
+ * env HN_PAY_MOCK_SECRET. When the env var is unset, the endpoint is
+ * disabled entirely (returns 503) — there is NO hardcoded fallback.
  *
- * Body:
- *   { event: "charge.succeeded" | "charge.failed",
- *     provider_ref: "mock_xxx",
- *     checkout_public_id: "cs_..." }
- *
- * On success it delegates to the shared settlement engine, which:
- *   - creates the payment row
- *   - creates/updates subscription
- *   - fires payment.succeeded + subscription.activated outbound webhooks
+ * Additional guard: the target checkout session's site MUST have the
+ * "mock" provider enabled in `sites.enabled_providers`; otherwise
+ * settlement is rejected. This prevents anyone from faking a paid
+ * status on production checkouts even if the secret leaked.
  */
 const Body = z.object({
   event: z.enum(["charge.succeeded", "charge.failed"]),
@@ -30,13 +27,23 @@ function json(status: number, body: unknown) {
   });
 }
 
+function safeEq(a: string, b: string): boolean {
+  const ab = Buffer.from(a);
+  const bb = Buffer.from(b);
+  if (ab.length !== bb.length) return false;
+  return timingSafeEqual(ab, bb);
+}
+
 export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const secret = process.env.HN_PAY_MOCK_SECRET ?? "mock_dev_secret";
+        const secret = process.env.HN_PAY_MOCK_SECRET;
+        if (!secret) {
+          return json(503, { error: "mock_disabled" });
+        }
         const provided = request.headers.get("x-mock-secret") ?? "";
-        if (provided !== secret) {
+        if (!safeEq(provided, secret)) {
           return json(401, { error: "invalid_secret" });
         }
 
@@ -49,7 +56,7 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
 
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-        // Idempotency — reject duplicate deliveries of the same provider event
+        // Idempotency
         const eventKey = `mock:${parsed.event}:${parsed.provider_ref}`;
         const { data: existing } = await supabaseAdmin
           .from("processed_webhook_events")
@@ -57,30 +64,37 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
           .eq("event_id", eventKey)
           .eq("source", "mock")
           .maybeSingle();
+        if (existing) return json(200, { ok: true, deduped: true });
 
-        if (existing) {
-          return json(200, { ok: true, deduped: true });
-        }
-
-        // Find the checkout session
         const { data: session } = await supabaseAdmin
           .from("checkout_sessions")
-          .select("id, public_id, status")
+          .select("id, public_id, status, site_id")
           .eq("public_id", parsed.checkout_public_id)
           .maybeSingle();
-
         if (!session) return json(404, { error: "session_not_found" });
+
+        // Guard: the site must have the mock provider explicitly enabled.
+        const { data: site } = await supabaseAdmin
+          .from("sites")
+          .select("enabled_providers")
+          .eq("id", session.site_id)
+          .maybeSingle();
+        const enabled = (site?.enabled_providers ?? []) as string[];
+        if (!enabled.includes("mock")) {
+          return json(403, { error: "mock_not_enabled_for_site" });
+        }
 
         if (parsed.event === "charge.failed") {
           await supabaseAdmin
             .from("checkout_sessions")
             .update({ status: "failed" })
             .eq("id", session.id);
-          await supabaseAdmin.from("processed_webhook_events").insert({ event_id: eventKey, source: "mock" });
+          await supabaseAdmin
+            .from("processed_webhook_events")
+            .insert({ event_id: eventKey, source: "mock" });
           return json(200, { ok: true, status: "failed" });
         }
 
-        // charge.succeeded → run shared settlement
         const { settleCheckoutSession } = await import("@/lib/hn-pay/settlement.server");
         const result = await settleCheckoutSession({
           admin: supabaseAdmin,
@@ -89,7 +103,9 @@ export const Route = createFileRoute("/api/public/v1/webhooks/mock")({
           providerRef: parsed.provider_ref,
         });
 
-        await supabaseAdmin.from("processed_webhook_events").insert({ event_id: eventKey, source: "mock" });
+        await supabaseAdmin
+          .from("processed_webhook_events")
+          .insert({ event_id: eventKey, source: "mock" });
 
         return json(200, { ok: true, ...result });
       },
