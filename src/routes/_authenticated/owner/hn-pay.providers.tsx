@@ -161,8 +161,8 @@ function ProvidersPage() {
     setEditorOpen(true);
   };
 
-  const activeCount = providers.filter((p: ProviderRow) => p.is_enabled).length;
-  const defaultProvider = providers.find((p: ProviderRow) => p.is_default);
+  const activeCount = providers.filter((p) => p.is_enabled).length;
+  const defaultProvider = providers.find((p) => p.is_default);
 
   return (
     <OwnerShell profile={profile} signOut={signOut}>
