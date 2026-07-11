@@ -73,7 +73,6 @@ export function useHnSession(): HnSessionData {
 }
 
 export function pickPostLoginRoute(roles: HnRole[]): string {
-  if (roles.some((r) => r.role === "owner")) return "/owner/dashboard";
-  if (roles.some((r) => r.role === "admin" || r.role === "manager")) return "/owner/dashboard";
+  if (roles.some((r) => r.role === "owner" || r.role === "admin" || r.role === "manager")) return "/admin";
   return "/user/dashboard";
 }
