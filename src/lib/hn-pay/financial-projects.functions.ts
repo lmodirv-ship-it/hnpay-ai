@@ -53,13 +53,16 @@ export const listFinancialProjects = createServerFn({ method: "GET" })
     const projMap = new Map((projects ?? []).map((p: any) => [p.id, p]));
     const provMap = new Map((providers ?? []).map((p: any) => [p.id, p.name]));
 
-    // aggregate products by project_id (fallback when no site_id linkage)
+    // index products by domain_id (primary) and by project_id (fallback aggregate)
+    const prodByDomain = new Map<string, any>();
     const prodByProject = new Map<string, any[]>();
     for (const pr of products ?? []) {
-      if (!pr.project_id) continue;
-      const arr = prodByProject.get(pr.project_id) ?? [];
-      arr.push(pr);
-      prodByProject.set(pr.project_id, arr);
+      if ((pr as any).domain_id) prodByDomain.set((pr as any).domain_id, pr);
+      if (pr.project_id) {
+        const arr = prodByProject.get(pr.project_id) ?? [];
+        arr.push(pr);
+        prodByProject.set(pr.project_id, arr);
+      }
     }
 
     return (domains ?? []).map((d: any): FinancialProjectRow => {
