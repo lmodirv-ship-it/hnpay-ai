@@ -110,6 +110,7 @@ function CatalogPage() {
   const filtered = useMemo(() => {
     return rows.filter((r) => {
       if (fProject && r.project_id !== fProject) return false;
+      if (fCategory && (r as any).category_id !== fCategory) return false;
       if (fType && r.type !== fType) return false;
       if (fBilling && r.billing_type !== fBilling) return false;
       if (fStatus && r.status !== fStatus) return false;
@@ -124,7 +125,7 @@ function CatalogPage() {
       }
       return true;
     });
-  }, [rows, q, fProject, fType, fBilling, fStatus]);
+  }, [rows, q, fProject, fCategory, fType, fBilling, fStatus]);
 
   const exportCsv = () => {
     const headers = ["product_code","name","project_code","type","category","billing_type","price","currency","status","sales_count","total_revenue"];
