@@ -193,6 +193,65 @@ export type Database = {
         }
         Relationships: []
       }
+      hn_projects: {
+        Row: {
+          brand_color: string | null
+          category: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          default_currency: string
+          default_provider_id: string | null
+          description: string | null
+          id: string
+          name: string
+          owner_id: string | null
+          primary_domain: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          brand_color?: string | null
+          category?: string | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          default_currency?: string
+          default_provider_id?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          owner_id?: string | null
+          primary_domain?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          brand_color?: string | null
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          default_currency?: string
+          default_provider_id?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          owner_id?: string | null
+          primary_domain?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hn_projects_default_provider_id_fkey"
+            columns: ["default_provider_id"]
+            isOneToOne: false
+            referencedRelation: "payment_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       hn_subscriptions: {
         Row: {
           app_id: string
@@ -571,6 +630,151 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      project_api_keys: {
+        Row: {
+          created_at: string
+          environment: string
+          id: string
+          label: string | null
+          last_used_at: string | null
+          project_id: string
+          public_key: string
+          secret_key_hash: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          environment?: string
+          id?: string
+          label?: string | null
+          last_used_at?: string | null
+          project_id: string
+          public_key: string
+          secret_key_hash: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          environment?: string
+          id?: string
+          label?: string | null
+          last_used_at?: string | null
+          project_id?: string
+          public_key?: string
+          secret_key_hash?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_api_keys_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_domains: {
+        Row: {
+          created_at: string
+          domain: string
+          domain_type: string
+          environment: string
+          id: string
+          is_primary: boolean
+          notes: string | null
+          payments_enabled: boolean
+          project_id: string
+          updated_at: string
+          verification_status: string
+        }
+        Insert: {
+          created_at?: string
+          domain: string
+          domain_type?: string
+          environment?: string
+          id?: string
+          is_primary?: boolean
+          notes?: string | null
+          payments_enabled?: boolean
+          project_id: string
+          updated_at?: string
+          verification_status?: string
+        }
+        Update: {
+          created_at?: string
+          domain?: string
+          domain_type?: string
+          environment?: string
+          id?: string
+          is_primary?: boolean
+          notes?: string | null
+          payments_enabled?: boolean
+          project_id?: string
+          updated_at?: string
+          verification_status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_domains_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_payment_settings: {
+        Row: {
+          checkout_enabled: boolean
+          created_at: string
+          invoices_enabled: boolean
+          project_id: string
+          provider_id: string
+          refunds_enabled: boolean
+          subscriptions_enabled: boolean
+          updated_at: string
+        }
+        Insert: {
+          checkout_enabled?: boolean
+          created_at?: string
+          invoices_enabled?: boolean
+          project_id: string
+          provider_id: string
+          refunds_enabled?: boolean
+          subscriptions_enabled?: boolean
+          updated_at?: string
+        }
+        Update: {
+          checkout_enabled?: boolean
+          created_at?: string
+          invoices_enabled?: boolean
+          project_id?: string
+          provider_id?: string
+          refunds_enabled?: boolean
+          subscriptions_enabled?: boolean
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_payment_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "project_payment_settings_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "payment_providers"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       provider_events: {
         Row: {

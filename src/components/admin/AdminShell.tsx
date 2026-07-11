@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, Package, Layers, ShoppingCart, RefreshCw,
   CreditCard, FileText, BarChart3, UserCog, Bell, Plug, Activity,
   Settings, LifeBuoy, LogOut, Crown, Search, Menu, ChevronRight,
-  Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2,
+  Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2, FolderKanban,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: ReactNode; group: string };
@@ -13,7 +13,8 @@ type NavItem = { to: string; label: string; icon: ReactNode; group: string };
 const NAV: NavItem[] = [
   { group: "نظرة عامة", to: "/admin",               label: "الرئيسية",              icon: <LayoutDashboard className="h-4 w-4" /> },
 
-  { group: "الأعمال",    to: "/admin/products",      label: "المواقع والمشاريع",     icon: <Globe className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/projects",      label: "المشاريع المالية",       icon: <FolderKanban className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/products",      label: "المواقع والنطاقات",       icon: <Globe className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/customers",     label: "العملاء",               icon: <Users className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/plans",         label: "الخطط والأسعار",        icon: <Layers className="h-4 w-4" /> },
 
