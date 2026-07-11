@@ -49,6 +49,7 @@ function OwnerDashboardPage() {
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
         <QuickLink to="/owner/hn-pay/monitor" title="HN-Pay Monitor" desc="Live revenue, payments, webhooks across the network." />
+        <QuickLink to="/owner/hn-pay/providers" title="Payment Providers" desc="Stripe, PayPal, CMI, NAPS, manual, mock — one switch." />
         <QuickLink to="/owner/sites" title="Sites (Payment Hub)" desc="Register sites, API keys, plans, bulk import." />
         <QuickLink to="/owner/portfolios" title="Portfolios" desc="Group sites (HN AI, Commerce, Media…)." />
         <QuickLink to="/owner/hn-pay/integrate" title="Integrate SDK" desc="Unified checkout SDK, button, webhook template." />
