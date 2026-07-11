@@ -54,7 +54,7 @@ function OverviewPage() {
         supabase.from("customers").select("id", { count: "exact", head: true }),
         supabase.from("customers").select("id", { count: "exact", head: true }).gte("created_at", from.toISOString()),
         supabase.from("payments").select("id, public_id, amount, currency, status, provider, created_at, site_id, customer_email").order("created_at", { ascending: false }).limit(10),
-        supabase.from("webhook_events").select("id, status, created_at, event_type, site_id").gte("created_at", from.toISOString()).order("created_at", { ascending: false }).limit(500),
+        supabase.from("webhook_events").select("id, delivered, attempts, last_response_status, created_at, event_type, site_id").gte("created_at", from.toISOString()).order("created_at", { ascending: false }).limit(500),
         supabase.from("subscriptions").select("id, current_period_end, plan_id, customer_id, site_id, status").in("status", ["active", "trialing", "past_due"]).order("current_period_end", { ascending: true }).limit(10),
       ]);
 
