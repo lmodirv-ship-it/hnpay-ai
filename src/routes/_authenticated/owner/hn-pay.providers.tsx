@@ -90,10 +90,11 @@ function ProvidersPage() {
   const deleteFn = useServerFn(deletePaymentProvider);
   const testFn = useServerFn(testPaymentProvider);
 
-  const { data: providers = [], isLoading } = useQuery({
+  const { data: providersRaw = [], isLoading } = useQuery({
     queryKey: ["hn-pay", "providers"],
     queryFn: () => listFn(),
   });
+  const providers = providersRaw as unknown as ProviderRow[];
 
   const [editorOpen, setEditorOpen] = useState(false);
   const [form, setForm] = useState<typeof BLANK_FORM>(BLANK_FORM);
