@@ -365,8 +365,14 @@ function CatalogPage() {
 /* ─────── Form ─────── */
 
 function FormDrawer({
-  initial, projects, onClose, onSave,
-}: { initial: Row | null; projects: Project[]; onClose: () => void; onSave: (p: any) => Promise<void> }) {
+  initial, projects, categories, onClose, onSave,
+}: {
+  initial: Row | null;
+  projects: Project[];
+  categories: { id: string; name: string; slug: string; project_id: string | null; color: string | null }[];
+  onClose: () => void;
+  onSave: (p: any) => Promise<void>;
+}) {
   const [f, setF] = useState({
     id: initial?.id,
     name: initial?.name ?? "",
@@ -374,6 +380,7 @@ function FormDrawer({
     description: initial?.description ?? "",
     image_url: initial?.image_url ?? "",
     project_id: initial?.project_id ?? "",
+    category_id: (initial as any)?.category_id ?? "",
     type: initial?.type ?? "product",
     category: initial?.category ?? "",
     billing_type: initial?.billing_type ?? "one_time",
