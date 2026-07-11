@@ -14,6 +14,7 @@ const NAV: NavItem[] = [
   { group: "نظرة عامة", to: "/admin",               label: "الرئيسية",              icon: <LayoutDashboard className="h-4 w-4" /> },
 
   { group: "الأعمال",    to: "/admin/projects",      label: "المشاريع المالية",       icon: <FolderKanban className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/financial-projects", label: "جدول النطاقات المالية", icon: <Globe className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/categories",    label: "الفئات",                icon: <FolderTree className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/catalog",       label: "المنتجات والخدمات",      icon: <Package className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/products",      label: "المواقع والنطاقات",       icon: <Globe className="h-4 w-4" /> },
