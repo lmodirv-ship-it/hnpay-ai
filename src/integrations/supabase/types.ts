@@ -601,6 +601,129 @@ export type Database = {
         }
         Relationships: []
       }
+      products_services: {
+        Row: {
+          allowed_providers: string[]
+          billing_type: string
+          category: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          customers_count: number
+          description: string | null
+          display_order: number
+          id: string
+          image_url: string | null
+          is_renewable: boolean
+          is_taxable: boolean
+          keywords: string | null
+          metadata: Json
+          name: string
+          price: number
+          product_code: string
+          project_id: string | null
+          requires_approval: boolean
+          sales_count: number
+          setup_fee: number
+          site_id: string | null
+          slug: string | null
+          status: string
+          subscription_interval: string | null
+          tags: string[]
+          tax_rate: number
+          total_revenue: number
+          trial_days: number
+          type: string
+          updated_at: string
+          visible_in_store: boolean
+        }
+        Insert: {
+          allowed_providers?: string[]
+          billing_type?: string
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customers_count?: number
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_renewable?: boolean
+          is_taxable?: boolean
+          keywords?: string | null
+          metadata?: Json
+          name: string
+          price?: number
+          product_code?: string
+          project_id?: string | null
+          requires_approval?: boolean
+          sales_count?: number
+          setup_fee?: number
+          site_id?: string | null
+          slug?: string | null
+          status?: string
+          subscription_interval?: string | null
+          tags?: string[]
+          tax_rate?: number
+          total_revenue?: number
+          trial_days?: number
+          type?: string
+          updated_at?: string
+          visible_in_store?: boolean
+        }
+        Update: {
+          allowed_providers?: string[]
+          billing_type?: string
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customers_count?: number
+          description?: string | null
+          display_order?: number
+          id?: string
+          image_url?: string | null
+          is_renewable?: boolean
+          is_taxable?: boolean
+          keywords?: string | null
+          metadata?: Json
+          name?: string
+          price?: number
+          product_code?: string
+          project_id?: string | null
+          requires_approval?: boolean
+          sales_count?: number
+          setup_fee?: number
+          site_id?: string | null
+          slug?: string | null
+          status?: string
+          subscription_interval?: string | null
+          tags?: string[]
+          tax_rate?: number
+          total_revenue?: number
+          trial_days?: number
+          type?: string
+          updated_at?: string
+          visible_in_store?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "products_services_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "products_services_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
