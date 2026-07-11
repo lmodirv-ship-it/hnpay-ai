@@ -5,7 +5,7 @@ import {
   LayoutDashboard, Users, Package, Layers, ShoppingCart, RefreshCw,
   CreditCard, FileText, BarChart3, UserCog, Bell, Plug, Activity,
   Settings, LifeBuoy, LogOut, Crown, Search, Menu, ChevronRight,
-  Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2,
+  Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2, FolderKanban,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: ReactNode; group: string };
