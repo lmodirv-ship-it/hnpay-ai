@@ -225,7 +225,7 @@ function ProvidersPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-3">
-          {providers.map((p: ProviderRow) => (
+          {providers.map((p) => (
             <ProviderCard
               key={p.id}
               provider={p}
