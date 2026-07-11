@@ -12,23 +12,28 @@ const STATUSES = ["active", "hidden", "paused", "draft"] as const;
 export const listCatalog = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const [{ data: items, error }, { data: projects }] = await Promise.all([
+    const [{ data: items, error }, { data: projects }, { data: categories }] = await Promise.all([
       context.supabase
         .from("products_services")
         .select("*")
         .order("created_at", { ascending: false }),
       context.supabase.from("hn_projects").select("id, name, code, brand_color, category"),
+      context.supabase.from("product_categories").select("id, name, slug, project_id, color").order("name"),
     ]);
     if (error) throw new Error(error.message);
 
     const pMap = new Map<string, { name: string; code: string; brand_color: string | null; category: string | null }>();
     (projects ?? []).forEach((p) => pMap.set(p.id, p));
+    const cMap = new Map<string, { name: string; color: string | null }>();
+    (categories ?? []).forEach((c: any) => cMap.set(c.id, { name: c.name, color: c.color }));
 
-    const rows = (items ?? []).map((it) => ({
+    const rows = (items ?? []).map((it: any) => ({
       ...it,
       project_name: it.project_id ? pMap.get(it.project_id)?.name ?? null : null,
       project_code: it.project_id ? pMap.get(it.project_id)?.code ?? null : null,
       project_color: it.project_id ? pMap.get(it.project_id)?.brand_color ?? null : null,
+      category_name: it.category_id ? cMap.get(it.category_id)?.name ?? null : null,
+      category_color: it.category_id ? cMap.get(it.category_id)?.color ?? null : null,
     }));
 
     const stats = {
@@ -42,7 +47,7 @@ export const listCatalog = createServerFn({ method: "GET" })
       totalSales: rows.reduce((s, r) => s + Number(r.sales_count ?? 0), 0),
     };
 
-    return { rows, projects: projects ?? [], stats };
+    return { rows, projects: projects ?? [], categories: categories ?? [], stats };
   });
 
 const upsertSchema = z.object({
