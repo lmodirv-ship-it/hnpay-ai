@@ -13,7 +13,8 @@ type NavItem = { to: string; label: string; icon: ReactNode; group: string };
 const NAV: NavItem[] = [
   { group: "نظرة عامة", to: "/admin",               label: "الرئيسية",              icon: <LayoutDashboard className="h-4 w-4" /> },
 
-  { group: "الأعمال",    to: "/admin/products",      label: "المواقع والمشاريع",     icon: <Globe className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/projects",      label: "المشاريع المالية",       icon: <FolderKanban className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/products",      label: "المواقع والنطاقات",       icon: <Globe className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/customers",     label: "العملاء",               icon: <Users className="h-4 w-4" /> },
   { group: "الأعمال",    to: "/admin/plans",         label: "الخطط والأسعار",        icon: <Layers className="h-4 w-4" /> },
 
