@@ -2,7 +2,7 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
-import { Crown, LogOut, Users, Boxes, Wallet, Activity } from "lucide-react";
+import { Crown, LogOut, Users, Boxes, Wallet, Activity, Sparkles, Handshake, FileText, Smartphone, BrainCircuit } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/owner/dashboard")({
   ssr: false,
