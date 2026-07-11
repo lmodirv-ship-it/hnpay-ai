@@ -77,6 +77,7 @@ function CatalogPage() {
 
   const [rows, setRows] = useState<Row[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [categories, setCategories] = useState<{ id: string; name: string; slug: string; project_id: string | null; color: string | null }[]>([]);
   const [stats, setStats] = useState({
     total: 0, products: 0, services: 0, subscriptions: 0,
     active: 0, inactive: 0, totalRevenue: 0, totalSales: 0,
@@ -85,6 +86,7 @@ function CatalogPage() {
   const [view, setView] = useState<"table" | "cards">("table");
   const [q, setQ] = useState("");
   const [fProject, setFProject] = useState("");
+  const [fCategory, setFCategory] = useState("");
   const [fType, setFType] = useState("");
   const [fBilling, setFBilling] = useState("");
   const [fStatus, setFStatus] = useState("");
@@ -99,6 +101,7 @@ function CatalogPage() {
       const res = await list();
       setRows(res.rows as Row[]);
       setProjects(res.projects as Project[]);
+      setCategories((res as any).categories ?? []);
       setStats(res.stats);
     } finally { setLoading(false); }
   };
