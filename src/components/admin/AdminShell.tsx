@@ -5,26 +5,39 @@ import {
   LayoutDashboard, Users, Package, Layers, ShoppingCart, RefreshCw,
   CreditCard, FileText, BarChart3, UserCog, Bell, Plug, Activity,
   Settings, LifeBuoy, LogOut, Crown, Search, Menu, ChevronRight,
+  Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2,
 } from "lucide-react";
 
 type NavItem = { to: string; label: string; icon: ReactNode; group: string };
 
 const NAV: NavItem[] = [
-  { group: "نظرة عامة", to: "/admin",               label: "الرئيسية",         icon: <LayoutDashboard className="h-4 w-4" /> },
-  { group: "الأعمال",    to: "/admin/customers",     label: "العملاء",          icon: <Users className="h-4 w-4" /> },
-  { group: "الأعمال",    to: "/admin/products",      label: "المنتجات والخدمات", icon: <Package className="h-4 w-4" /> },
-  { group: "الأعمال",    to: "/admin/plans",         label: "الخطط",            icon: <Layers className="h-4 w-4" /> },
-  { group: "المدفوعات",  to: "/admin/orders",        label: "الطلبات",          icon: <ShoppingCart className="h-4 w-4" /> },
-  { group: "المدفوعات",  to: "/admin/subscriptions", label: "الاشتراكات",       icon: <RefreshCw className="h-4 w-4" /> },
-  { group: "المدفوعات",  to: "/admin/payments",      label: "المدفوعات",        icon: <CreditCard className="h-4 w-4" /> },
-  { group: "المدفوعات",  to: "/admin/invoices",      label: "الفواتير",         icon: <FileText className="h-4 w-4" /> },
-  { group: "التحليل",    to: "/admin/reports",       label: "التقارير",         icon: <BarChart3 className="h-4 w-4" /> },
-  { group: "الإدارة",    to: "/admin/team",          label: "فريق العمل",       icon: <UserCog className="h-4 w-4" /> },
-  { group: "الإدارة",    to: "/admin/notifications", label: "الإشعارات",        icon: <Bell className="h-4 w-4" /> },
-  { group: "الإدارة",    to: "/admin/integration",   label: "التكامل و API",    icon: <Plug className="h-4 w-4" /> },
-  { group: "الإدارة",    to: "/admin/activity",      label: "سجل النشاط",      icon: <Activity className="h-4 w-4" /> },
-  { group: "النظام",     to: "/admin/settings",      label: "إعدادات الموقع",   icon: <Settings className="h-4 w-4" /> },
-  { group: "النظام",     to: "/admin/support",       label: "الدعم",            icon: <LifeBuoy className="h-4 w-4" /> },
+  { group: "نظرة عامة", to: "/admin",               label: "الرئيسية",              icon: <LayoutDashboard className="h-4 w-4" /> },
+
+  { group: "الأعمال",    to: "/admin/products",      label: "المواقع والمشاريع",     icon: <Globe className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/customers",     label: "العملاء",               icon: <Users className="h-4 w-4" /> },
+  { group: "الأعمال",    to: "/admin/plans",         label: "الخطط والأسعار",        icon: <Layers className="h-4 w-4" /> },
+
+  { group: "المدفوعات",  to: "/admin/payments",      label: "المدفوعات",             icon: <CreditCard className="h-4 w-4" /> },
+  { group: "المدفوعات",  to: "/admin/orders",        label: "جلسات الدفع",           icon: <ShoppingCart className="h-4 w-4" /> },
+  { group: "المدفوعات",  to: "/admin/subscriptions", label: "الاشتراكات",            icon: <RefreshCw className="h-4 w-4" /> },
+  { group: "المدفوعات",  to: "/admin/renewals",      label: "التجديدات",             icon: <RefreshCw className="h-4 w-4" /> },
+  { group: "المدفوعات",  to: "/admin/invoices",      label: "الفواتير والإيصالات",   icon: <FileText className="h-4 w-4" /> },
+  { group: "المدفوعات",  to: "/admin/refunds",       label: "الاسترجاعات والنزاعات", icon: <Undo2 className="h-4 w-4" /> },
+
+  { group: "المالية",    to: "/admin/providers",     label: "مزودو الدفع",           icon: <Wallet className="h-4 w-4" /> },
+  { group: "المالية",    to: "/admin/settlements",   label: "التسويات المالية",      icon: <Landmark className="h-4 w-4" /> },
+  { group: "المالية",    to: "/admin/reports",       label: "التقارير والتحليلات",   icon: <BarChart3 className="h-4 w-4" /> },
+
+  { group: "التقنية",    to: "/admin/webhooks",      label: "Webhooks",              icon: <Webhook className="h-4 w-4" /> },
+  { group: "التقنية",    to: "/admin/api-keys",      label: "مفاتيح API",            icon: <KeyRound className="h-4 w-4" /> },
+  { group: "التقنية",    to: "/admin/integration",   label: "المطورون والتوثيق",     icon: <Code2 className="h-4 w-4" /> },
+  { group: "التقنية",    to: "/admin/activity",      label: "سجل النظام",            icon: <Activity className="h-4 w-4" /> },
+
+  { group: "الإدارة",    to: "/admin/team",          label: "المستخدمون والصلاحيات", icon: <UserCog className="h-4 w-4" /> },
+  { group: "الإدارة",    to: "/admin/security",      label: "الأمان",                icon: <ShieldCheck className="h-4 w-4" /> },
+  { group: "الإدارة",    to: "/admin/notifications", label: "الإشعارات",             icon: <Bell className="h-4 w-4" /> },
+  { group: "الإدارة",    to: "/admin/settings",      label: "الإعدادات",             icon: <Settings className="h-4 w-4" /> },
+  { group: "الإدارة",    to: "/admin/support",       label: "الدعم",                 icon: <LifeBuoy className="h-4 w-4" /> },
 ];
 
 export function AdminShell({
