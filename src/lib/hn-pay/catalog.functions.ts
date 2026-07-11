@@ -90,6 +90,7 @@ export const upsertCatalogItem = createServerFn({ method: "POST" })
       description: rest.description || null,
       image_url: rest.image_url || null,
       category: rest.category || null,
+      category_id: rest.category_id || null,
       subscription_interval: rest.subscription_interval || null,
       keywords: rest.keywords || null,
       currency: rest.currency.toUpperCase(),
