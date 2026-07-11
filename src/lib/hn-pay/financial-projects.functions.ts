@@ -40,9 +40,9 @@ export const listFinancialProjects = createServerFn({ method: "GET" })
     const { supabase } = context;
 
     const [{ data: domains, error: dErr }, { data: projects, error: pErr }, { data: products, error: prErr }, { data: providers }] = await Promise.all([
-      supabase.from("project_domains").select("*").order("created_at", { ascending: false }),
+      supabase.from("project_domains").select("*").order("domain", { ascending: true }),
       supabase.from("hn_projects").select("id,name,code,category,brand_color,default_currency,default_provider_id"),
-      supabase.from("products_services").select("id,project_id,site_id,product_code,type,billing_type,is_taxable,is_renewable,subscription_interval,visible_in_store,requires_approval,display_order,keywords,sales_count,total_revenue,customers_count"),
+      supabase.from("products_services").select("id,project_id,site_id,domain_id,product_code,type,billing_type,is_taxable,is_renewable,subscription_interval,visible_in_store,requires_approval,display_order,keywords,sales_count,total_revenue,customers_count") as any,
       supabase.from("payment_providers").select("id,name"),
     ]);
 
