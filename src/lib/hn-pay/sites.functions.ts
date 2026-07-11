@@ -99,6 +99,16 @@ export const createApiKey = createServerFn({ method: "POST" })
       .parse(data),
   )
   .handler(async ({ data, context }) => {
+    // Authorize: caller must be able to see the target site via RLS
+    // (owners see everything; site creators see rows they created).
+    const { data: siteRow, error: siteErr } = await context.supabase
+      .from("sites")
+      .select("id")
+      .eq("id", data.siteId)
+      .maybeSingle();
+    if (siteErr) throw new Error(siteErr.message);
+    if (!siteRow) throw new Error("Not authorized for this site");
+
     const { generateApiKey } = await import("@/lib/hn-pay/crypto.server");
     const key = generateApiKey(data.mode);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -111,7 +121,6 @@ export const createApiKey = createServerFn({ method: "POST" })
     });
     if (error) throw new Error(error.message);
     // return full key ONCE — never stored plaintext
-    void context;
     return { full_key: key.full, prefix: key.prefix, mode: data.mode };
   });
 
