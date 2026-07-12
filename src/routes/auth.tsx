@@ -38,6 +38,11 @@ function AuthPage() {
 
   const routeAfterLogin = async () => {
     if (next && next.startsWith("/")) {
+      // Use a full navigation so query strings (e.g. OAuth ?authorization_id=...) survive.
+      if (next.includes("?")) {
+        window.location.href = next;
+        return;
+      }
       navigate({ to: next });
       return;
     }
