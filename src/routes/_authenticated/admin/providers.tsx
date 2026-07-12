@@ -21,7 +21,7 @@ function ProvidersPage() {
   const [rows, setRows] = useState<any[]>([]);
   const router = useRouter();
 
-  const refresh = async () => setRows((await list()) as any[]);
+  const refresh = async () => setRows((await list({ data: { include_global: true } })) as any[]);
   useEffect(() => { void refresh(); }, []);
 
   return (
