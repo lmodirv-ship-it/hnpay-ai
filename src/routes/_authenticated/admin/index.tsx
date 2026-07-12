@@ -44,7 +44,7 @@ function OverviewPage() {
         sitesQ, provQ, paysAllQ, paysPrevQ, paysMonthQ, paysTodayQ, paysTotalQ,
         subsQ, subsCanceledQ, custsAllQ, custsNewQ, recentQ, whQ, upcomingQ,
       ] = await Promise.all([
-        supabase.from("sites").select("id, name, domain, enabled_providers, is_active").order("created_at", { ascending: true }),
+        supabase.from("sites").select("id, name, domain, slug, enabled_providers, is_active, is_group_site, project_id, environment, integration_status").order("created_at", { ascending: true }),
         supabase.from("payment_providers").select("*").order("is_default", { ascending: false }),
         supabase.from("payments").select("amount, currency, status, created_at, site_id, provider").gte("created_at", from.toISOString()),
         supabase.from("payments").select("amount, status").gte("created_at", prevFrom.toISOString()).lt("created_at", from.toISOString()),
