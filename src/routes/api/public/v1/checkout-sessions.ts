@@ -113,6 +113,34 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
         const clientTokenExpiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 min
         const displayMode = parsed.data.display_mode ?? "embedded";
 
+        // 7b) HN group cross-benefit: if buyer is a group member and the plan
+        // is shared, waive the fee automatically (100% internal discount).
+        let finalAmount = Number(plan.amount);
+        let groupFreeApplied = false;
+        let groupFreeReason: string | null = null;
+        const buyerEmail = parsed.data.customer?.email ?? null;
+        if (buyerEmail && site?.id) {
+          const { data: planShare } = await supabaseAdmin
+            .from("plans")
+            .select("share_with_group")
+            .eq("id", plan.id)
+            .maybeSingle();
+          const { data: siteRow } = await supabaseAdmin
+            .from("sites")
+            .select("is_group_site")
+            .eq("id", plan.site_id!)
+            .maybeSingle();
+          if (planShare?.share_with_group !== false && siteRow?.is_group_site) {
+            const { data: isMember } = await supabaseAdmin
+              .rpc("is_hn_group_email", { _email: buyerEmail });
+            if (isMember === true) {
+              finalAmount = 0;
+              groupFreeApplied = true;
+              groupFreeReason = "hn_group_cross_benefit";
+            }
+          }
+        }
+
         // 8) create checkout session
         const { data: session, error } = await supabaseAdmin
           .from("checkout_sessions")
@@ -120,17 +148,22 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
             site_id: plan.site_id!,
             plan_id: plan.id,
             customer_external_id: parsed.data.customer?.external_id ?? null,
-            customer_email: parsed.data.customer?.email ?? null,
+            customer_email: buyerEmail,
             customer_name: parsed.data.customer?.name ?? null,
-            amount: plan.amount,
+            amount: finalAmount,
             currency: plan.currency,
             success_url: parsed.data.success_url ?? null,
             cancel_url: parsed.data.cancel_url ?? null,
             display_mode: displayMode,
-            provider: defaultProviderCode,
+            provider: groupFreeApplied ? "manual" : defaultProviderCode,
             client_token: clientToken,
             client_token_expires_at: clientTokenExpiresAt,
-            metadata: (parsed.data.metadata ?? {}) as never,
+            group_free_applied: groupFreeApplied,
+            group_free_reason: groupFreeReason,
+            metadata: {
+              ...(parsed.data.metadata ?? {}),
+              ...(groupFreeApplied ? { hn_group_free: true, original_amount: plan.amount } : {}),
+            } as never,
           })
           .select("public_id, status, expires_at, amount, currency, provider")
           .single();
