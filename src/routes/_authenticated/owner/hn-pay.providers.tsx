@@ -607,6 +607,63 @@ function ProviderEditor({
               className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
             />
           </Field>
+          <Field label="Public key / Client token">
+            <input
+              value={form.public_key}
+              onChange={(e) => setForm({ ...form, public_key: e.target.value })}
+              placeholder="Paddle client-side key, publishable ID, etc."
+              autoComplete="off"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Supported countries (2-letter)" hint={form.supported_countries.join(", ") || "All countries"}>
+            <input
+              value={form.supported_countries.join(",")}
+              onChange={(e) => setForm({ ...form, supported_countries: e.target.value.split(/[,\s]+/).filter(Boolean) })}
+              placeholder="MA,FR,US,…"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Supported currencies (3-letter)" hint={form.supported_currencies.join(", ") || "All currencies"}>
+            <input
+              value={form.supported_currencies.join(",")}
+              onChange={(e) => setForm({ ...form, supported_currencies: e.target.value.split(/[,\s]+/).filter(Boolean) })}
+              placeholder="MAD,EUR,USD,…"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Fee %">
+            <input
+              type="number"
+              min={0}
+              max={100}
+              step={0.01}
+              value={form.fee_percent}
+              onChange={(e) => setForm({ ...form, fee_percent: Number(e.target.value) })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Fixed fee">
+            <input
+              type="number"
+              min={0}
+              step={0.01}
+              value={form.fee_fixed}
+              onChange={(e) => setForm({ ...form, fee_fixed: Number(e.target.value) })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Tax mode">
+            <select
+              value={form.tax_mode}
+              onChange={(e) => setForm({ ...form, tax_mode: e.target.value as "automatic" | "manual" | "none" })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 text-sm"
+            >
+              <option value="automatic">Automatic tax</option>
+              <option value="manual">Manual tax</option>
+              <option value="none">No tax</option>
+            </select>
+          </Field>
         </div>
 
         {error && (
