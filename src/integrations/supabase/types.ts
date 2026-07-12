@@ -27,6 +27,7 @@ export type Database = {
           name_ar: string
           name_en: string | null
           parent_id: string | null
+          project_id: string | null
           site_id: string
           updated_at: string
         }
@@ -42,6 +43,7 @@ export type Database = {
           name_ar: string
           name_en?: string | null
           parent_id?: string | null
+          project_id?: string | null
           site_id: string
           updated_at?: string
         }
@@ -57,6 +59,7 @@ export type Database = {
           name_ar?: string
           name_en?: string | null
           parent_id?: string | null
+          project_id?: string | null
           site_id?: string
           updated_at?: string
         }
@@ -66,6 +69,13 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_categories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -134,6 +144,7 @@ export type Database = {
           id: string
           is_default: boolean
           is_enabled: boolean
+          project_id: string | null
           provider_id: string
           site_id: string
           updated_at: string
@@ -144,6 +155,7 @@ export type Database = {
           id?: string
           is_default?: boolean
           is_enabled?: boolean
+          project_id?: string | null
           provider_id: string
           site_id: string
           updated_at?: string
@@ -154,6 +166,7 @@ export type Database = {
           id?: string
           is_default?: boolean
           is_enabled?: boolean
+          project_id?: string | null
           provider_id?: string
           site_id?: string
           updated_at?: string
@@ -164,6 +177,13 @@ export type Database = {
             columns: ["catalog_item_id"]
             isOneToOne: false
             referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_item_providers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -197,6 +217,7 @@ export type Database = {
           metadata: Json
           name_ar: string
           name_en: string | null
+          project_id: string | null
           requires_approval: boolean
           short_description_ar: string | null
           short_description_en: string | null
@@ -219,6 +240,7 @@ export type Database = {
           metadata?: Json
           name_ar: string
           name_en?: string | null
+          project_id?: string | null
           requires_approval?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
@@ -241,6 +263,7 @@ export type Database = {
           metadata?: Json
           name_ar?: string
           name_en?: string | null
+          project_id?: string | null
           requires_approval?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
@@ -255,6 +278,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -284,6 +314,7 @@ export type Database = {
           name_ar: string | null
           name_en: string | null
           price_code: string
+          project_id: string | null
           setup_fee: number
           site_id: string
           tax_behavior: string
@@ -308,6 +339,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           price_code: string
+          project_id?: string | null
           setup_fee?: number
           site_id: string
           tax_behavior?: string
@@ -332,6 +364,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           price_code?: string
+          project_id?: string | null
           setup_fee?: number
           site_id?: string
           tax_behavior?: string
@@ -345,6 +378,13 @@ export type Database = {
             columns: ["catalog_item_id"]
             isOneToOne: false
             referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_prices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -577,52 +617,91 @@ export type Database = {
       }
       hn_projects: {
         Row: {
+          api_enabled: boolean
+          arr_cached: number
           brand_color: string | null
           category: string | null
           code: string
+          connection_status: string
           created_at: string
           created_by: string | null
           default_currency: string
           default_provider_id: string | null
           description: string | null
+          environment: string
           id: string
+          integration_mode: string
+          invoices_enabled: boolean
+          last_seen_at: string | null
+          logo_url: string | null
+          mrr_cached: number
           name: string
           owner_id: string | null
+          payments_enabled: boolean
           primary_domain: string | null
+          project_type: string | null
           status: string
+          subscriptions_enabled: boolean
           updated_at: string
+          webhooks_enabled: boolean
         }
         Insert: {
+          api_enabled?: boolean
+          arr_cached?: number
           brand_color?: string | null
           category?: string | null
           code: string
+          connection_status?: string
           created_at?: string
           created_by?: string | null
           default_currency?: string
           default_provider_id?: string | null
           description?: string | null
+          environment?: string
           id?: string
+          integration_mode?: string
+          invoices_enabled?: boolean
+          last_seen_at?: string | null
+          logo_url?: string | null
+          mrr_cached?: number
           name: string
           owner_id?: string | null
+          payments_enabled?: boolean
           primary_domain?: string | null
+          project_type?: string | null
           status?: string
+          subscriptions_enabled?: boolean
           updated_at?: string
+          webhooks_enabled?: boolean
         }
         Update: {
+          api_enabled?: boolean
+          arr_cached?: number
           brand_color?: string | null
           category?: string | null
           code?: string
+          connection_status?: string
           created_at?: string
           created_by?: string | null
           default_currency?: string
           default_provider_id?: string | null
           description?: string | null
+          environment?: string
           id?: string
+          integration_mode?: string
+          invoices_enabled?: boolean
+          last_seen_at?: string | null
+          logo_url?: string | null
+          mrr_cached?: number
           name?: string
           owner_id?: string | null
+          payments_enabled?: boolean
           primary_domain?: string | null
+          project_type?: string | null
           status?: string
+          subscriptions_enabled?: boolean
           updated_at?: string
+          webhooks_enabled?: boolean
         }
         Relationships: [
           {
@@ -688,6 +767,7 @@ export type Database = {
           last_test_status: string | null
           last_tested_at: string | null
           merchant_id: string | null
+          project_id: string | null
           public_key: string | null
           secret_key: string | null
           site_id: string | null
@@ -714,6 +794,7 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          project_id?: string | null
           public_key?: string | null
           secret_key?: string | null
           site_id?: string | null
@@ -740,6 +821,7 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          project_id?: string | null
           public_key?: string | null
           secret_key?: string | null
           site_id?: string | null
@@ -750,6 +832,13 @@ export type Database = {
           webhook_secret?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_providers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payment_providers_site_id_fkey"
             columns: ["site_id"]
@@ -988,6 +1077,7 @@ export type Database = {
           created_at: string
           customer_id: string
           expires_at: string
+          project_id: string | null
           site_id: string
           token: string
           used_at: string | null
@@ -996,6 +1086,7 @@ export type Database = {
           created_at?: string
           customer_id: string
           expires_at?: string
+          project_id?: string | null
           site_id: string
           token: string
           used_at?: string | null
@@ -1004,6 +1095,7 @@ export type Database = {
           created_at?: string
           customer_id?: string
           expires_at?: string
+          project_id?: string | null
           site_id?: string
           token?: string
           used_at?: string | null
@@ -1014,6 +1106,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_tokens_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -1529,6 +1628,7 @@ export type Database = {
           label: string
           last_used_at: string | null
           mode: string
+          project_id: string | null
           revoked_at: string | null
           site_id: string
         }
@@ -1540,6 +1640,7 @@ export type Database = {
           label?: string
           last_used_at?: string | null
           mode?: string
+          project_id?: string | null
           revoked_at?: string | null
           site_id: string
         }
@@ -1551,10 +1652,18 @@ export type Database = {
           label?: string
           last_used_at?: string | null
           mode?: string
+          project_id?: string | null
           revoked_at?: string | null
           site_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "site_api_keys_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "site_api_keys_site_id_fkey"
             columns: ["site_id"]
@@ -1821,6 +1930,7 @@ export type Database = {
           last_response_body: string | null
           last_response_status: number | null
           payload: Json
+          project_id: string | null
           public_id: string
           site_id: string
         }
@@ -1835,6 +1945,7 @@ export type Database = {
           last_response_body?: string | null
           last_response_status?: number | null
           payload: Json
+          project_id?: string | null
           public_id?: string
           site_id: string
         }
@@ -1849,10 +1960,18 @@ export type Database = {
           last_response_body?: string | null
           last_response_status?: number | null
           payload?: Json
+          project_id?: string | null
           public_id?: string
           site_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "webhook_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "webhook_events_site_id_fkey"
             columns: ["site_id"]
@@ -1868,6 +1987,10 @@ export type Database = {
     }
     Functions: {
       is_protected_owner: { Args: { _user_id: string }; Returns: boolean }
+      user_can_access_project: {
+        Args: { _project_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
