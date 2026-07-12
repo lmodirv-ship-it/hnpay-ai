@@ -60,6 +60,7 @@ import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_aut
 import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
 import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_authenticated/owner/hn-pay.monitor'
 import { Route as AuthenticatedOwnerHnPayIntegrateRouteImport } from './routes/_authenticated/owner/hn-pay.integrate'
+import { Route as AuthenticatedOwnerHnPayCatalogRouteImport } from './routes/_authenticated/owner/hn-pay.catalog'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
 
@@ -349,6 +350,12 @@ const AuthenticatedOwnerHnPayIntegrateRoute =
     path: '/owner/hn-pay/integrate',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedOwnerHnPayCatalogRoute =
+  AuthenticatedOwnerHnPayCatalogRouteImport.update({
+    id: '/owner/hn-pay/catalog',
+    path: '/owner/hn-pay/catalog',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicV1WebhooksMockRoute = ApiPublicV1WebhooksMockRouteImport.update({
   id: '/api/public/v1/webhooks/mock',
   path: '/api/public/v1/webhooks/mock',
@@ -406,6 +413,7 @@ export interface FileRoutesByFullPath {
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/owner/hn-pay/catalog': typeof AuthenticatedOwnerHnPayCatalogRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -459,6 +467,7 @@ export interface FileRoutesByTo {
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/owner/hn-pay/catalog': typeof AuthenticatedOwnerHnPayCatalogRoute
   '/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -515,6 +524,7 @@ export interface FileRoutesById {
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/owner/hn-pay/catalog': typeof AuthenticatedOwnerHnPayCatalogRoute
   '/_authenticated/owner/hn-pay/integrate': typeof AuthenticatedOwnerHnPayIntegrateRoute
   '/_authenticated/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -571,6 +581,7 @@ export interface FileRouteTypes {
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
     | '/admin/'
+    | '/owner/hn-pay/catalog'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
@@ -624,6 +635,7 @@ export interface FileRouteTypes {
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
     | '/admin'
+    | '/owner/hn-pay/catalog'
     | '/owner/hn-pay/integrate'
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
@@ -679,6 +691,7 @@ export interface FileRouteTypes {
     | '/_authenticated/user/dashboard'
     | '/pay/embed/$sessionId'
     | '/_authenticated/admin/'
+    | '/_authenticated/owner/hn-pay/catalog'
     | '/_authenticated/owner/hn-pay/integrate'
     | '/_authenticated/owner/hn-pay/monitor'
     | '/_authenticated/owner/hn-pay/providers'
@@ -1063,6 +1076,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerHnPayIntegrateRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/hn-pay/catalog': {
+      id: '/_authenticated/owner/hn-pay/catalog'
+      path: '/owner/hn-pay/catalog'
+      fullPath: '/owner/hn-pay/catalog'
+      preLoaderRoute: typeof AuthenticatedOwnerHnPayCatalogRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/v1/webhooks/mock': {
       id: '/api/public/v1/webhooks/mock'
       path: '/api/public/v1/webhooks/mock'
@@ -1170,6 +1190,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerSitesRoute: typeof AuthenticatedOwnerSitesRouteWithChildren
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
+  AuthenticatedOwnerHnPayCatalogRoute: typeof AuthenticatedOwnerHnPayCatalogRoute
   AuthenticatedOwnerHnPayIntegrateRoute: typeof AuthenticatedOwnerHnPayIntegrateRoute
   AuthenticatedOwnerHnPayMonitorRoute: typeof AuthenticatedOwnerHnPayMonitorRoute
   AuthenticatedOwnerHnPayProvidersRoute: typeof AuthenticatedOwnerHnPayProvidersRoute
@@ -1184,6 +1205,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerSitesRoute: AuthenticatedOwnerSitesRouteWithChildren,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
+  AuthenticatedOwnerHnPayCatalogRoute: AuthenticatedOwnerHnPayCatalogRoute,
   AuthenticatedOwnerHnPayIntegrateRoute: AuthenticatedOwnerHnPayIntegrateRoute,
   AuthenticatedOwnerHnPayMonitorRoute: AuthenticatedOwnerHnPayMonitorRoute,
   AuthenticatedOwnerHnPayProvidersRoute: AuthenticatedOwnerHnPayProvidersRoute,
