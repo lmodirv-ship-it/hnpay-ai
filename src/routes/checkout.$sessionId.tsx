@@ -44,7 +44,7 @@ export const initiateCheckout = createServerFn({ method: "POST" })
     z
       .object({
         publicId: z.string().min(3).max(64),
-        provider: z.enum(["manual", "stripe", "paypal", "cmi", "payzone", "naps", "mock"]),
+        provider: z.enum(["manual", "stripe", "paddle", "paypal", "cmi", "payzone", "naps", "mock"]),
       })
       .parse(data),
   )
