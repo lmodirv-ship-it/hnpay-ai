@@ -100,7 +100,7 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
         const { data: session, error } = await supabaseAdmin
           .from("checkout_sessions")
           .insert({
-            site_id: plan.site_id,
+            site_id: plan.site_id!,
             plan_id: plan.id,
             customer_external_id: parsed.data.customer?.external_id ?? null,
             customer_email: parsed.data.customer?.email ?? null,
