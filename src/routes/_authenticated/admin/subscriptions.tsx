@@ -77,14 +77,17 @@ function SubsPage() {
                         {s.current_period_end ? new Date(s.current_period_end).toLocaleDateString("ar-MA") : "—"}
                       </td>
                       <td className="px-5 py-3">
-                        {s.status !== "canceled" && !s.cancel_at_period_end && (
-                          <button
-                            onClick={() => cancel(s.id)}
-                            className="rounded-lg border border-rose-400/30 bg-rose-500/10 px-3 py-1 text-[11px] text-rose-200 hover:bg-rose-500/20"
-                          >
-                            إلغاء
-                          </button>
-                        )}
+                        <div className="flex flex-wrap gap-1">
+                          {s.status !== "canceled" && !s.cancel_at_period_end && (
+                            <button onClick={() => cancelAtEnd(s.id)} className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-[11px] text-amber-200 hover:bg-amber-500/20">إلغاء نهاية الفترة</button>
+                          )}
+                          {s.status !== "canceled" && (
+                            <button onClick={() => cancelNow(s.id)} className="rounded-lg border border-rose-400/30 bg-rose-500/10 px-2 py-1 text-[11px] text-rose-200 hover:bg-rose-500/20">إلغاء فوري</button>
+                          )}
+                          {(s.status === "canceled" || s.cancel_at_period_end) && (
+                            <button onClick={() => reactivate(s.id)} className="rounded-lg border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-[11px] text-emerald-200 hover:bg-emerald-500/20">تفعيل</button>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
