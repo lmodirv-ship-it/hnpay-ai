@@ -440,7 +440,7 @@ function Th({ label, onClick }: { label: string; onClick: () => void }) {
   );
 }
 
-function RowMenu({ lang, isActive, onView, onEdit, onDuplicate, onToggleStatus, onArchive, onDelete }: any) {
+function RowMenu({ lang, isActive, onView, onEdit, onDuplicate, onToggleStatus, onArchive, onDelete }: { lang: Lang; isActive: boolean; onView: () => void; onEdit: () => void; onDuplicate: () => void; onToggleStatus: () => void; onArchive: () => void; onDelete: () => void }) {
   const [open, setOpen] = useState(false);
   useEffect(() => {
     if (!open) return;
@@ -475,7 +475,7 @@ function MItem({ icon, label, onClick, danger }: any) {
   );
 }
 
-function ConfirmDelete({ lang, name, onCancel, onConfirm, loading }: any) {
+function ConfirmDelete({ lang, name, onCancel, onConfirm, loading }: { lang: Lang; name: string; onCancel: () => void; onConfirm: () => void; loading: boolean }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4" onClick={onCancel}>
       <div className="w-full max-w-sm rounded-2xl border border-red-500/30 bg-[#0a0b16] p-5" onClick={(e) => e.stopPropagation()}>
@@ -502,7 +502,7 @@ type FormPrice = {
 };
 type FormFeature = { id?: string; name_ar: string; name_en: string; value_text: string; included: boolean; display_order: number };
 
-function ItemForm({ lang, initial, meta, onClose, onSave, saving, error }: any) {
+function ItemForm({ lang, initial, meta, onClose, onSave, saving, error }: { lang: Lang; initial: any; meta: any; onClose: () => void; onSave: (payload: any) => void; saving: boolean; error: string | null }) {
   const isEdit = !!initial;
   const [tab, setTab] = useState<"basic" | "pricing" | "features" | "providers" | "integration">("basic");
 
@@ -824,7 +824,7 @@ function ReadOnly({ label, value }: { label: string; value: string }) {
 
 /* ────────── detail modal ────────── */
 
-function ItemDetail({ lang, id, fetchDetail, onClose }: any) {
+function ItemDetail({ lang, id, fetchDetail, onClose }: { lang: Lang; id: string; fetchDetail: any; onClose: () => void }) {
   const q = useQuery({ queryKey: ["catalog-central-detail", id], queryFn: () => fetchDetail({ data: { id } }) });
   const d = q.data;
 
