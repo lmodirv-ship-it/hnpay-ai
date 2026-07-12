@@ -291,6 +291,37 @@ function SiteRow({
         </div>
       </div>
 
+      <div className="mt-3 flex flex-wrap gap-1.5 text-[10px]">
+        <Badge tone={site.is_internal === false ? "purple" : "cyan"}>
+          {site.is_internal === false ? "External" : "Internal"}
+        </Badge>
+        <Badge tone="amber">{site.integration_mode ?? "internal_database"}</Badge>
+        <Badge tone={site.database_access ? "emerald" : "neutral"}>
+          DB {site.database_access ? "shared" : "isolated"}
+        </Badge>
+        <Badge tone={site.api_enabled ? "emerald" : "neutral"}>
+          API {site.api_enabled ? "on" : "off"}
+        </Badge>
+        <Badge tone={site.webhook_enabled ? "emerald" : "neutral"}>
+          Webhooks {site.webhook_enabled ? "on" : "off"}
+        </Badge>
+        <Badge tone={site.environment === "live" ? "emerald" : "amber"}>
+          {site.environment ?? "live"}
+        </Badge>
+        <Badge
+          tone={
+            site.integration_status === "connected" ? "emerald"
+              : site.integration_status === "degraded" ? "amber"
+              : site.integration_status === "disconnected" ? "red" : "neutral"
+          }
+        >
+          {site.integration_status ?? "pending"}
+        </Badge>
+        {site.last_connection_at && (
+          <span className="text-neutral-500">· last {new Date(site.last_connection_at).toLocaleString()}</span>
+        )}
+      </div>
+
       <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-neutral-500">
         <Shield className="h-3 w-3 text-amber-300" />
         Webhook: <span className="font-mono text-neutral-300">{site.webhook_url ?? "not set"}</span>
@@ -303,6 +334,7 @@ function SiteRow({
           </button>
         )}
       </div>
+
       <div className="mt-2 flex items-center gap-2 text-[11px] text-neutral-500">
         <FolderTree className="h-3 w-3 text-amber-300" /> Portfolio:
         <select
