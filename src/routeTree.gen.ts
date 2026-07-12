@@ -55,6 +55,7 @@ import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminApiKeysRouteImport } from './routes/_authenticated/admin/api-keys'
 import { Route as AuthenticatedAdminActivityRouteImport } from './routes/_authenticated/admin/activity'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
+import { Route as ApiPublicWebhooksPaddleRouteImport } from './routes/api/public/webhooks/paddle'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
 import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
@@ -320,6 +321,11 @@ const ApiPublicWebhooksStripeRoute = ApiPublicWebhooksStripeRouteImport.update({
   path: '/api/public/webhooks/stripe',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhooksPaddleRoute = ApiPublicWebhooksPaddleRouteImport.update({
+  id: '/api/public/webhooks/paddle',
+  path: '/api/public/webhooks/paddle',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1CheckoutSessionsRoute =
   ApiPublicV1CheckoutSessionsRouteImport.update({
     id: '/api/public/v1/checkout-sessions',
@@ -419,6 +425,7 @@ export interface FileRoutesByFullPath {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
@@ -473,6 +480,7 @@ export interface FileRoutesByTo {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
@@ -530,6 +538,7 @@ export interface FileRoutesById {
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
@@ -587,6 +596,7 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/webhooks/mock'
@@ -641,6 +651,7 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/webhooks/mock'
@@ -697,6 +708,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/hn-pay/providers'
     | '/_authenticated/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/webhooks/mock'
@@ -713,6 +725,7 @@ export interface RootRouteChildren {
   DemoEmbedRoute: typeof DemoEmbedRoute
   PayEmbedSessionIdRoute: typeof PayEmbedSessionIdRoute
   ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  ApiPublicWebhooksPaddleRoute: typeof ApiPublicWebhooksPaddleRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
@@ -1041,6 +1054,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicWebhooksStripeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhooks/paddle': {
+      id: '/api/public/webhooks/paddle'
+      path: '/api/public/webhooks/paddle'
+      fullPath: '/api/public/webhooks/paddle'
+      preLoaderRoute: typeof ApiPublicWebhooksPaddleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/checkout-sessions': {
       id: '/api/public/v1/checkout-sessions'
       path: '/api/public/v1/checkout-sessions'
@@ -1251,6 +1271,7 @@ const rootRouteChildren: RootRouteChildren = {
   PayEmbedSessionIdRoute: PayEmbedSessionIdRoute,
   ApiPublicV1CheckoutSessionsRoute:
     ApiPublicV1CheckoutSessionsRouteWithChildren,
+  ApiPublicWebhooksPaddleRoute: ApiPublicWebhooksPaddleRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,
 }

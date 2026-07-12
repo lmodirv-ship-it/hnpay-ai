@@ -16,6 +16,8 @@ import {
   Pencil,
   ShieldCheck,
   Lock,
+  Globe,
+  Building2,
 } from "lucide-react";
 import {
   listPaymentProviders,
@@ -25,6 +27,7 @@ import {
   deletePaymentProvider,
   testPaymentProvider,
 } from "@/lib/hn-pay/payment-providers.functions";
+import { listSites } from "@/lib/hn-pay/sites.functions";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { useHnSession } from "@/lib/auth/use-session";
 
@@ -33,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/owner/hn-pay/providers")({
   head: () => ({
     meta: [
       { title: "Payment Providers · HN-Pay" },
-      { name: "description", content: "Manage payment providers (Stripe, PayPal, CMI, NAPS, manual, mock) for HN-Pay." },
+      { name: "description", content: "Manage per-site payment providers (Stripe, Paddle, PayPal, CMI, NAPS, manual, mock) for HN-Pay." },
     ],
   }),
   component: ProvidersPage,
@@ -43,15 +46,22 @@ type ProviderCode = "stripe" | "paddle" | "paypal" | "cmi" | "payzone" | "naps" 
 
 type ProviderRow = {
   id: string;
+  site_id: string | null;
   code: ProviderCode;
   display_name: string;
   api_key: string | null;
   secret_key: string | null;
+  public_key: string | null;
   webhook_secret: string | null;
   merchant_id: string | null;
   environment: "sandbox" | "production";
   is_enabled: boolean;
   is_default: boolean;
+  supported_countries: string[];
+  supported_currencies: string[];
+  fee_percent: number;
+  fee_fixed: number;
+  tax_mode: string;
   last_tested_at: string | null;
   last_test_status: "ok" | "fail" | null;
   last_test_message: string | null;
@@ -70,14 +80,21 @@ const PROVIDER_META: Record<ProviderCode, { label: string; badge: string; gradie
 
 const BLANK_FORM = {
   id: undefined as string | undefined,
+  site_id: "" as string,
   code: "stripe" as ProviderCode,
   display_name: "",
   api_key: "",
   secret_key: "",
+  public_key: "",
   webhook_secret: "",
   merchant_id: "",
   environment: "sandbox" as "sandbox" | "production",
   is_enabled: true,
+  supported_countries: [] as string[],
+  supported_currencies: [] as string[],
+  fee_percent: 0,
+  fee_fixed: 0,
+  tax_mode: "automatic" as "automatic" | "manual" | "none",
 };
 
 function ProvidersPage() {
@@ -89,22 +106,35 @@ function ProvidersPage() {
   const setDefaultFn = useServerFn(setDefaultPaymentProvider);
   const deleteFn = useServerFn(deletePaymentProvider);
   const testFn = useServerFn(testPaymentProvider);
+  const listSitesFn = useServerFn(listSites);
 
-  const { data: providersRaw = [], isLoading } = useQuery({
-    queryKey: ["hn-pay", "providers"],
-    queryFn: () => listFn(),
-  });
-  const providers = providersRaw as unknown as ProviderRow[];
-
+  const [selectedSiteId, setSelectedSiteId] = useState<string>("");
   const [editorOpen, setEditorOpen] = useState(false);
   const [form, setForm] = useState<typeof BLANK_FORM>(BLANK_FORM);
   const [testingId, setTestingId] = useState<string | null>(null);
   const [testFlash, setTestFlash] = useState<{ id: string; ok: boolean; msg: string } | null>(null);
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["hn-pay", "providers"] });
+  const { data: sitesRaw = [] } = useQuery({
+    queryKey: ["hn-pay", "sites"],
+    queryFn: () => listSitesFn(),
+  });
+  const sites = sitesRaw as { id: string; slug: string; name: string; domain: string; default_provider_id?: string | null }[];
+
+  const { data: providersRaw = [], isLoading } = useQuery({
+    queryKey: ["hn-pay", "providers", selectedSiteId || "global"],
+    queryFn: () => listFn({ data: { site_id: selectedSiteId || undefined, include_global: !selectedSiteId } }),
+  });
+  const providers = providersRaw as unknown as ProviderRow[];
+
+  const selectedSite = sites.find((s) => s.id === selectedSiteId);
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ["hn-pay", "providers"] });
+    qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] });
+  };
 
   const upsert = useMutation({
-    mutationFn: (payload: typeof BLANK_FORM) => upsertFn({ data: payload }),
+    mutationFn: (payload: typeof BLANK_FORM) => upsertFn({ data: { ...payload, site_id: payload.site_id || undefined } }),
     onSuccess: () => {
       invalidate();
       setEditorOpen(false);
@@ -118,7 +148,7 @@ function ProvidersPage() {
   });
 
   const setDefault = useMutation({
-    mutationFn: (id: string) => setDefaultFn({ data: { id } }),
+    mutationFn: (id: string) => setDefaultFn({ data: { id, site_id: selectedSiteId || undefined } }),
     onSuccess: invalidate,
   });
 
@@ -142,21 +172,28 @@ function ProvidersPage() {
   };
 
   const openNew = () => {
-    setForm(BLANK_FORM);
+    setForm({ ...BLANK_FORM, site_id: selectedSiteId });
     setEditorOpen(true);
   };
 
   const openEdit = (p: ProviderRow) => {
     setForm({
       id: p.id,
+      site_id: p.site_id ?? "",
       code: p.code,
       display_name: p.display_name,
       api_key: p.api_key ?? "",
       secret_key: p.secret_key ?? "",
+      public_key: p.public_key ?? "",
       webhook_secret: p.webhook_secret ?? "",
       merchant_id: p.merchant_id ?? "",
       environment: p.environment,
       is_enabled: p.is_enabled,
+      supported_countries: p.supported_countries ?? [],
+      supported_currencies: p.supported_currencies ?? [],
+      fee_percent: p.fee_percent ?? 0,
+      fee_fixed: p.fee_fixed ?? 0,
+      tax_mode: (p.tax_mode as "automatic" | "manual" | "none") ?? "automatic",
     });
     setEditorOpen(true);
   };
@@ -173,16 +210,41 @@ function ProvidersPage() {
           </div>
           <h1 className="text-3xl font-bold">Payment Providers</h1>
           <p className="mt-1 text-sm text-neutral-400">
-            Connect Stripe, PayPal, CMI, NAPS, bank transfer or the sandbox. HN-Pay routes every checkout
-            through the default provider — switch it any time, no code changes required.
+            Each HN site can have its own gateways. Select a site to manage its providers, or leave it blank to manage global/shared providers.
           </p>
         </div>
         <button
           onClick={openNew}
           className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
         >
-          <Plus className="h-4 w-4" /> Add provider
+          <Plus className="h-4 w-4" /> {selectedSiteId ? "Add provider to site" : "Add shared provider"}
         </button>
+      </div>
+
+      <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Site</label>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            onClick={() => setSelectedSiteId("")}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs ${selectedSiteId === "" ? "border-amber-400/60 bg-amber-500/20 text-amber-200" : "border-white/10 bg-black/40 text-neutral-400 hover:bg-white/5"}`}
+          >
+            <Globe className="h-3.5 w-3.5" /> Global / shared
+          </button>
+          {sites.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedSiteId(s.id)}
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs ${selectedSiteId === s.id ? "border-amber-400/60 bg-amber-500/20 text-amber-200" : "border-white/10 bg-black/40 text-neutral-400 hover:bg-white/5"}`}
+            >
+              <Building2 className="h-3.5 w-3.5" /> {s.name}
+            </button>
+          ))}
+        </div>
+        {selectedSite && (
+          <div className="mt-2 text-[10px] text-neutral-500">
+            Managing providers for <span className="text-amber-300">{selectedSite.name}</span> ({selectedSite.domain})
+          </div>
+        )}
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -544,6 +606,63 @@ function ProviderEditor({
               className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
             />
           </Field>
+          <Field label="Public key / Client token">
+            <input
+              value={form.public_key}
+              onChange={(e) => setForm({ ...form, public_key: e.target.value })}
+              placeholder="Paddle client-side key, publishable ID, etc."
+              autoComplete="off"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Supported countries (2-letter)" hint={form.supported_countries.join(", ") || "All countries"}>
+            <input
+              value={form.supported_countries.join(",")}
+              onChange={(e) => setForm({ ...form, supported_countries: e.target.value.split(/[,\s]+/).filter(Boolean) })}
+              placeholder="MA,FR,US,…"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Supported currencies (3-letter)" hint={form.supported_currencies.join(", ") || "All currencies"}>
+            <input
+              value={form.supported_currencies.join(",")}
+              onChange={(e) => setForm({ ...form, supported_currencies: e.target.value.split(/[,\s]+/).filter(Boolean) })}
+              placeholder="MAD,EUR,USD,…"
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Fee %">
+            <input
+              type="number"
+              min={0}
+              max={100}
+              step={0.01}
+              value={form.fee_percent}
+              onChange={(e) => setForm({ ...form, fee_percent: Number(e.target.value) })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Fixed fee">
+            <input
+              type="number"
+              min={0}
+              step={0.01}
+              value={form.fee_fixed}
+              onChange={(e) => setForm({ ...form, fee_fixed: Number(e.target.value) })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 font-mono text-xs"
+            />
+          </Field>
+          <Field label="Tax mode">
+            <select
+              value={form.tax_mode}
+              onChange={(e) => setForm({ ...form, tax_mode: e.target.value as "automatic" | "manual" | "none" })}
+              className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 text-sm"
+            >
+              <option value="automatic">Automatic tax</option>
+              <option value="manual">Manual tax</option>
+              <option value="none">No tax</option>
+            </select>
+          </Field>
         </div>
 
         {error && (
@@ -573,10 +692,13 @@ function ProviderEditor({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">{label}</div>
+      <div className="mb-1 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+        {label}
+        {hint && <span className="font-normal normal-case text-neutral-600">{hint}</span>}
+      </div>
       {children}
     </label>
   );

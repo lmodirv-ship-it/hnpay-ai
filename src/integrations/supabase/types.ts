@@ -679,6 +679,8 @@ export type Database = {
           display_name: string
           environment: string
           extra: Json
+          fee_fixed: number
+          fee_percent: number
           id: string
           is_default: boolean
           is_enabled: boolean
@@ -686,7 +688,12 @@ export type Database = {
           last_test_status: string | null
           last_tested_at: string | null
           merchant_id: string | null
+          public_key: string | null
           secret_key: string | null
+          site_id: string | null
+          supported_countries: string[]
+          supported_currencies: string[]
+          tax_mode: string
           updated_at: string
           webhook_secret: string | null
         }
@@ -698,6 +705,8 @@ export type Database = {
           display_name: string
           environment?: string
           extra?: Json
+          fee_fixed?: number
+          fee_percent?: number
           id?: string
           is_default?: boolean
           is_enabled?: boolean
@@ -705,7 +714,12 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          public_key?: string | null
           secret_key?: string | null
+          site_id?: string | null
+          supported_countries?: string[]
+          supported_currencies?: string[]
+          tax_mode?: string
           updated_at?: string
           webhook_secret?: string | null
         }
@@ -717,6 +731,8 @@ export type Database = {
           display_name?: string
           environment?: string
           extra?: Json
+          fee_fixed?: number
+          fee_percent?: number
           id?: string
           is_default?: boolean
           is_enabled?: boolean
@@ -724,11 +740,24 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          public_key?: string | null
           secret_key?: string | null
+          site_id?: string | null
+          supported_countries?: string[]
+          supported_currencies?: string[]
+          tax_mode?: string
           updated_at?: string
           webhook_secret?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "payment_providers_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       payments: {
         Row: {
@@ -1543,6 +1572,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           database_access: boolean
+          default_provider_id: string | null
           domain: string
           domain_id: string | null
           enabled_providers: string[]
@@ -1572,6 +1602,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           database_access?: boolean
+          default_provider_id?: string | null
           domain: string
           domain_id?: string | null
           enabled_providers?: string[]
@@ -1601,6 +1632,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           database_access?: boolean
+          default_provider_id?: string | null
           domain?: string
           domain_id?: string | null
           enabled_providers?: string[]
@@ -1624,6 +1656,13 @@ export type Database = {
           webhook_url?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "sites_default_provider_id_fkey"
+            columns: ["default_provider_id"]
+            isOneToOne: false
+            referencedRelation: "payment_providers"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sites_domain_id_fkey"
             columns: ["domain_id"]
