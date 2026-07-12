@@ -4,21 +4,19 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /* ─────────── sites ─────────── */
 
-const SITE_LIST_COLUMNS =
-  "id, slug, name, domain, webhook_url, is_active, brand_color, created_at, " +
-  "is_internal, integration_mode, api_enabled, webhook_enabled, database_access, " +
-  "allowed_origins, environment, integration_status, last_connection_at, portfolio_id";
-
 export const listSites = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("sites")
-      .select(SITE_LIST_COLUMNS)
+      .select(
+        "id, slug, name, domain, webhook_url, is_active, brand_color, created_at, is_internal, integration_mode, api_enabled, webhook_enabled, database_access, allowed_origins, environment, integration_status, last_connection_at, portfolio_id",
+      )
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];
   });
+
 
 export const updateSiteIntegration = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
