@@ -63,6 +63,7 @@ import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_au
 import { Route as AuthenticatedOwnerHnPayIntegrateRouteImport } from './routes/_authenticated/owner/hn-pay.integrate'
 import { Route as AuthenticatedOwnerHnPayCatalogRouteImport } from './routes/_authenticated/owner/hn-pay.catalog'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
+import { Route as ApiPublicV1GroupSecretsDistributionRouteImport } from './routes/api/public/v1/group/secrets-distribution'
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
 
 const TermsRoute = TermsRouteImport.update({
@@ -367,6 +368,12 @@ const ApiPublicV1WebhooksMockRoute = ApiPublicV1WebhooksMockRouteImport.update({
   path: '/api/public/v1/webhooks/mock',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicV1GroupSecretsDistributionRoute =
+  ApiPublicV1GroupSecretsDistributionRouteImport.update({
+    id: '/api/public/v1/group/secrets-distribution',
+    path: '/api/public/v1/group/secrets-distribution',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicV1CheckoutSessionsSessionIdRoute =
   ApiPublicV1CheckoutSessionsSessionIdRouteImport.update({
     id: '/$sessionId',
@@ -428,6 +435,7 @@ export interface FileRoutesByFullPath {
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesByTo {
@@ -483,6 +491,7 @@ export interface FileRoutesByTo {
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesById {
@@ -541,6 +550,7 @@ export interface FileRoutesById {
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRouteTypes {
@@ -599,6 +609,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -654,6 +665,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   id:
     | '__root__'
@@ -711,6 +723,7 @@ export interface FileRouteTypes {
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesById: FileRoutesById
 }
@@ -727,6 +740,7 @@ export interface RootRouteChildren {
   ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   ApiPublicWebhooksPaddleRoute: typeof ApiPublicWebhooksPaddleRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
+  ApiPublicV1GroupSecretsDistributionRoute: typeof ApiPublicV1GroupSecretsDistributionRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
 
@@ -1110,6 +1124,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1WebhooksMockRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/group/secrets-distribution': {
+      id: '/api/public/v1/group/secrets-distribution'
+      path: '/api/public/v1/group/secrets-distribution'
+      fullPath: '/api/public/v1/group/secrets-distribution'
+      preLoaderRoute: typeof ApiPublicV1GroupSecretsDistributionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/checkout-sessions/$sessionId': {
       id: '/api/public/v1/checkout-sessions/$sessionId'
       path: '/$sessionId'
@@ -1273,6 +1294,8 @@ const rootRouteChildren: RootRouteChildren = {
     ApiPublicV1CheckoutSessionsRouteWithChildren,
   ApiPublicWebhooksPaddleRoute: ApiPublicWebhooksPaddleRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
+  ApiPublicV1GroupSecretsDistributionRoute:
+    ApiPublicV1GroupSecretsDistributionRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,
 }
 export const routeTree = rootRouteImport
