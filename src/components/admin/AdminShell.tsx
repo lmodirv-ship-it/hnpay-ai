@@ -159,9 +159,11 @@ export function AdminShell({
           </main>
         </div>
       </div>
+      <AIAssistant />
     </div>
   );
 }
+
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
