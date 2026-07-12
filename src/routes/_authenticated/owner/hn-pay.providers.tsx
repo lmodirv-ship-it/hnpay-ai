@@ -172,21 +172,28 @@ function ProvidersPage() {
   };
 
   const openNew = () => {
-    setForm(BLANK_FORM);
+    setForm({ ...BLANK_FORM, site_id: selectedSiteId });
     setEditorOpen(true);
   };
 
   const openEdit = (p: ProviderRow) => {
     setForm({
       id: p.id,
+      site_id: p.site_id ?? "",
       code: p.code,
       display_name: p.display_name,
       api_key: p.api_key ?? "",
       secret_key: p.secret_key ?? "",
+      public_key: p.public_key ?? "",
       webhook_secret: p.webhook_secret ?? "",
       merchant_id: p.merchant_id ?? "",
       environment: p.environment,
       is_enabled: p.is_enabled,
+      supported_countries: p.supported_countries ?? [],
+      supported_currencies: p.supported_currencies ?? [],
+      fee_percent: p.fee_percent ?? 0,
+      fee_fixed: p.fee_fixed ?? 0,
+      tax_mode: (p.tax_mode as "automatic" | "manual" | "none") ?? "automatic",
     });
     setEditorOpen(true);
   };
