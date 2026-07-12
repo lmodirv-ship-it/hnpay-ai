@@ -1,48 +1,81 @@
-## الهدف
 
-في صفحة `/admin/products`، بدل عرض المنتجات كقائمة مسطّحة، اعرضها **مجمّعة حسب الموقع/المشروع** بحيث كل صف في الجدول يمثّل موقعًا واحدًا مع أسماء الخدمات التي يقدّمها (مستخرجة من تحليل الموقع + بيانات `products_services`).
+## تشخيص الوضع الحالي
 
-## المصدر
+بعد فحص القاعدة (29 جدولًا) واستعراض الكود، هذه هي الحقائق الحرجة:
 
-جدول `sites` فارغ حاليًا (0 صفوف). المصدر الفعلي للمواقع هو `hn_projects` (18 مشروعًا)، وكل مشروع مرتبط بـ `products_services` عبر `project_id` (152 عنصرًا موزّعة).
+| المجال | الحالة | الملاحظة |
+|---|---|---|
+| `hn_projects` | 18 صف | المصدر الفعلي "للمواقع" حاليًا |
+| `products_services` | 152 صف | كتالوج قديم مستخدَم فعليًا |
+| `sites` | **0** | البنية الجديدة (RLS + api keys + domains) لكنها فارغة |
+| `catalog_items / catalog_prices / plans` | **0** | البنية الاحترافية الجديدة — غير مستخدمة |
+| `customers / subscriptions / payments / checkout_sessions` | **0** | لا حركة تجارية |
+| `payment_providers` | **0** | لم يُفعَّل أي مزوّد |
+| `profiles / user_roles` | 1 / 3 | مالك واحد فقط |
 
-## ما سيتغيّر
+### المشكلة الجوهرية
+يوجد **نظامان متوازيان للكتالوج** (القديم `products_services` المرتبط بـ`hn_projects`، والجديد `catalog_items → catalog_prices → plans` المرتبط بـ`sites`). الواجهة تعرض القديم، والـRLS الجديدة والـEdge/Server Functions تعتمد على الجديد. النتيجة: أزرار كثيرة لا تكتب في المكان الصحيح، والمشتريات مستحيلة لأن `payment_providers` و`sites` فارغتان.
 
-قسم "المنتجات والخدمات" في `src/routes/_authenticated/admin/products.tsx` فقط. لا تغيير على قواعد البيانات ولا على دوال الخادم.
+---
 
-## بنية الجدول الجديدة
+## خطة تطوير جادة — 6 مراحل
 
-عمود واحد لكل موقع + الخدمات:
+### المرحلة 1 — توحيد نموذج البيانات (Foundation)
+**الهدف:** مصدر حقيقة واحد للكتالوج.
+- ترحيل (migration) يملأ `sites` من `hn_projects` (صف لكل مشروع) مع ربط `hn_projects.site_id`.
+- ترحيل يحوّل `products_services` (152) إلى `catalog_items` + سعر افتراضي في `catalog_prices` مع الحفاظ على `legacy_id`.
+- إبقاء `products_services` كـView للقراءة فقط للتوافق العكسي لأسبوع، ثم حذفه.
+- إضافة `owner_user_id` و`site_id` واضحة في كل جدول تجاري.
 
-```text
-| الموقع          | الفئة       | عدد الخدمات | الخدمات المقدّمة                                    | الإيرادات | الحالة |
-|-----------------|-------------|-------------|-----------------------------------------------------|-----------|--------|
-| HN-DRIVER       | logistics   | 22          | توصيل • اشتراك سائق • رسوم رحلة • …                | 12,400 د  | نشط    |
-| HN-CARWASH      | services    | 7           | غسيل داخلي • غسيل خارجي • باقة شهرية • …           | 3,120 د   | نشط    |
-| HN-CHAT         | chat        | 4           | اشتراك Pro • رسائل إضافية • …                       | 890 د     | نشط    |
-```
+### المرحلة 2 — الأدوار والصلاحيات الفعلية (RBAC)
+**الهدف:** تفعيل الأدوار المذكورة سابقًا فعليًا في القاعدة والواجهة.
+- توسيع `app_role` enum: `owner, group_owner, hn_pay_admin, site_owner, site_manager, accountant, viewer, subscriber`.
+- جدول `site_members(site_id, user_id, role, permissions jsonb)` + دالة `has_site_role(user_id, site_id, role)` security-definer.
+- إعادة كتابة RLS لكل جدول (`catalog_items, catalog_prices, plans, subscriptions, payments, invoices, checkout_sessions, customers`) وفق `site_id` والدور.
+- Endpoint عام آمن (`/api/public/v1/catalog/:siteSlug`) يقرأ فقط `status='active' AND is_public=true`.
 
-## منطق التحليل لكل موقع
+### المرحلة 3 — مزوّدو الدفع والدورة الكاملة
+**الهدف:** أول دفعة حقيقية تعمل من A→Z.
+- شاشة إعداد `payment_providers` (Stripe + Manual + Mock) لكل موقع.
+- Checkout الحالي (`/checkout/$sessionId`) يستخدم `catalog_prices` مباشرة.
+- Webhook Stripe (`/api/public/webhooks/stripe`) يكتب في `payments` + `subscriptions` + `webhook_events` + `processed_webhook_events` (idempotency).
+- Cron للتجديدات (`renewals`) وللتسويات (`settlements`).
+- بوابة العميل (`/customer/portal` عبر `portal_tokens`) لإدارة الاشتراك.
 
-لكل مشروع في `hn_projects`:
-1. اجلب كل صفوف `products_services` حيث `project_id = project.id`.
-2. **الخدمات المقدّمة** = قائمة `name` للعناصر النشطة (`status='active'`) — أول 6 مع "+N" للباقي، شارات صغيرة قابلة للنقر تفتح الكتالوج مفلترًا.
-3. **الفئة** = `hn_projects.category` (logistics, services, chat…) مع لون من `brand_color`.
-4. **عدد الخدمات** = COUNT من `products_services`.
-5. **الإيرادات** = SUM(`total_revenue`).
-6. **الحالة** = "نشط" إن كان لديه ≥1 عنصر active، "مسودة" إن لم يكن، "متوقّف" إن كل عناصره paused/hidden.
-7. المشاريع بدون أي عنصر في `products_services` تظهر بشارة "لا توجد خدمات بعد" + زر "إضافة خدمة" يفتح الكتالوج مع project_id مُمرَّر.
+### المرحلة 4 — تفعيل أزرار لوحة الإدارة (30+ صفحة)
+**الهدف:** كل زر يعمل ويكتب/يقرأ بيانات حقيقية.
+- قائمة تدقيق لكل صفحة `/admin/*`: (Orders, Payments, Refunds, Subscriptions, Renewals, Settlements, Invoices, Customers, Team, Roles, Api-keys, Webhooks, Providers, Notifications, Reports, Security, Activity, Support, Settings).
+- كل صفحة: server function للقراءة + للتعديل + toast + optimistic update + إدخال في `activity_log` جديد.
+- توحيد `AdminShell` وإضافة فلاتر/بحث/تصدير CSV.
 
-## سلوك تفاعلي
+### المرحلة 5 — واجهة المالك (Owner Experience)
+- `/owner/sites` : CRUD كامل + تفعيل integration_mode (internal / external_api / hybrid) + إدارة `allowed_origins` + توليد وتدوير `site_api_keys`.
+- `/owner/hn-pay/catalog` : بديل صفحة `/admin/products` كواجهة أساسية للكتالوج، مع تحرير سعر/مزايا/فئات/صور.
+- `/owner/portfolios` : ربط عدة مواقع تحت محفظة واحدة مع تقارير مجمّعة.
+- `/owner/users` و`/owner/roles` : دعوة، تعيين دور لكل موقع، سجل صلاحيات.
 
-- النقر على اسم الموقع → ينقل إلى `/owner/hn-pay/catalog?project=<code>` مع فلتر مسبق.
-- النقر على شارة خدمة → نفس المسار مع فلتر على العنصر.
-- زر "تحديث" في أعلى الجدول يعيد الجلب.
+### المرحلة 6 — الجودة والمراقبة
+- Zod schemas مشتركة، اختبارات vitest للـserver functions الحرجة (checkout, webhook, RLS).
+- Playwright E2E: تسجيل → إنشاء موقع → إضافة منتج → checkout Stripe test → استلام webhook.
+- لوحة `/admin/security` تعرض تحذيرات linter مباشرة.
+- Logging مركزي (`activity_log`) + `analytics_events` + رسوم بيانية حقيقية بدلًا من المؤشرات الوهمية.
+- سياسة نسخ احتياطية + توثيق `AGENTS.md` محدَّث.
 
-## الأداء
+---
 
-استعلام واحد إضافي: `products_services.select("id,name,status,total_revenue,project_id")` بدون limit، ثم تجميع في الذاكرة. القسم القديم "المواقع (بطاقات sites)" يبقى كما هو للتوافق. قسم "تطبيقات HN" يبقى كما هو.
+## تسلسل تنفيذي مقترح (بالأولوية)
+1. **[أساس]** ترحيل `sites` من `hn_projects` + توحيد الكتالوج (يفتح كل ما بعده).
+2. **[أمان]** RBAC + RLS كاملة + endpoint عام.
+3. **[إيراد]** تفعيل Stripe end-to-end مع موقع تجريبي.
+4. **[منتَج]** أزرار لوحة الإدارة + شاشات المالك.
+5. **[جودة]** اختبارات + مراقبة + توثيق.
 
-## ملاحظة تقنية
+## ما لن يتغيّر
+- شكل `/admin/products` الحالي يبقى للعرض التحليلي، لكن التحرير ينتقل إلى `/owner/hn-pay/catalog`.
+- `hn_apps` يبقى سجل تطبيقات مرجعي فقط (ليس كتالوج بيع).
 
-لا حاجة لتعديل schema أو دوال. كل شيء عبر supabase client في الصفحة نفسها (كما هو الآن). RLS يعمل تلقائيًا لأن المستخدم owner/admin.
+---
+
+**قبل البدء أحتاج تأكيدًا على نقطتين:**
+1. هل أبدأ فورًا من المرحلة 1 (ترحيل البيانات من `products_services` و`hn_projects` إلى `sites`/`catalog_items`) أم تفضّل مراجعة تصميم الترحيل أولًا؟
+2. مزوّد الدفع الأول: Stripe فقط، أم Stripe + Manual (تحويل بنكي) في نفس الدفعة؟
