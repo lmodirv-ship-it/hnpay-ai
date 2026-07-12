@@ -85,18 +85,35 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
           return jsonError(404, "plan_not_found", `Plan '${parsed.data.plan_code}' not found`);
         }
 
-        // 5) touch last_used_at (fire and forget)
+        // 5) resolve site + default provider
+        const { data: site } = await supabaseAdmin
+          .from("sites")
+          .select("id, default_provider_id, enabled_providers")
+          .eq("id", keyRow.site_id)
+          .maybeSingle();
+
+        let defaultProviderCode = "stripe";
+        if (site?.default_provider_id) {
+          const { data: defaultProvider } = await supabaseAdmin
+            .from("payment_providers")
+            .select("code")
+            .eq("id", site.default_provider_id)
+            .maybeSingle();
+          if (defaultProvider?.code) defaultProviderCode = defaultProvider.code;
+        }
+
+        // 6) touch last_used_at (fire and forget)
         await supabaseAdmin
           .from("site_api_keys")
           .update({ last_used_at: new Date().toISOString() })
           .eq("id", keyRow.id);
 
-        // 6) mint client_token (short-lived, one-time use)
+        // 7) mint client_token (short-lived, one-time use)
         const clientToken = `ct_${randomBytes(24).toString("hex")}`;
         const clientTokenExpiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString(); // 30 min
         const displayMode = parsed.data.display_mode ?? "embedded";
 
-        // 7) create checkout session
+        // 8) create checkout session
         const { data: session, error } = await supabaseAdmin
           .from("checkout_sessions")
           .insert({
@@ -110,11 +127,12 @@ export const Route = createFileRoute("/api/public/v1/checkout-sessions")({
             success_url: parsed.data.success_url ?? null,
             cancel_url: parsed.data.cancel_url ?? null,
             display_mode: displayMode,
+            provider: defaultProviderCode,
             client_token: clientToken,
             client_token_expires_at: clientTokenExpiresAt,
             metadata: (parsed.data.metadata ?? {}) as never,
           })
-          .select("public_id, status, expires_at, amount, currency")
+          .select("public_id, status, expires_at, amount, currency, provider")
           .single();
 
         if (error || !session) {
