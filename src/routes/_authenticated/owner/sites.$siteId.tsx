@@ -522,6 +522,138 @@ function AwaitingPanel({ siteId, qc }: { siteId: string; qc: ReturnType<typeof u
   );
 }
 
+type IntegrationSite = {
+  id: string;
+  is_internal?: boolean;
+  integration_mode?: string;
+  api_enabled?: boolean;
+  webhook_enabled?: boolean;
+  database_access?: boolean;
+  allowed_origins?: string[];
+  environment?: string;
+  integration_status?: string;
+  last_connection_at?: string | null;
+  webhook_url?: string | null;
+} | undefined;
+
+function IntegrationPanel({ site, qc }: { site: IntegrationSite; qc: ReturnType<typeof useQueryClient> }) {
+  const updateFn = useServerFn(updateSiteIntegration);
+  const testFn = useServerFn(testSiteConnection);
+
+  const [mode, setMode] = useState<string>(site?.integration_mode ?? "internal_database");
+  const [apiEnabled, setApiEnabled] = useState<boolean>(!!site?.api_enabled);
+  const [webhookEnabled, setWebhookEnabled] = useState<boolean>(!!site?.webhook_enabled);
+  const [isInternal, setIsInternal] = useState<boolean>(site?.is_internal !== false);
+  const [dbAccess, setDbAccess] = useState<boolean>(site?.database_access !== false);
+  const [env, setEnv] = useState<string>(site?.environment ?? "live");
+  const [origins, setOrigins] = useState<string>((site?.allowed_origins ?? []).join("\n"));
+
+  const save = useMutation({
+    mutationFn: () =>
+      updateFn({
+        data: {
+          id: site!.id,
+          is_internal: isInternal,
+          integration_mode: mode as "internal_database" | "external_api" | "hybrid",
+          api_enabled: apiEnabled,
+          webhook_enabled: webhookEnabled,
+          database_access: dbAccess,
+          environment: env as "test" | "live",
+          allowed_origins: origins.split(/\r?\n/).map((s) => s.trim()).filter(Boolean),
+        },
+      }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
+  });
+
+  const test = useMutation({
+    mutationFn: () => testFn({ data: { id: site!.id } }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] }),
+  });
+
+  if (!site) return null;
+  const showKeys = mode !== "internal_database";
+
+  return (
+    <Panel title="Integration" desc="How this site talks to HN-Pay: shared database, external API, or both.">
+      <div className="mb-4 flex flex-wrap gap-1.5 text-[10px]">
+        <Badge tone={site.integration_status === "connected" ? "emerald" : site.integration_status === "degraded" ? "amber" : site.integration_status === "disconnected" ? "red" : "neutral"}>
+          {site.integration_status ?? "pending"}
+        </Badge>
+        {site.last_connection_at && (
+          <span className="text-neutral-500">last ping {new Date(site.last_connection_at).toLocaleString()}</span>
+        )}
+      </div>
+
+      <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+        <label className="block">
+          <div className="mb-1 text-[10px] uppercase tracking-wider text-neutral-500">Integration mode</div>
+          <select value={mode} onChange={(e) => setMode(e.target.value)} className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 text-sm">
+            <option value="internal_database">internal_database — direct DB access via Supabase</option>
+            <option value="external_api">external_api — API + webhooks only</option>
+            <option value="hybrid">hybrid — direct DB + API</option>
+          </select>
+        </label>
+        <label className="block">
+          <div className="mb-1 text-[10px] uppercase tracking-wider text-neutral-500">Environment</div>
+          <select value={env} onChange={(e) => setEnv(e.target.value)} className="w-full rounded-lg border border-white/10 bg-black/60 px-3 py-2 text-sm">
+            <option value="live">live</option>
+            <option value="test">test</option>
+          </select>
+        </label>
+
+        <Toggle label="Internal HN site" desc="Belongs to HN group" value={isInternal} onChange={setIsInternal} />
+        <Toggle label="Shared database access" desc="Reads catalog directly via Supabase" value={dbAccess} onChange={setDbAccess} disabled={mode === "external_api"} />
+        <Toggle label="API enabled" desc="Site can call HN-Pay REST endpoints" value={apiEnabled} onChange={setApiEnabled} />
+        <Toggle label="Webhooks enabled" desc="HN-Pay sends events to webhook URL" value={webhookEnabled} onChange={setWebhookEnabled} />
+
+        <label className="block md:col-span-2">
+          <div className="mb-1 text-[10px] uppercase tracking-wider text-neutral-500">Allowed origins (one per line)</div>
+          <textarea value={origins} onChange={(e) => setOrigins(e.target.value)} rows={3} placeholder="https://example.com" className="w-full rounded-lg border border-white/10 bg-black/60 p-3 font-mono text-[11px] text-neutral-200" />
+        </label>
+      </div>
+
+      {showKeys && (
+        <div className="mt-4 rounded-lg border border-amber-500/20 bg-amber-500/5 p-3 text-[11px] text-amber-100">
+          External / hybrid sites use API keys and webhook secrets from the panels above. Manage keys under <strong>API Keys</strong>. Direct database queries are blocked for <code>external_api</code>.
+        </div>
+      )}
+
+      <div className="mt-4 flex flex-wrap gap-2">
+        <button onClick={() => save.mutate()} disabled={save.isPending} className="rounded-lg bg-amber-400 px-4 py-2 text-xs font-bold text-black hover:brightness-110 disabled:opacity-50">
+          {save.isPending ? "Saving…" : "Save integration"}
+        </button>
+        <button onClick={() => test.mutate()} disabled={test.isPending} className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-400/40 bg-emerald-500/10 px-4 py-2 text-xs font-semibold text-emerald-200 hover:bg-emerald-500/20 disabled:opacity-50">
+          <Zap className="h-3 w-3" /> {test.isPending ? "Testing…" : "Test connection"}
+        </button>
+        {test.data && (
+          <span className="self-center text-[11px] text-neutral-400">→ {test.data.status}</span>
+        )}
+      </div>
+    </Panel>
+  );
+}
+
+function Toggle({ label, desc, value, onChange, disabled }: { label: string; desc: string; value: boolean; onChange: (v: boolean) => void; disabled?: boolean }) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={() => onChange(!value)}
+      className={`flex items-start justify-between rounded-lg border px-3 py-2 text-left transition ${
+        value ? "border-emerald-400/40 bg-emerald-500/10" : "border-white/10 bg-black/40"
+      } ${disabled ? "opacity-40" : "hover:bg-white/5"}`}
+    >
+      <div>
+        <div className="text-xs font-semibold text-neutral-100">{label}</div>
+        <div className="text-[10px] text-neutral-500">{desc}</div>
+      </div>
+      <div className={`ml-3 mt-0.5 h-4 w-8 rounded-full ${value ? "bg-emerald-400" : "bg-neutral-700"} relative`}>
+        <span className={`absolute top-0.5 h-3 w-3 rounded-full bg-white transition-all ${value ? "left-4" : "left-0.5"}`} />
+      </div>
+    </button>
+  );
+}
+
 function Panel({ title, desc, children }: { title: string; desc: string; children: React.ReactNode }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5">
