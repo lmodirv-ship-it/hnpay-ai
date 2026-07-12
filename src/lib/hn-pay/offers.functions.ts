@@ -87,7 +87,7 @@ export const startOfferCheckout = createServerFn({ method: "POST" })
     const { data: session, error } = await supabaseAdmin
       .from("checkout_sessions")
       .insert({
-        site_id: plan.site_id,
+        site_id: plan.site_id!,
         plan_id: plan.id,
         customer_external_id: data.external_id ?? null,
         customer_email: data.email,

@@ -28,10 +28,12 @@ export type Database = {
           customer_external_id: string | null
           customer_name: string | null
           display_mode: string
+          domain_id: string | null
           expires_at: string
           id: string
           metadata: Json | null
           plan_id: string
+          project_id: string | null
           provider: string
           provider_checkout_url: string | null
           provider_details: Json
@@ -55,10 +57,12 @@ export type Database = {
           customer_external_id?: string | null
           customer_name?: string | null
           display_mode?: string
+          domain_id?: string | null
           expires_at?: string
           id?: string
           metadata?: Json | null
           plan_id: string
+          project_id?: string | null
           provider?: string
           provider_checkout_url?: string | null
           provider_details?: Json
@@ -82,10 +86,12 @@ export type Database = {
           customer_external_id?: string | null
           customer_name?: string | null
           display_mode?: string
+          domain_id?: string | null
           expires_at?: string
           id?: string
           metadata?: Json | null
           plan_id?: string
+          project_id?: string | null
           provider?: string
           provider_checkout_url?: string | null
           provider_details?: Json
@@ -98,10 +104,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "checkout_sessions_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "checkout_sessions_plan_id_fkey"
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "checkout_sessions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -116,11 +136,13 @@ export type Database = {
       customers: {
         Row: {
           created_at: string
+          domain_id: string | null
           email: string | null
           external_id: string
           id: string
           metadata: Json | null
           name: string | null
+          project_id: string | null
           provider: string
           provider_customer_id: string | null
           site_id: string
@@ -128,11 +150,13 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          domain_id?: string | null
           email?: string | null
           external_id: string
           id?: string
           metadata?: Json | null
           name?: string | null
+          project_id?: string | null
           provider?: string
           provider_customer_id?: string | null
           site_id: string
@@ -140,17 +164,33 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          domain_id?: string | null
           email?: string | null
           external_id?: string
           id?: string
           metadata?: Json | null
           name?: string | null
+          project_id?: string | null
           provider?: string
           provider_customer_id?: string | null
           site_id?: string
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "customers_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "customers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "customers_site_id_fkey"
             columns: ["site_id"]
@@ -355,10 +395,12 @@ export type Database = {
           created_at: string
           currency: string
           customer_id: string | null
+          domain_id: string | null
           id: string
           metadata: Json | null
           notes: string | null
           plan_id: string | null
+          project_id: string | null
           provider: string | null
           provider_invoice_id: string | null
           provider_payment_id: string | null
@@ -375,10 +417,12 @@ export type Database = {
           created_at?: string
           currency: string
           customer_id?: string | null
+          domain_id?: string | null
           id?: string
           metadata?: Json | null
           notes?: string | null
           plan_id?: string | null
+          project_id?: string | null
           provider?: string | null
           provider_invoice_id?: string | null
           provider_payment_id?: string | null
@@ -395,10 +439,12 @@ export type Database = {
           created_at?: string
           currency?: string
           customer_id?: string | null
+          domain_id?: string | null
           id?: string
           metadata?: Json | null
           notes?: string | null
           plan_id?: string | null
+          project_id?: string | null
           provider?: string | null
           provider_invoice_id?: string | null
           provider_payment_id?: string | null
@@ -425,10 +471,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "payments_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "payments_plan_id_fkey"
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -449,14 +509,15 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          domain_id: string | null
           id: string
           is_active: boolean
           name: string
           project_id: string | null
-          provider: string
+          provider: string | null
           provider_price_id: string | null
           provider_product_id: string | null
-          site_id: string
+          site_id: string | null
           trial_days: number | null
           updated_at: string
         }
@@ -468,14 +529,15 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          domain_id?: string | null
           id?: string
           is_active?: boolean
           name: string
           project_id?: string | null
-          provider?: string
+          provider?: string | null
           provider_price_id?: string | null
           provider_product_id?: string | null
-          site_id: string
+          site_id?: string | null
           trial_days?: number | null
           updated_at?: string
         }
@@ -487,14 +549,15 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          domain_id?: string | null
           id?: string
           is_active?: boolean
           name?: string
           project_id?: string | null
-          provider?: string
+          provider?: string | null
           provider_price_id?: string | null
           provider_product_id?: string | null
-          site_id?: string
+          site_id?: string | null
           trial_days?: number | null
           updated_at?: string
         }
@@ -504,6 +567,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "product_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plans_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
             referencedColumns: ["id"]
           },
           {
@@ -1109,6 +1179,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           domain: string
+          domain_id: string | null
           enabled_providers: string[]
           environment: string
           id: string
@@ -1118,6 +1189,7 @@ export type Database = {
           manual_instructions: string | null
           name: string
           portfolio_id: string | null
+          project_id: string | null
           slug: string
           updated_at: string
           webhook_secret: string
@@ -1128,6 +1200,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           domain: string
+          domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
           id?: string
@@ -1137,6 +1210,7 @@ export type Database = {
           manual_instructions?: string | null
           name: string
           portfolio_id?: string | null
+          project_id?: string | null
           slug: string
           updated_at?: string
           webhook_secret?: string
@@ -1147,6 +1221,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           domain?: string
+          domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
           id?: string
@@ -1156,6 +1231,7 @@ export type Database = {
           manual_instructions?: string | null
           name?: string
           portfolio_id?: string | null
+          project_id?: string | null
           slug?: string
           updated_at?: string
           webhook_secret?: string
@@ -1163,10 +1239,24 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "sites_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "sites_portfolio_id_fkey"
             columns: ["portfolio_id"]
             isOneToOne: false
             referencedRelation: "portfolios"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sites_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
         ]
@@ -1179,9 +1269,11 @@ export type Database = {
           current_period_end: string | null
           current_period_start: string
           customer_id: string
+          domain_id: string | null
           id: string
           metadata: Json | null
           plan_id: string
+          project_id: string | null
           provider: string
           provider_ref: string | null
           provider_subscription_id: string | null
@@ -1197,9 +1289,11 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string
           customer_id: string
+          domain_id?: string | null
           id?: string
           metadata?: Json | null
           plan_id: string
+          project_id?: string | null
           provider?: string
           provider_ref?: string | null
           provider_subscription_id?: string | null
@@ -1215,9 +1309,11 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string
           customer_id?: string
+          domain_id?: string | null
           id?: string
           metadata?: Json | null
           plan_id?: string
+          project_id?: string | null
           provider?: string
           provider_ref?: string | null
           provider_subscription_id?: string | null
@@ -1235,10 +1331,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "subscriptions_domain_id_fkey"
+            columns: ["domain_id"]
+            isOneToOne: false
+            referencedRelation: "project_domains"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "subscriptions_plan_id_fkey"
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
