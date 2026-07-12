@@ -1878,6 +1878,13 @@ export type Database = {
         | "subscriber"
         | "viewer"
         | "accountant"
+        | "finance_manager"
+        | "hn_pay_admin"
+        | "group_owner"
+        | "project_owner"
+        | "project_manager"
+        | "support_agent"
+        | "security_auditor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2013,6 +2020,13 @@ export const Constants = {
         "subscriber",
         "viewer",
         "accountant",
+        "finance_manager",
+        "hn_pay_admin",
+        "group_owner",
+        "project_owner",
+        "project_manager",
+        "support_agent",
+        "security_auditor",
       ],
     },
   },
