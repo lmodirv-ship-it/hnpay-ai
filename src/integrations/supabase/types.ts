@@ -809,6 +809,7 @@ export type Database = {
           default_provider_id: string | null
           description: string | null
           environment: string
+          financial_metrics_updated_at: string | null
           id: string
           integration_mode: string
           invoices_enabled: boolean
@@ -838,6 +839,7 @@ export type Database = {
           default_provider_id?: string | null
           description?: string | null
           environment?: string
+          financial_metrics_updated_at?: string | null
           id?: string
           integration_mode?: string
           invoices_enabled?: boolean
@@ -867,6 +869,7 @@ export type Database = {
           default_provider_id?: string | null
           description?: string | null
           environment?: string
+          financial_metrics_updated_at?: string | null
           id?: string
           integration_mode?: string
           invoices_enabled?: boolean
@@ -1818,6 +1821,71 @@ export type Database = {
             columns: ["provider_id"]
             isOneToOne: false
             referencedRelation: "payment_providers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      project_settings: {
+        Row: {
+          ai_support_enabled: boolean
+          branding: Json
+          created_at: string
+          default_webhook_url: string | null
+          id: string
+          invoice_footer: string | null
+          invoice_prefix: string | null
+          legal_address: Json
+          locale: string
+          metadata: Json
+          notification_emails: string[]
+          project_id: string
+          tax_id: string | null
+          timezone: string
+          updated_at: string
+          webhook_signing_algo: string
+        }
+        Insert: {
+          ai_support_enabled?: boolean
+          branding?: Json
+          created_at?: string
+          default_webhook_url?: string | null
+          id?: string
+          invoice_footer?: string | null
+          invoice_prefix?: string | null
+          legal_address?: Json
+          locale?: string
+          metadata?: Json
+          notification_emails?: string[]
+          project_id: string
+          tax_id?: string | null
+          timezone?: string
+          updated_at?: string
+          webhook_signing_algo?: string
+        }
+        Update: {
+          ai_support_enabled?: boolean
+          branding?: Json
+          created_at?: string
+          default_webhook_url?: string | null
+          id?: string
+          invoice_footer?: string | null
+          invoice_prefix?: string | null
+          legal_address?: Json
+          locale?: string
+          metadata?: Json
+          notification_emails?: string[]
+          project_id?: string
+          tax_id?: string | null
+          timezone?: string
+          updated_at?: string
+          webhook_signing_algo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_settings_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: true
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
         ]
