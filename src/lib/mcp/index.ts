@@ -4,6 +4,7 @@ import listProjects from "./tools/list-projects";
 import listSites from "./tools/list-sites";
 import recentPayments from "./tools/recent-payments";
 import searchCatalog from "./tools/search-catalog";
+import checkHnGroupDiscount from "./tools/check-hn-group-discount";
 
 // Direct Supabase issuer — the .lovable.cloud proxy publishes the direct
 // supabase.co form in its discovery document, so mcp-js needs the direct host.
@@ -19,5 +20,5 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
-  tools: [whoami, listProjects, listSites, recentPayments, searchCatalog],
+  tools: [whoami, listProjects, listSites, recentPayments, searchCatalog, checkHnGroupDiscount],
 });
