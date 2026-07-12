@@ -103,18 +103,9 @@ export const retryWebhook = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
   .handler(async ({ data, context }) => {
-    const { data: row, error: e0 } = await context.supabase
-      .from("webhook_events").select("id, delivered, attempts, metadata").eq("id", data.id).single();
-    if (e0) throw new Error(e0.message);
-    const meta = (row?.metadata as any) ?? {};
     const { error } = await context.supabase
       .from("webhook_events")
-      .update({
-        delivered: false,
-        attempts: 0,
-        next_retry_at: new Date().toISOString(),
-        metadata: { ...meta, manual_retry_at: new Date().toISOString(), manual_retry_by: context.userId },
-      })
+      .update({ delivered: false, attempts: 0, last_attempt_at: null, last_response_status: null, last_response_body: null })
       .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
