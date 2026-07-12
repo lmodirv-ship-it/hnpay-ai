@@ -693,10 +693,13 @@ function ProviderEditor({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <label className="block">
-      <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">{label}</div>
+      <div className="mb-1 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wider text-neutral-500">
+        {label}
+        {hint && <span className="font-normal normal-case text-neutral-600">{hint}</span>}
+      </div>
       {children}
     </label>
   );
