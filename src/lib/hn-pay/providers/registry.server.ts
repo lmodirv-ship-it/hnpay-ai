@@ -1,6 +1,13 @@
 import { manualProvider } from "./manual.server";
 import { stripeProvider } from "./stripe.server";
 import { paddleProvider } from "./paddle.server";
+import { paypalProvider } from "./paypal.server";
+import { cmiProvider } from "./cmi.server";
+import { napsProvider } from "./naps.server";
+import { payzoneProvider } from "./payzone.server";
+import { applePayProvider } from "./apple_pay.server";
+import { googlePayProvider } from "./google_pay.server";
+import { usdtProvider } from "./usdt.server";
 import { mockProvider } from "./mock.server";
 import type { PaymentProvider, ProviderCode } from "./types";
 
@@ -8,6 +15,13 @@ const REGISTRY: Record<string, PaymentProvider> = {
   manual: manualProvider,
   stripe: stripeProvider,
   paddle: paddleProvider,
+  paypal: paypalProvider,
+  cmi: cmiProvider,
+  naps: napsProvider,
+  payzone: payzoneProvider,
+  apple_pay: applePayProvider,
+  google_pay: googlePayProvider,
+  usdt: usdtProvider,
   mock: mockProvider,
 };
 
