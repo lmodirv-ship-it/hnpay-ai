@@ -125,7 +125,7 @@ export const getCatalogMeta = createServerFn({ method: "GET" })
       active: items.filter((i: any) => i.status === "active").length,
       draft: items.filter((i: any) => i.status === "draft").length,
       sites_with_items: siteSet.size,
-      linked_subscriptions: (subs.data ?? []).length,
+      linked_subscriptions: 0,
     };
 
     return {
