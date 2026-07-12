@@ -100,13 +100,12 @@ export const listCatalogCentral = createServerFn({ method: "POST" })
 export const getCatalogMeta = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const [{ data: sites }, { data: cats }, { data: providers }, itemsAll, plans, subs] = await Promise.all([
+    const [{ data: sites }, { data: cats }, { data: providers }, itemsAll, plans] = await Promise.all([
       context.supabase.from("sites").select("id, name, domain, brand_color, is_active").order("name"),
       context.supabase.from("catalog_categories").select("id, name_ar, name_en, site_id, icon").order("name_ar"),
       context.supabase.from("payment_providers").select("id, code, display_name, is_enabled, is_default"),
       context.supabase.from("catalog_items").select("id, item_type, status, site_id"),
       context.supabase.from("catalog_prices").select("catalog_item_id, currency, billing_type"),
-      context.supabase.from("subscriptions").select("id, catalog_item_id").not("catalog_item_id", "is", null),
     ]);
 
     const items = itemsAll.data ?? [];
