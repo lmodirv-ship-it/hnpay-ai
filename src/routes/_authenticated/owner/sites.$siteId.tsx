@@ -58,6 +58,10 @@ function SiteDetail() {
       </div>
 
       <div className="mt-6">
+        <IntegrationPanel site={site} qc={qc} />
+      </div>
+
+      <div className="mt-6">
         <AwaitingPanel siteId={siteId} qc={qc} />
       </div>
 
@@ -67,6 +71,7 @@ function SiteDetail() {
       </div>
 
       <IntegrationSnippet siteId={siteId} domain={site?.domain} />
+
     </OwnerShell>
   );
 }
