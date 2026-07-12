@@ -210,16 +210,42 @@ function ProvidersPage() {
           </div>
           <h1 className="text-3xl font-bold">Payment Providers</h1>
           <p className="mt-1 text-sm text-neutral-400">
-            Connect Stripe, PayPal, CMI, NAPS, bank transfer or the sandbox. HN-Pay routes every checkout
-            through the default provider — switch it any time, no code changes required.
+            Each HN site can have its own gateways. Select a site to manage its providers, or leave it blank to manage global/shared providers.
           </p>
         </div>
         <button
           onClick={openNew}
-          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
+          disabled={!selectedSiteId}
+          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20 disabled:opacity-40"
         >
           <Plus className="h-4 w-4" /> Add provider
         </button>
+      </div>
+
+      <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+        <label className="block text-[10px] font-semibold uppercase tracking-wider text-neutral-500">Site</label>
+        <div className="mt-2 flex flex-wrap gap-2">
+          <button
+            onClick={() => setSelectedSiteId("")}
+            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs ${selectedSiteId === "" ? "border-amber-400/60 bg-amber-500/20 text-amber-200" : "border-white/10 bg-black/40 text-neutral-400 hover:bg-white/5"}`}
+          >
+            <Globe className="h-3.5 w-3.5" /> Global / shared
+          </button>
+          {sites.map((s) => (
+            <button
+              key={s.id}
+              onClick={() => setSelectedSiteId(s.id)}
+              className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs ${selectedSiteId === s.id ? "border-amber-400/60 bg-amber-500/20 text-amber-200" : "border-white/10 bg-black/40 text-neutral-400 hover:bg-white/5"}`}
+            >
+              <Building2 className="h-3.5 w-3.5" /> {s.name}
+            </button>
+          ))}
+        </div>
+        {selectedSite && (
+          <div className="mt-2 text-[10px] text-neutral-500">
+            Managing providers for <span className="text-amber-300">{selectedSite.name}</span> ({selectedSite.domain})
+          </div>
+        )}
       </div>
 
       <div className="mb-6 grid grid-cols-1 gap-3 md:grid-cols-3">
