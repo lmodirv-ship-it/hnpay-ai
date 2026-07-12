@@ -14,6 +14,348 @@ export type Database = {
   }
   public: {
     Tables: {
+      catalog_categories: {
+        Row: {
+          code: string
+          created_at: string
+          description_ar: string | null
+          description_en: string | null
+          display_order: number
+          icon: string | null
+          id: string
+          is_active: boolean
+          name_ar: string
+          name_en: string | null
+          parent_id: string | null
+          site_id: string
+          updated_at: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name_ar: string
+          name_en?: string | null
+          parent_id?: string | null
+          site_id: string
+          updated_at?: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          description_ar?: string | null
+          description_en?: string | null
+          display_order?: number
+          icon?: string | null
+          id?: string
+          is_active?: boolean
+          name_ar?: string
+          name_en?: string | null
+          parent_id?: string | null
+          site_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_categories_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_categories_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_features: {
+        Row: {
+          catalog_item_id: string
+          created_at: string
+          display_order: number
+          feature_key: string | null
+          id: string
+          included: boolean
+          name_ar: string
+          name_en: string | null
+          updated_at: string
+          value_number: number | null
+          value_text: string | null
+        }
+        Insert: {
+          catalog_item_id: string
+          created_at?: string
+          display_order?: number
+          feature_key?: string | null
+          id?: string
+          included?: boolean
+          name_ar: string
+          name_en?: string | null
+          updated_at?: string
+          value_number?: number | null
+          value_text?: string | null
+        }
+        Update: {
+          catalog_item_id?: string
+          created_at?: string
+          display_order?: number
+          feature_key?: string | null
+          id?: string
+          included?: boolean
+          name_ar?: string
+          name_en?: string | null
+          updated_at?: string
+          value_number?: number | null
+          value_text?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_features_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_item_providers: {
+        Row: {
+          catalog_item_id: string
+          created_at: string
+          id: string
+          is_default: boolean
+          is_enabled: boolean
+          provider_id: string
+          site_id: string
+          updated_at: string
+        }
+        Insert: {
+          catalog_item_id: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          provider_id: string
+          site_id: string
+          updated_at?: string
+        }
+        Update: {
+          catalog_item_id?: string
+          created_at?: string
+          id?: string
+          is_default?: boolean
+          is_enabled?: boolean
+          provider_id?: string
+          site_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_item_providers_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_item_providers_provider_id_fkey"
+            columns: ["provider_id"]
+            isOneToOne: false
+            referencedRelation: "payment_providers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_item_providers_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_items: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          image_url: string | null
+          is_public: boolean
+          item_code: string
+          item_type: string
+          metadata: Json
+          name_ar: string
+          name_en: string | null
+          requires_approval: boolean
+          short_description_ar: string | null
+          short_description_en: string | null
+          site_id: string
+          slug: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          item_code: string
+          item_type: string
+          metadata?: Json
+          name_ar: string
+          name_en?: string | null
+          requires_approval?: boolean
+          short_description_ar?: string | null
+          short_description_en?: string | null
+          site_id: string
+          slug?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          image_url?: string | null
+          is_public?: boolean
+          item_code?: string
+          item_type?: string
+          metadata?: Json
+          name_ar?: string
+          name_en?: string | null
+          requires_approval?: boolean
+          short_description_ar?: string | null
+          short_description_en?: string | null
+          site_id?: string
+          slug?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_items_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      catalog_prices: {
+        Row: {
+          amount: number | null
+          billing_interval: string | null
+          billing_type: string
+          catalog_item_id: string
+          created_at: string
+          currency: string
+          id: string
+          interval_count: number
+          is_active: boolean
+          is_default: boolean
+          maximum_quantity: number | null
+          metadata: Json
+          minimum_quantity: number
+          name_ar: string | null
+          name_en: string | null
+          price_code: string
+          setup_fee: number
+          site_id: string
+          tax_behavior: string
+          tax_rate: number
+          trial_days: number
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          billing_interval?: string | null
+          billing_type: string
+          catalog_item_id: string
+          created_at?: string
+          currency?: string
+          id?: string
+          interval_count?: number
+          is_active?: boolean
+          is_default?: boolean
+          maximum_quantity?: number | null
+          metadata?: Json
+          minimum_quantity?: number
+          name_ar?: string | null
+          name_en?: string | null
+          price_code: string
+          setup_fee?: number
+          site_id: string
+          tax_behavior?: string
+          tax_rate?: number
+          trial_days?: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          billing_interval?: string | null
+          billing_type?: string
+          catalog_item_id?: string
+          created_at?: string
+          currency?: string
+          id?: string
+          interval_count?: number
+          is_active?: boolean
+          is_default?: boolean
+          maximum_quantity?: number | null
+          metadata?: Json
+          minimum_quantity?: number
+          name_ar?: string | null
+          name_en?: string | null
+          price_code?: string
+          setup_fee?: number
+          site_id?: string
+          tax_behavior?: string
+          tax_rate?: number
+          trial_days?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "catalog_prices_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_prices_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       checkout_sessions: {
         Row: {
           amount: number
@@ -504,6 +846,8 @@ export type Database = {
         Row: {
           amount: number
           billing_interval: string | null
+          catalog_item_id: string | null
+          catalog_price_id: string | null
           category_id: string | null
           code: string
           created_at: string
@@ -524,6 +868,8 @@ export type Database = {
         Insert: {
           amount: number
           billing_interval?: string | null
+          catalog_item_id?: string | null
+          catalog_price_id?: string | null
           category_id?: string | null
           code: string
           created_at?: string
@@ -544,6 +890,8 @@ export type Database = {
         Update: {
           amount?: number
           billing_interval?: string | null
+          catalog_item_id?: string | null
+          catalog_price_id?: string | null
           category_id?: string | null
           code?: string
           created_at?: string
@@ -562,6 +910,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "plans_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "plans_catalog_price_id_fkey"
+            columns: ["catalog_price_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_prices"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "plans_category_id_fkey"
             columns: ["category_id"]
