@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { AdminShell, Card, Badge, EmptyState } from "@/components/admin/AdminShell";
+import { cancelSubscription, reactivateSubscription } from "@/lib/hn-pay/admin-actions.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/subscriptions")({
   head: () => ({ meta: [{ title: "الاشتراكات · HN-PAY" }] }),
@@ -10,6 +12,8 @@ export const Route = createFileRoute("/_authenticated/admin/subscriptions")({
 
 function SubsPage() {
   const [rows, setRows] = useState<any[]>([]);
+  const cancelFn = useServerFn(cancelSubscription);
+  const reactFn = useServerFn(reactivateSubscription);
 
   const load = async () => {
     const { data } = await supabase
@@ -21,9 +25,18 @@ function SubsPage() {
   };
   useEffect(() => { load(); }, []);
 
-  const cancel = async (id: string) => {
-    if (!confirm("هل تريد إلغاء الاشتراك في نهاية الفترة؟")) return;
-    await supabase.from("subscriptions").update({ cancel_at_period_end: true, canceled_at: new Date().toISOString() }).eq("id", id);
+  const cancelAtEnd = async (id: string) => {
+    if (!confirm("إلغاء الاشتراك في نهاية الفترة؟")) return;
+    await cancelFn({ data: { id, at_period_end: true } });
+    load();
+  };
+  const cancelNow = async (id: string) => {
+    if (!confirm("إلغاء فوري للاشتراك؟")) return;
+    await cancelFn({ data: { id, at_period_end: false } });
+    load();
+  };
+  const reactivate = async (id: string) => {
+    await reactFn({ data: { id } });
     load();
   };
 
