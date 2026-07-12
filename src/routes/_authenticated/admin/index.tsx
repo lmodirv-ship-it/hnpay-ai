@@ -287,41 +287,87 @@ function OverviewPage() {
         </div>
       </div>
 
-      {/* Sites summary */}
-      <Section title="ملخص المواقع المرتبطة" actions={<Link to="/admin/products" className="text-xs text-amber-300 hover:underline">إدارة المواقع ←</Link>}>
-        {sites.length === 0 ? (
-          <EmptyState title="لا توجد مواقع مرتبطة بعد" />
-        ) : (
-          <Card className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-white/5 text-right text-[10px] uppercase tracking-wider text-neutral-500">
-                    <th className="px-4 py-3">الموقع</th>
-                    <th className="px-4 py-3">الدومين</th>
-                    <th className="px-4 py-3">الحالة</th>
-                    <th className="px-4 py-3">مزودو الدفع</th>
-                    <th className="px-4 py-3">إجراءات</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {sites.map((s) => (
-                    <tr key={s.id} className="border-b border-white/5">
-                      <td className="px-4 py-3 font-semibold">{s.name}</td>
-                      <td className="px-4 py-3 font-mono text-[11px] text-neutral-400">{s.domain}</td>
-                      <td className="px-4 py-3"><Badge tone={s.is_active ? "green" : "red"}>{s.is_active ? "نشط" : "متوقف"}</Badge></td>
-                      <td className="px-4 py-3 text-[11px] text-neutral-400">{(s.enabled_providers ?? []).join(", ") || "—"}</td>
-                      <td className="px-4 py-3">
-                        <Link to="/admin/products" className="text-[11px] text-amber-300 hover:underline">تفاصيل</Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+      {/* Sites summary — full ecosystem view */}
+      {(() => {
+        const total = sites.length;
+        const active = sites.filter((s) => s.is_active).length;
+        const groupSites = sites.filter((s) => s.is_group_site).length;
+        const linkedProjects = new Set(sites.map((s) => s.project_id).filter(Boolean)).size;
+        const totalDomains = Object.values(domainsByProject).reduce((n, arr) => n + arr.length, 0);
+        return (
+          <Section
+            title={`ملخص المواقع المرتبطة — ${total} موقع`}
+            actions={<Link to="/owner/sites" className="text-xs text-amber-300 hover:underline">إدارة المواقع ←</Link>}
+          >
+            <div className="mb-3 grid grid-cols-2 gap-3 md:grid-cols-5">
+              <StatCard icon={<Globe className="h-5 w-5" />} label="إجمالي المواقع" value={total} tone="amber" />
+              <StatCard icon={<CheckCircle2 className="h-5 w-5" />} label="مواقع نشطة" value={active} tone="emerald" />
+              <StatCard icon={<Link2 className="h-5 w-5" />} label="مشاريع مرتبطة" value={linkedProjects} tone="sky" />
+              <StatCard icon={<Globe className="h-5 w-5" />} label="نطاقات (Aliases)" value={totalDomains} tone="violet" />
+              <StatCard icon={<Users className="h-5 w-5" />} label="ضمن مجموعة HN" value={groupSites} tone="emerald" />
             </div>
-          </Card>
-        )}
-      </Section>
+
+            {sites.length === 0 ? (
+              <EmptyState title="لا توجد مواقع مرتبطة بعد" />
+            ) : (
+              <Card className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-white/5 text-right text-[10px] uppercase tracking-wider text-neutral-500">
+                        <th className="px-4 py-3">#</th>
+                        <th className="px-4 py-3">الموقع</th>
+                        <th className="px-4 py-3">Slug</th>
+                        <th className="px-4 py-3">الدومين</th>
+                        <th className="px-4 py-3">المشروع (code)</th>
+                        <th className="px-4 py-3">نطاقات مرتبطة</th>
+                        <th className="px-4 py-3">HN Group</th>
+                        <th className="px-4 py-3">البيئة</th>
+                        <th className="px-4 py-3">الحالة</th>
+                        <th className="px-4 py-3">التكامل</th>
+                        <th className="px-4 py-3">مزودو الدفع</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {sites.map((s, i) => {
+                        const proj = s.project_id ? projectsById[s.project_id] : null;
+                        const aliases = s.project_id ? domainsByProject[s.project_id] ?? [] : [];
+                        return (
+                          <tr key={s.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                            <td className="px-4 py-3 text-[11px] text-neutral-500">{i + 1}</td>
+                            <td className="px-4 py-3 font-semibold">{s.name}</td>
+                            <td className="px-4 py-3 font-mono text-[11px] text-neutral-400">{s.slug ?? "—"}</td>
+                            <td className="px-4 py-3 font-mono text-[11px] text-neutral-400">{s.domain}</td>
+                            <td className="px-4 py-3 font-mono text-[11px] text-amber-200">{proj?.code ?? "—"}</td>
+                            <td className="px-4 py-3 text-[11px] text-neutral-400" title={aliases.join(", ")}>
+                              {aliases.length}
+                            </td>
+                            <td className="px-4 py-3">
+                              <Badge tone={s.is_group_site ? "green" : "neutral"}>
+                                {s.is_group_site ? "عضو" : "خارجي"}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-3 text-[11px] text-neutral-400">{s.environment ?? "—"}</td>
+                            <td className="px-4 py-3"><Badge tone={s.is_active ? "green" : "red"}>{s.is_active ? "نشط" : "متوقف"}</Badge></td>
+                            <td className="px-4 py-3">
+                              <Badge tone={s.integration_status === "connected" ? "green" : s.integration_status === "degraded" ? "amber" : s.integration_status === "disconnected" ? "red" : "neutral"}>
+                                {s.integration_status ?? "—"}
+                              </Badge>
+                            </td>
+                            <td className="px-4 py-3 text-[11px] text-neutral-400">{(s.enabled_providers ?? []).join(", ") || "—"}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </Card>
+            )}
+          </Section>
+        );
+      })()}
+
+
 
       {/* Providers status */}
       <Section title="حالة مزودي الدفع" actions={<Link to="/admin/providers" className="text-xs text-amber-300 hover:underline">إدارة المزودين ←</Link>}>
