@@ -155,6 +155,7 @@ export function OwnerShell({
               <NavLink to="/owner/dashboard">Overview</NavLink>
               <NavLink to="/owner/hn-pay/monitor">Monitor</NavLink>
               <NavLink to="/owner/sites">Sites</NavLink>
+              <NavLink to="/owner/hn-pay/catalog">Catalog</NavLink>
               <NavLink to="/owner/portfolios">Portfolios</NavLink>
               <NavLink to="/owner/hn-pay/integrate">Integrate</NavLink>
               <NavLink to="/owner/users">Users</NavLink>
