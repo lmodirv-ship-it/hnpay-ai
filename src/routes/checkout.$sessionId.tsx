@@ -145,11 +145,16 @@ export const Route = createFileRoute("/checkout/$sessionId")({
 
 const PROVIDER_META: Record<string, { label: string; sub: string; Icon: typeof CreditCard }> = {
   stripe: { label: "Card (Stripe)", sub: "Visa · Mastercard · Amex", Icon: CreditCard },
+  paddle: { label: "Paddle", sub: "Cards, PayPal, Apple Pay · MoR", Icon: CreditCard },
+  paypal: { label: "PayPal", sub: "PayPal balance / card", Icon: CreditCard },
+  cmi: { label: "CMI (Maroc)", sub: "Cartes marocaines", Icon: CreditCard },
+  payzone: { label: "Payzone", sub: "UK/EU gateway", Icon: CreditCard },
+  naps: { label: "NAPS", sub: "Qatar local network", Icon: CreditCard },
+  apple_pay: { label: "Apple Pay", sub: "iPhone / Mac / Safari", Icon: CreditCard },
+  google_pay: { label: "Google Pay", sub: "Android / Chrome", Icon: CreditCard },
+  usdt: { label: "USDT (Tether)", sub: "Crypto wallet", Icon: CreditCard },
   manual: { label: "Bank Transfer", sub: "RIB · Wire · Cash", Icon: Landmark },
-  paypal: { label: "PayPal", sub: "Coming soon", Icon: CreditCard },
-  cmi: { label: "CMI (Maroc)", sub: "Coming soon", Icon: CreditCard },
-  payzone: { label: "Payzone", sub: "Coming soon", Icon: CreditCard },
-  naps: { label: "NAPS", sub: "Coming soon", Icon: CreditCard },
+  mock: { label: "Demo (Mock)", sub: "No real charge", Icon: CreditCard },
 };
 
 function CheckoutPage() {
