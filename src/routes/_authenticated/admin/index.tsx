@@ -18,6 +18,8 @@ function OverviewPage() {
   const [range, setRange] = useState<Range>("30d");
   const [siteFilter, setSiteFilter] = useState<string>("all");
   const [sites, setSites] = useState<any[]>([]);
+  const [projectsById, setProjectsById] = useState<Record<string, any>>({});
+  const [domainsByProject, setDomainsByProject] = useState<Record<string, string[]>>({});
   const [providers, setProviders] = useState<any[]>([]);
   const [recent, setRecent] = useState<any[]>([]);
   const [renewals, setRenewals] = useState<any[]>([]);
