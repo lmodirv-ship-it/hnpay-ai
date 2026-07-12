@@ -420,6 +420,28 @@ function BulkImportPanel({ onDone, runImport }: { onDone: () => void; runImport:
   );
 }
 
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: React.ReactNode;
+  tone?: "emerald" | "amber" | "red" | "cyan" | "purple" | "neutral";
+}) {
+  const map: Record<string, string> = {
+    emerald: "border-emerald-400/40 bg-emerald-500/10 text-emerald-200",
+    amber: "border-amber-400/40 bg-amber-500/10 text-amber-200",
+    red: "border-red-400/40 bg-red-500/10 text-red-200",
+    cyan: "border-cyan-400/40 bg-cyan-500/10 text-cyan-200",
+    purple: "border-purple-400/40 bg-purple-500/10 text-purple-200",
+    neutral: "border-white/10 bg-white/5 text-neutral-300",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 font-mono ${map[tone]}`}>
+      {children}
+    </span>
+  );
+}
+
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="block">
