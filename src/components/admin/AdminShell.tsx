@@ -7,6 +7,8 @@ import {
   Settings, LifeBuoy, LogOut, Crown, Search, Menu, ChevronRight,
   Globe, Wallet, Undo2, Landmark, Webhook, KeyRound, ShieldCheck, Code2, FolderKanban, FolderTree,
 } from "lucide-react";
+import { AIAssistant } from "@/components/admin/AIAssistant";
+
 
 type NavItem = { to: string; label: string; icon: ReactNode; group: string };
 
@@ -159,9 +161,11 @@ export function AdminShell({
           </main>
         </div>
       </div>
+      <AIAssistant />
     </div>
   );
 }
+
 
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
