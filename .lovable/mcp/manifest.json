@@ -149,6 +149,52 @@
           ]
         },
         "outputSchema": null
+      },
+      {
+        "name": "check_hn_group_discount",
+        "title": "Check HN group discount eligibility",
+        "description": "Preview whether a buyer qualifies for the HN-group cross-benefit (100% internal discount) on a given plan BEFORE creating a checkout session. Returns final amount, currency, eligibility flag, and a machine-readable reason.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "plan_code": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 64,
+              "description": "Plan code as defined on the target site."
+            },
+            "site_slug": {
+              "description": "Site slug that owns the plan. Provide this OR site_id.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            },
+            "site_id": {
+              "description": "Site UUID. Provide this OR site_slug.",
+              "type": "string",
+              "format": "uuid",
+              "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+            },
+            "customer_email": {
+              "type": "string",
+              "maxLength": 255,
+              "format": "email",
+              "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$",
+              "description": "Buyer email — the address checked against the HN group members registry."
+            }
+          },
+          "required": [
+            "plan_code",
+            "customer_email"
+          ]
+        },
+        "outputSchema": null
       }
     ]
   }
