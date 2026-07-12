@@ -12,12 +12,13 @@ export default defineTool({
       return { content: [{ type: "text", text: "Not authenticated" }], isError: true };
     }
     const sb = supabaseForUser(ctx);
+    const userId = ctx.getUserId()!;
     const { data: roles } = await sb
       .from("user_roles")
       .select("app_id, role")
-      .eq("user_id", ctx.getUserId());
+      .eq("user_id", userId);
     const out = {
-      user_id: ctx.getUserId(),
+      user_id: userId,
       email: ctx.getUserEmail(),
       roles: roles ?? [],
     };

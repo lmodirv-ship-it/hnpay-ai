@@ -231,7 +231,7 @@ const upsertItemSchema = z.object({
   status: z.enum(ITEM_STATUSES),
   is_public: z.boolean().default(true),
   requires_approval: z.boolean().default(false),
-  metadata: z.record(z.any()).default({}),
+  metadata: z.record(z.string(), z.any()).default({}),
   prices: z.array(priceSchema).default([]),
   features: z.array(featureSchema).default([]),
   providers: z.array(providerLinkSchema).default([]),
@@ -244,7 +244,7 @@ export const upsertCatalogItemCentral = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
     const { id, prices, features, providers, ...rest } = data;
 
-    const itemPayload = {
+    const itemPayload: Record<string, unknown> = {
       ...rest,
       slug: rest.slug || null,
       name_en: rest.name_en || null,
@@ -258,12 +258,12 @@ export const upsertCatalogItemCentral = createServerFn({ method: "POST" })
 
     let itemId = id;
     if (id) {
-      const { error } = await supabase.from("catalog_items").update(itemPayload).eq("id", id);
+      const { error } = await supabase.from("catalog_items").update(itemPayload as never).eq("id", id);
       if (error) throw new Error(error.message);
     } else {
       const { data: row, error } = await supabase
         .from("catalog_items")
-        .insert({ ...itemPayload, created_by: userId })
+        .insert({ ...itemPayload, created_by: userId } as never)
         .select("id")
         .single();
       if (error) throw new Error(error.message);
