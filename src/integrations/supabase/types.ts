@@ -399,6 +399,7 @@ export type Database = {
           name_en: string | null
           project_id: string | null
           requires_approval: boolean
+          share_with_group: boolean
           short_description_ar: string | null
           short_description_en: string | null
           site_id: string
@@ -422,6 +423,7 @@ export type Database = {
           name_en?: string | null
           project_id?: string | null
           requires_approval?: boolean
+          share_with_group?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
           site_id: string
@@ -445,6 +447,7 @@ export type Database = {
           name_en?: string | null
           project_id?: string | null
           requires_approval?: boolean
+          share_with_group?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
           site_id?: string
@@ -592,6 +595,8 @@ export type Database = {
           display_mode: string
           domain_id: string | null
           expires_at: string
+          group_free_applied: boolean
+          group_free_reason: string | null
           id: string
           metadata: Json | null
           plan_id: string
@@ -621,6 +626,8 @@ export type Database = {
           display_mode?: string
           domain_id?: string | null
           expires_at?: string
+          group_free_applied?: boolean
+          group_free_reason?: string | null
           id?: string
           metadata?: Json | null
           plan_id: string
@@ -650,6 +657,8 @@ export type Database = {
           display_mode?: string
           domain_id?: string | null
           expires_at?: string
+          group_free_applied?: boolean
+          group_free_reason?: string | null
           id?: string
           metadata?: Json | null
           plan_id?: string
@@ -794,6 +803,44 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      hn_group_members: {
+        Row: {
+          created_at: string
+          email: string | null
+          is_active: boolean
+          joined_at: string
+          joined_via_site_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          is_active?: boolean
+          joined_at?: string
+          joined_via_site_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          is_active?: boolean
+          joined_at?: string
+          joined_via_site_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hn_group_members_joined_via_site_id_fkey"
+            columns: ["joined_via_site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       hn_projects: {
         Row: {
@@ -1239,6 +1286,7 @@ export type Database = {
           provider: string | null
           provider_price_id: string | null
           provider_product_id: string | null
+          share_with_group: boolean
           site_id: string | null
           trial_days: number | null
           updated_at: string
@@ -1261,6 +1309,7 @@ export type Database = {
           provider?: string | null
           provider_price_id?: string | null
           provider_product_id?: string | null
+          share_with_group?: boolean
           site_id?: string | null
           trial_days?: number | null
           updated_at?: string
@@ -1283,6 +1332,7 @@ export type Database = {
           provider?: string | null
           provider_price_id?: string | null
           provider_product_id?: string | null
+          share_with_group?: boolean
           site_id?: string | null
           trial_days?: number | null
           updated_at?: string
@@ -2181,6 +2231,7 @@ export type Database = {
           integration_mode: string
           integration_status: string
           is_active: boolean
+          is_group_site: boolean
           is_internal: boolean
           last_connection_at: string | null
           logo_url: string | null
@@ -2211,6 +2262,7 @@ export type Database = {
           integration_mode?: string
           integration_status?: string
           is_active?: boolean
+          is_group_site?: boolean
           is_internal?: boolean
           last_connection_at?: string | null
           logo_url?: string | null
@@ -2241,6 +2293,7 @@ export type Database = {
           integration_mode?: string
           integration_status?: string
           is_active?: boolean
+          is_group_site?: boolean
           is_internal?: boolean
           last_connection_at?: string | null
           logo_url?: string | null
@@ -2478,6 +2531,8 @@ export type Database = {
     }
     Functions: {
       generate_invoice_number: { Args: never; Returns: string }
+      is_hn_group_email: { Args: { _email: string }; Returns: boolean }
+      is_hn_group_member: { Args: { _user_id: string }; Returns: boolean }
       is_protected_owner: { Args: { _user_id: string }; Returns: boolean }
       user_can_access_project: {
         Args: { _project_id: string }
