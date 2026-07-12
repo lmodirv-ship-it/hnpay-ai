@@ -4,16 +4,89 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 /* ─────────── sites ─────────── */
 
+const SITE_LIST_COLUMNS =
+  "id, slug, name, domain, webhook_url, is_active, brand_color, created_at, " +
+  "is_internal, integration_mode, api_enabled, webhook_enabled, database_access, " +
+  "allowed_origins, environment, integration_status, last_connection_at, portfolio_id";
+
 export const listSites = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data, error } = await context.supabase
       .from("sites")
-      .select("id, slug, name, domain, webhook_url, is_active, brand_color, created_at")
+      .select(SITE_LIST_COLUMNS)
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
     return data ?? [];
   });
+
+export const updateSiteIntegration = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: {
+    id: string;
+    is_internal?: boolean;
+    integration_mode?: "internal_database" | "external_api" | "hybrid";
+    api_enabled?: boolean;
+    webhook_enabled?: boolean;
+    database_access?: boolean;
+    allowed_origins?: string[];
+    environment?: "test" | "live";
+    integration_status?: "connected" | "disconnected" | "degraded" | "pending";
+  }) =>
+    z
+      .object({
+        id: z.string().uuid(),
+        is_internal: z.boolean().optional(),
+        integration_mode: z.enum(["internal_database", "external_api", "hybrid"]).optional(),
+        api_enabled: z.boolean().optional(),
+        webhook_enabled: z.boolean().optional(),
+        database_access: z.boolean().optional(),
+        allowed_origins: z.array(z.string().max(255)).max(50).optional(),
+        environment: z.enum(["test", "live"]).optional(),
+        integration_status: z
+          .enum(["connected", "disconnected", "degraded", "pending"]).optional(),
+      })
+      .parse(data),
+  )
+  .handler(async ({ data, context }) => {
+    const { id, ...patch } = data;
+    const { error } = await context.supabase.from("sites").update(patch).eq("id", id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const testSiteConnection = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { id: string }) => z.object({ id: z.string().uuid() }).parse(data))
+  .handler(async ({ data, context }) => {
+    // Mark last_connection_at and set status to 'connected' on internal sites;
+    // for external_api / hybrid, ping the webhook_url if set.
+    const { data: site, error } = await context.supabase
+      .from("sites")
+      .select("id, webhook_url, integration_mode")
+      .eq("id", data.id)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    let status: "connected" | "degraded" | "disconnected" = "connected";
+    if (site?.integration_mode !== "internal_database" && site?.webhook_url) {
+      try {
+        const res = await fetch(site.webhook_url, {
+          method: "POST",
+          headers: { "content-type": "application/json", "x-hn-pay-ping": "1" },
+          body: JSON.stringify({ type: "ping", ts: new Date().toISOString() }),
+        });
+        status = res.ok ? "connected" : "degraded";
+      } catch {
+        status = "disconnected";
+      }
+    }
+    await context.supabase
+      .from("sites")
+      .update({ integration_status: status, last_connection_at: new Date().toISOString() })
+      .eq("id", data.id);
+    return { status };
+  });
+
 
 export const createSite = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
