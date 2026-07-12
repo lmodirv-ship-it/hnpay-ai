@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { ArrowLeft, Plus, Trash2, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, CheckCircle2, Zap } from "lucide-react";
 import {
   listApiKeys,
   createApiKey,
@@ -13,10 +13,12 @@ import {
   listSites,
   listSitePayments,
   listSiteWebhookEvents,
+  updateSiteIntegration,
+  testSiteConnection,
 } from "@/lib/hn-pay/sites.functions";
 import { listAwaitingSessions, settleManualPayment } from "@/lib/hn-pay/settlement.functions";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
-import { CopyRow } from "@/routes/_authenticated/owner/sites";
+import { CopyRow, Badge } from "@/routes/_authenticated/owner/sites";
 import { useHnSession } from "@/lib/auth/use-session";
 
 export const Route = createFileRoute("/_authenticated/owner/sites/$siteId")({
