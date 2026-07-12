@@ -16,6 +16,8 @@ import {
   Pencil,
   ShieldCheck,
   Lock,
+  Globe,
+  Building2,
 } from "lucide-react";
 import {
   listPaymentProviders,
@@ -25,6 +27,7 @@ import {
   deletePaymentProvider,
   testPaymentProvider,
 } from "@/lib/hn-pay/payment-providers.functions";
+import { listSites } from "@/lib/hn-pay/sites.functions";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { useHnSession } from "@/lib/auth/use-session";
 
@@ -33,7 +36,7 @@ export const Route = createFileRoute("/_authenticated/owner/hn-pay/providers")({
   head: () => ({
     meta: [
       { title: "Payment Providers · HN-Pay" },
-      { name: "description", content: "Manage payment providers (Stripe, PayPal, CMI, NAPS, manual, mock) for HN-Pay." },
+      { name: "description", content: "Manage per-site payment providers (Stripe, Paddle, PayPal, CMI, NAPS, manual, mock) for HN-Pay." },
     ],
   }),
   component: ProvidersPage,
@@ -43,15 +46,22 @@ type ProviderCode = "stripe" | "paddle" | "paypal" | "cmi" | "payzone" | "naps" 
 
 type ProviderRow = {
   id: string;
+  site_id: string | null;
   code: ProviderCode;
   display_name: string;
   api_key: string | null;
   secret_key: string | null;
+  public_key: string | null;
   webhook_secret: string | null;
   merchant_id: string | null;
   environment: "sandbox" | "production";
   is_enabled: boolean;
   is_default: boolean;
+  supported_countries: string[];
+  supported_currencies: string[];
+  fee_percent: number;
+  fee_fixed: number;
+  tax_mode: string;
   last_tested_at: string | null;
   last_test_status: "ok" | "fail" | null;
   last_test_message: string | null;
@@ -70,14 +80,21 @@ const PROVIDER_META: Record<ProviderCode, { label: string; badge: string; gradie
 
 const BLANK_FORM = {
   id: undefined as string | undefined,
+  site_id: "" as string,
   code: "stripe" as ProviderCode,
   display_name: "",
   api_key: "",
   secret_key: "",
+  public_key: "",
   webhook_secret: "",
   merchant_id: "",
   environment: "sandbox" as "sandbox" | "production",
   is_enabled: true,
+  supported_countries: [] as string[],
+  supported_currencies: [] as string[],
+  fee_percent: 0,
+  fee_fixed: 0,
+  tax_mode: "automatic" as "automatic" | "manual" | "none",
 };
 
 function ProvidersPage() {
@@ -89,22 +106,35 @@ function ProvidersPage() {
   const setDefaultFn = useServerFn(setDefaultPaymentProvider);
   const deleteFn = useServerFn(deletePaymentProvider);
   const testFn = useServerFn(testPaymentProvider);
+  const listSitesFn = useServerFn(listSites);
 
-  const { data: providersRaw = [], isLoading } = useQuery({
-    queryKey: ["hn-pay", "providers"],
-    queryFn: () => listFn(),
-  });
-  const providers = providersRaw as unknown as ProviderRow[];
-
+  const [selectedSiteId, setSelectedSiteId] = useState<string>("");
   const [editorOpen, setEditorOpen] = useState(false);
   const [form, setForm] = useState<typeof BLANK_FORM>(BLANK_FORM);
   const [testingId, setTestingId] = useState<string | null>(null);
   const [testFlash, setTestFlash] = useState<{ id: string; ok: boolean; msg: string } | null>(null);
 
-  const invalidate = () => qc.invalidateQueries({ queryKey: ["hn-pay", "providers"] });
+  const { data: sitesRaw = [] } = useQuery({
+    queryKey: ["hn-pay", "sites"],
+    queryFn: () => listSitesFn(),
+  });
+  const sites = sitesRaw as { id: string; slug: string; name: string; domain: string; default_provider_id?: string | null }[];
+
+  const { data: providersRaw = [], isLoading } = useQuery({
+    queryKey: ["hn-pay", "providers", selectedSiteId || "global"],
+    queryFn: () => listFn({ data: { site_id: selectedSiteId || undefined, include_global: !selectedSiteId } }),
+  });
+  const providers = providersRaw as unknown as ProviderRow[];
+
+  const selectedSite = sites.find((s) => s.id === selectedSiteId);
+
+  const invalidate = () => {
+    qc.invalidateQueries({ queryKey: ["hn-pay", "providers"] });
+    qc.invalidateQueries({ queryKey: ["hn-pay", "sites"] });
+  };
 
   const upsert = useMutation({
-    mutationFn: (payload: typeof BLANK_FORM) => upsertFn({ data: payload }),
+    mutationFn: (payload: typeof BLANK_FORM) => upsertFn({ data: { ...payload, site_id: payload.site_id || undefined } }),
     onSuccess: () => {
       invalidate();
       setEditorOpen(false);
@@ -118,7 +148,7 @@ function ProvidersPage() {
   });
 
   const setDefault = useMutation({
-    mutationFn: (id: string) => setDefaultFn({ data: { id } }),
+    mutationFn: (id: string) => setDefaultFn({ data: { id, site_id: selectedSiteId || undefined } }),
     onSuccess: invalidate,
   });
 
