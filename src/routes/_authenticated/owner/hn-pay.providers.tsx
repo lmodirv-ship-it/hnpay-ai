@@ -215,10 +215,9 @@ function ProvidersPage() {
         </div>
         <button
           onClick={openNew}
-          disabled={!selectedSiteId}
-          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20 disabled:opacity-40"
+          className="inline-flex items-center gap-2 rounded-lg border border-amber-400/40 bg-amber-500/10 px-3 py-2 text-xs font-semibold text-amber-200 hover:bg-amber-500/20"
         >
-          <Plus className="h-4 w-4" /> Add provider
+          <Plus className="h-4 w-4" /> {selectedSiteId ? "Add provider to site" : "Add shared provider"}
         </button>
       </div>
 
