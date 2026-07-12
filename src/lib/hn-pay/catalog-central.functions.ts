@@ -143,16 +143,24 @@ export const getCatalogItemDetail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: { id: string }) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const [item, prices, features, itemProviders, linkedPlans, subs, pays] = await Promise.all([
+    const [item, prices, features, itemProviders, linkedPlans] = await Promise.all([
       context.supabase.from("catalog_items").select("*").eq("id", data.id).single(),
       context.supabase.from("catalog_prices").select("*").eq("catalog_item_id", data.id).order("is_default", { ascending: false }),
       context.supabase.from("catalog_features").select("*").eq("catalog_item_id", data.id).order("display_order"),
       context.supabase.from("catalog_item_providers").select("*, payment_providers(code, display_name)").eq("catalog_item_id", data.id),
       context.supabase.from("plans").select("id, name, code, amount, currency, billing_interval, is_active").eq("catalog_item_id", data.id),
-      context.supabase.from("subscriptions").select("id, status, customer_id, created_at").eq("catalog_item_id", data.id).order("created_at", { ascending: false }).limit(20),
-      context.supabase.from("payments").select("id, amount, currency, status, created_at").eq("catalog_item_id", data.id).order("created_at", { ascending: false }).limit(20),
     ]);
     if (item.error) throw new Error(item.error.message);
+
+    const planIds = (linkedPlans.data ?? []).map((p: any) => p.id);
+    const [subs, pays] = await Promise.all([
+      planIds.length
+        ? context.supabase.from("subscriptions").select("id, status, customer_id, created_at, plan_id").in("plan_id", planIds).order("created_at", { ascending: false }).limit(20)
+        : Promise.resolve({ data: [] as any[] }),
+      planIds.length
+        ? context.supabase.from("payments").select("id, amount, currency, status, created_at, plan_id").in("plan_id", planIds).order("created_at", { ascending: false }).limit(20)
+        : Promise.resolve({ data: [] as any[] }),
+    ]);
 
     const revenue = (pays.data ?? [])
       .filter((p: any) => p.status === "succeeded" || p.status === "paid")
