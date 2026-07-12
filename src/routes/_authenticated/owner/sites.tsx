@@ -213,7 +213,16 @@ type SiteRowData = {
   is_active: boolean;
   brand_color: string | null;
   portfolio_id?: string | null;
+  is_internal?: boolean;
+  integration_mode?: string;
+  api_enabled?: boolean;
+  webhook_enabled?: boolean;
+  database_access?: boolean;
+  environment?: string;
+  integration_status?: string;
+  last_connection_at?: string | null;
 };
+
 
 type PortfolioLite = { id: string; name: string; slug: string };
 
