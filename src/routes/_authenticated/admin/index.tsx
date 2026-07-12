@@ -64,6 +64,23 @@ function OverviewPage() {
       setSites(sitesArr);
       setProviders(provQ.data ?? []);
 
+      // Fetch projects + domains for interconnection view
+      const projectIds = Array.from(new Set(sitesArr.map((s: any) => s.project_id).filter(Boolean)));
+      if (projectIds.length) {
+        const [projQ, domQ] = await Promise.all([
+          supabase.from("hn_projects").select("id, code, name, status, portfolio_id").in("id", projectIds),
+          supabase.from("project_domains").select("project_id, domain").in("project_id", projectIds),
+        ]);
+        const pmap: Record<string, any> = {};
+        (projQ.data ?? []).forEach((p: any) => (pmap[p.id] = p));
+        setProjectsById(pmap);
+        const dmap: Record<string, string[]> = {};
+        (domQ.data ?? []).forEach((d: any) => {
+          (dmap[d.project_id] = dmap[d.project_id] ?? []).push(d.domain);
+        });
+        setDomainsByProject(dmap);
+      }
+
       const filterFn = (r: any) => siteFilter === "all" || r.site_id === siteFilter;
       const pays = (paysAllQ.data ?? []).filter(filterFn);
       const succeeded = pays.filter((p) => p.status === "succeeded");
