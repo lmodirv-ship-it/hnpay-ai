@@ -14,6 +14,186 @@ export type Database = {
   }
   public: {
     Tables: {
+      audit_logs: {
+        Row: {
+          action: string
+          after_data: Json | null
+          before_data: Json | null
+          created_at: string
+          entity_id: string | null
+          entity_table: string | null
+          id: string
+          ip_address: string | null
+          metadata: Json
+          project_id: string | null
+          site_id: string | null
+          status: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_table?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          project_id?: string | null
+          site_id?: string | null
+          status?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          after_data?: Json | null
+          before_data?: Json | null
+          created_at?: string
+          entity_id?: string | null
+          entity_table?: string | null
+          id?: string
+          ip_address?: string | null
+          metadata?: Json
+          project_id?: string | null
+          site_id?: string | null
+          status?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "audit_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "audit_logs_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_invoices: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          currency: string
+          customer_id: string | null
+          discount_amount: number
+          due_at: string | null
+          id: string
+          invoice_number: string
+          issued_at: string
+          metadata: Json
+          notes: string | null
+          paid_at: string | null
+          payment_id: string | null
+          pdf_url: string | null
+          project_id: string | null
+          public_id: string
+          site_id: string | null
+          status: string
+          subscription_id: string | null
+          subtotal: number
+          tax_amount: number
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_id?: string | null
+          discount_amount?: number
+          due_at?: string | null
+          id?: string
+          invoice_number: string
+          issued_at?: string
+          metadata?: Json
+          notes?: string | null
+          paid_at?: string | null
+          payment_id?: string | null
+          pdf_url?: string | null
+          project_id?: string | null
+          public_id?: string
+          site_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          subtotal?: number
+          tax_amount?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          customer_id?: string | null
+          discount_amount?: number
+          due_at?: string | null
+          id?: string
+          invoice_number?: string
+          issued_at?: string
+          metadata?: Json
+          notes?: string | null
+          paid_at?: string | null
+          payment_id?: string | null
+          pdf_url?: string | null
+          project_id?: string | null
+          public_id?: string
+          site_id?: string | null
+          status?: string
+          subscription_id?: string | null
+          subtotal?: number
+          tax_amount?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_invoices_customer_id_fkey"
+            columns: ["customer_id"]
+            isOneToOne: false
+            referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       catalog_categories: {
         Row: {
           code: string
@@ -27,6 +207,7 @@ export type Database = {
           name_ar: string
           name_en: string | null
           parent_id: string | null
+          project_id: string | null
           site_id: string
           updated_at: string
         }
@@ -42,6 +223,7 @@ export type Database = {
           name_ar: string
           name_en?: string | null
           parent_id?: string | null
+          project_id?: string | null
           site_id: string
           updated_at?: string
         }
@@ -57,6 +239,7 @@ export type Database = {
           name_ar?: string
           name_en?: string | null
           parent_id?: string | null
+          project_id?: string | null
           site_id?: string
           updated_at?: string
         }
@@ -66,6 +249,13 @@ export type Database = {
             columns: ["parent_id"]
             isOneToOne: false
             referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_categories_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -134,6 +324,7 @@ export type Database = {
           id: string
           is_default: boolean
           is_enabled: boolean
+          project_id: string | null
           provider_id: string
           site_id: string
           updated_at: string
@@ -144,6 +335,7 @@ export type Database = {
           id?: string
           is_default?: boolean
           is_enabled?: boolean
+          project_id?: string | null
           provider_id: string
           site_id: string
           updated_at?: string
@@ -154,6 +346,7 @@ export type Database = {
           id?: string
           is_default?: boolean
           is_enabled?: boolean
+          project_id?: string | null
           provider_id?: string
           site_id?: string
           updated_at?: string
@@ -164,6 +357,13 @@ export type Database = {
             columns: ["catalog_item_id"]
             isOneToOne: false
             referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_item_providers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -197,6 +397,7 @@ export type Database = {
           metadata: Json
           name_ar: string
           name_en: string | null
+          project_id: string | null
           requires_approval: boolean
           short_description_ar: string | null
           short_description_en: string | null
@@ -219,6 +420,7 @@ export type Database = {
           metadata?: Json
           name_ar: string
           name_en?: string | null
+          project_id?: string | null
           requires_approval?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
@@ -241,6 +443,7 @@ export type Database = {
           metadata?: Json
           name_ar?: string
           name_en?: string | null
+          project_id?: string | null
           requires_approval?: boolean
           short_description_ar?: string | null
           short_description_en?: string | null
@@ -255,6 +458,13 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "catalog_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_items_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -284,6 +494,7 @@ export type Database = {
           name_ar: string | null
           name_en: string | null
           price_code: string
+          project_id: string | null
           setup_fee: number
           site_id: string
           tax_behavior: string
@@ -308,6 +519,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           price_code: string
+          project_id?: string | null
           setup_fee?: number
           site_id: string
           tax_behavior?: string
@@ -332,6 +544,7 @@ export type Database = {
           name_ar?: string | null
           name_en?: string | null
           price_code?: string
+          project_id?: string | null
           setup_fee?: number
           site_id?: string
           tax_behavior?: string
@@ -345,6 +558,13 @@ export type Database = {
             columns: ["catalog_item_id"]
             isOneToOne: false
             referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "catalog_prices_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -577,52 +797,91 @@ export type Database = {
       }
       hn_projects: {
         Row: {
+          api_enabled: boolean
+          arr_cached: number
           brand_color: string | null
           category: string | null
           code: string
+          connection_status: string
           created_at: string
           created_by: string | null
           default_currency: string
           default_provider_id: string | null
           description: string | null
+          environment: string
           id: string
+          integration_mode: string
+          invoices_enabled: boolean
+          last_seen_at: string | null
+          logo_url: string | null
+          mrr_cached: number
           name: string
           owner_id: string | null
+          payments_enabled: boolean
           primary_domain: string | null
+          project_type: string | null
           status: string
+          subscriptions_enabled: boolean
           updated_at: string
+          webhooks_enabled: boolean
         }
         Insert: {
+          api_enabled?: boolean
+          arr_cached?: number
           brand_color?: string | null
           category?: string | null
           code: string
+          connection_status?: string
           created_at?: string
           created_by?: string | null
           default_currency?: string
           default_provider_id?: string | null
           description?: string | null
+          environment?: string
           id?: string
+          integration_mode?: string
+          invoices_enabled?: boolean
+          last_seen_at?: string | null
+          logo_url?: string | null
+          mrr_cached?: number
           name: string
           owner_id?: string | null
+          payments_enabled?: boolean
           primary_domain?: string | null
+          project_type?: string | null
           status?: string
+          subscriptions_enabled?: boolean
           updated_at?: string
+          webhooks_enabled?: boolean
         }
         Update: {
+          api_enabled?: boolean
+          arr_cached?: number
           brand_color?: string | null
           category?: string | null
           code?: string
+          connection_status?: string
           created_at?: string
           created_by?: string | null
           default_currency?: string
           default_provider_id?: string | null
           description?: string | null
+          environment?: string
           id?: string
+          integration_mode?: string
+          invoices_enabled?: boolean
+          last_seen_at?: string | null
+          logo_url?: string | null
+          mrr_cached?: number
           name?: string
           owner_id?: string | null
+          payments_enabled?: boolean
           primary_domain?: string | null
+          project_type?: string | null
           status?: string
+          subscriptions_enabled?: boolean
           updated_at?: string
+          webhooks_enabled?: boolean
         }
         Relationships: [
           {
@@ -670,6 +929,83 @@ export type Database = {
         }
         Relationships: []
       }
+      invoice_items: {
+        Row: {
+          catalog_item_id: string | null
+          catalog_price_id: string | null
+          created_at: string
+          description: string
+          discount_amount: number
+          id: string
+          invoice_id: string
+          line_total: number
+          metadata: Json
+          plan_id: string | null
+          quantity: number
+          tax_amount: number
+          unit_price: number
+        }
+        Insert: {
+          catalog_item_id?: string | null
+          catalog_price_id?: string | null
+          created_at?: string
+          description: string
+          discount_amount?: number
+          id?: string
+          invoice_id: string
+          line_total?: number
+          metadata?: Json
+          plan_id?: string | null
+          quantity?: number
+          tax_amount?: number
+          unit_price?: number
+        }
+        Update: {
+          catalog_item_id?: string | null
+          catalog_price_id?: string | null
+          created_at?: string
+          description?: string
+          discount_amount?: number
+          id?: string
+          invoice_id?: string
+          line_total?: number
+          metadata?: Json
+          plan_id?: string | null
+          quantity?: number
+          tax_amount?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoice_items_catalog_item_id_fkey"
+            columns: ["catalog_item_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_catalog_price_id_fkey"
+            columns: ["catalog_price_id"]
+            isOneToOne: false
+            referencedRelation: "catalog_prices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "billing_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoice_items_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       payment_providers: {
         Row: {
           api_key: string | null
@@ -688,6 +1024,7 @@ export type Database = {
           last_test_status: string | null
           last_tested_at: string | null
           merchant_id: string | null
+          project_id: string | null
           public_key: string | null
           secret_key: string | null
           site_id: string | null
@@ -714,6 +1051,7 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          project_id?: string | null
           public_key?: string | null
           secret_key?: string | null
           site_id?: string | null
@@ -740,6 +1078,7 @@ export type Database = {
           last_test_status?: string | null
           last_tested_at?: string | null
           merchant_id?: string | null
+          project_id?: string | null
           public_key?: string | null
           secret_key?: string | null
           site_id?: string | null
@@ -750,6 +1089,13 @@ export type Database = {
           webhook_secret?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "payment_providers_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "payment_providers_site_id_fkey"
             columns: ["site_id"]
@@ -988,6 +1334,7 @@ export type Database = {
           created_at: string
           customer_id: string
           expires_at: string
+          project_id: string | null
           site_id: string
           token: string
           used_at: string | null
@@ -996,6 +1343,7 @@ export type Database = {
           created_at?: string
           customer_id: string
           expires_at?: string
+          project_id?: string | null
           site_id: string
           token: string
           used_at?: string | null
@@ -1004,6 +1352,7 @@ export type Database = {
           created_at?: string
           customer_id?: string
           expires_at?: string
+          project_id?: string | null
           site_id?: string
           token?: string
           used_at?: string | null
@@ -1014,6 +1363,13 @@ export type Database = {
             columns: ["customer_id"]
             isOneToOne: false
             referencedRelation: "customers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "portal_tokens_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
             referencedColumns: ["id"]
           },
           {
@@ -1493,6 +1849,101 @@ export type Database = {
         }
         Relationships: []
       }
+      refunds: {
+        Row: {
+          amount: number
+          approved_by: string | null
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          id: string
+          invoice_id: string | null
+          metadata: Json
+          payment_id: string
+          processed_at: string | null
+          project_id: string | null
+          provider: string | null
+          provider_refund_id: string | null
+          public_id: string
+          reason: string | null
+          requested_by: string | null
+          site_id: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          payment_id: string
+          processed_at?: string | null
+          project_id?: string | null
+          provider?: string | null
+          provider_refund_id?: string | null
+          public_id?: string
+          reason?: string | null
+          requested_by?: string | null
+          site_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          approved_by?: string | null
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          invoice_id?: string | null
+          metadata?: Json
+          payment_id?: string
+          processed_at?: string | null
+          project_id?: string | null
+          provider?: string | null
+          provider_refund_id?: string | null
+          public_id?: string
+          reason?: string | null
+          requested_by?: string | null
+          site_id?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "billing_invoices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_site_id_fkey"
+            columns: ["site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -1520,6 +1971,77 @@ export type Database = {
         }
         Relationships: []
       }
+      settlements: {
+        Row: {
+          bank_reference: string | null
+          created_at: string
+          currency: string
+          expected_payout: number
+          fee_amount: number
+          gross_amount: number
+          id: string
+          metadata: Json
+          net_amount: number
+          project_id: string | null
+          provider: string
+          public_id: string
+          reconciliation_status: string
+          refund_amount: number
+          settlement_date: string | null
+          tax_amount: number
+          unmatched_count: number
+          updated_at: string
+        }
+        Insert: {
+          bank_reference?: string | null
+          created_at?: string
+          currency?: string
+          expected_payout?: number
+          fee_amount?: number
+          gross_amount?: number
+          id?: string
+          metadata?: Json
+          net_amount?: number
+          project_id?: string | null
+          provider: string
+          public_id?: string
+          reconciliation_status?: string
+          refund_amount?: number
+          settlement_date?: string | null
+          tax_amount?: number
+          unmatched_count?: number
+          updated_at?: string
+        }
+        Update: {
+          bank_reference?: string | null
+          created_at?: string
+          currency?: string
+          expected_payout?: number
+          fee_amount?: number
+          gross_amount?: number
+          id?: string
+          metadata?: Json
+          net_amount?: number
+          project_id?: string | null
+          provider?: string
+          public_id?: string
+          reconciliation_status?: string
+          refund_amount?: number
+          settlement_date?: string | null
+          tax_amount?: number
+          unmatched_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "settlements_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       site_api_keys: {
         Row: {
           created_at: string
@@ -1529,6 +2051,7 @@ export type Database = {
           label: string
           last_used_at: string | null
           mode: string
+          project_id: string | null
           revoked_at: string | null
           site_id: string
         }
@@ -1540,6 +2063,7 @@ export type Database = {
           label?: string
           last_used_at?: string | null
           mode?: string
+          project_id?: string | null
           revoked_at?: string | null
           site_id: string
         }
@@ -1551,10 +2075,18 @@ export type Database = {
           label?: string
           last_used_at?: string | null
           mode?: string
+          project_id?: string | null
           revoked_at?: string | null
           site_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "site_api_keys_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "site_api_keys_site_id_fkey"
             columns: ["site_id"]
@@ -1821,6 +2353,7 @@ export type Database = {
           last_response_body: string | null
           last_response_status: number | null
           payload: Json
+          project_id: string | null
           public_id: string
           site_id: string
         }
@@ -1835,6 +2368,7 @@ export type Database = {
           last_response_body?: string | null
           last_response_status?: number | null
           payload: Json
+          project_id?: string | null
           public_id?: string
           site_id: string
         }
@@ -1849,10 +2383,18 @@ export type Database = {
           last_response_body?: string | null
           last_response_status?: number | null
           payload?: Json
+          project_id?: string | null
           public_id?: string
           site_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "webhook_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "hn_projects"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "webhook_events_site_id_fkey"
             columns: ["site_id"]
@@ -1867,7 +2409,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_invoice_number: { Args: never; Returns: string }
       is_protected_owner: { Args: { _user_id: string }; Returns: boolean }
+      user_can_access_project: {
+        Args: { _project_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role:
@@ -1878,6 +2425,13 @@ export type Database = {
         | "subscriber"
         | "viewer"
         | "accountant"
+        | "finance_manager"
+        | "hn_pay_admin"
+        | "group_owner"
+        | "project_owner"
+        | "project_manager"
+        | "support_agent"
+        | "security_auditor"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2013,6 +2567,13 @@ export const Constants = {
         "subscriber",
         "viewer",
         "accountant",
+        "finance_manager",
+        "hn_pay_admin",
+        "group_owner",
+        "project_owner",
+        "project_manager",
+        "support_agent",
+        "security_auditor",
       ],
     },
   },
