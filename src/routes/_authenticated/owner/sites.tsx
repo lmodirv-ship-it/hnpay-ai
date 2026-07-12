@@ -213,7 +213,16 @@ type SiteRowData = {
   is_active: boolean;
   brand_color: string | null;
   portfolio_id?: string | null;
+  is_internal?: boolean;
+  integration_mode?: string;
+  api_enabled?: boolean;
+  webhook_enabled?: boolean;
+  database_access?: boolean;
+  environment?: string;
+  integration_status?: string;
+  last_connection_at?: string | null;
 };
+
 
 type PortfolioLite = { id: string; name: string; slug: string };
 
@@ -282,6 +291,37 @@ function SiteRow({
         </div>
       </div>
 
+      <div className="mt-3 flex flex-wrap gap-1.5 text-[10px]">
+        <Badge tone={site.is_internal === false ? "purple" : "cyan"}>
+          {site.is_internal === false ? "External" : "Internal"}
+        </Badge>
+        <Badge tone="amber">{site.integration_mode ?? "internal_database"}</Badge>
+        <Badge tone={site.database_access ? "emerald" : "neutral"}>
+          DB {site.database_access ? "shared" : "isolated"}
+        </Badge>
+        <Badge tone={site.api_enabled ? "emerald" : "neutral"}>
+          API {site.api_enabled ? "on" : "off"}
+        </Badge>
+        <Badge tone={site.webhook_enabled ? "emerald" : "neutral"}>
+          Webhooks {site.webhook_enabled ? "on" : "off"}
+        </Badge>
+        <Badge tone={site.environment === "live" ? "emerald" : "amber"}>
+          {site.environment ?? "live"}
+        </Badge>
+        <Badge
+          tone={
+            site.integration_status === "connected" ? "emerald"
+              : site.integration_status === "degraded" ? "amber"
+              : site.integration_status === "disconnected" ? "red" : "neutral"
+          }
+        >
+          {site.integration_status ?? "pending"}
+        </Badge>
+        {site.last_connection_at && (
+          <span className="text-neutral-500">· last {new Date(site.last_connection_at).toLocaleString()}</span>
+        )}
+      </div>
+
       <div className="mt-3 flex flex-wrap items-center gap-2 text-[11px] text-neutral-500">
         <Shield className="h-3 w-3 text-amber-300" />
         Webhook: <span className="font-mono text-neutral-300">{site.webhook_url ?? "not set"}</span>
@@ -294,6 +334,7 @@ function SiteRow({
           </button>
         )}
       </div>
+
       <div className="mt-2 flex items-center gap-2 text-[11px] text-neutral-500">
         <FolderTree className="h-3 w-3 text-amber-300" /> Portfolio:
         <select
@@ -376,6 +417,28 @@ function BulkImportPanel({ onDone, runImport }: { onDone: () => void; runImport:
         </div>
       )}
     </div>
+  );
+}
+
+export function Badge({
+  children,
+  tone = "neutral",
+}: {
+  children: React.ReactNode;
+  tone?: "emerald" | "amber" | "red" | "cyan" | "purple" | "neutral";
+}) {
+  const map: Record<string, string> = {
+    emerald: "border-emerald-400/40 bg-emerald-500/10 text-emerald-200",
+    amber: "border-amber-400/40 bg-amber-500/10 text-amber-200",
+    red: "border-red-400/40 bg-red-500/10 text-red-200",
+    cyan: "border-cyan-400/40 bg-cyan-500/10 text-cyan-200",
+    purple: "border-purple-400/40 bg-purple-500/10 text-purple-200",
+    neutral: "border-white/10 bg-white/5 text-neutral-300",
+  };
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-md border px-1.5 py-0.5 font-mono ${map[tone]}`}>
+      {children}
+    </span>
   );
 }
 

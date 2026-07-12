@@ -1537,15 +1537,22 @@ export type Database = {
       }
       sites: {
         Row: {
+          allowed_origins: string[]
+          api_enabled: boolean
           brand_color: string | null
           created_at: string
           created_by: string | null
+          database_access: boolean
           domain: string
           domain_id: string | null
           enabled_providers: string[]
           environment: string
           id: string
+          integration_mode: string
+          integration_status: string
           is_active: boolean
+          is_internal: boolean
+          last_connection_at: string | null
           logo_url: string | null
           manual_bank_details: Json
           manual_instructions: string | null
@@ -1554,19 +1561,27 @@ export type Database = {
           project_id: string | null
           slug: string
           updated_at: string
+          webhook_enabled: boolean
           webhook_secret: string
           webhook_url: string | null
         }
         Insert: {
+          allowed_origins?: string[]
+          api_enabled?: boolean
           brand_color?: string | null
           created_at?: string
           created_by?: string | null
+          database_access?: boolean
           domain: string
           domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
           id?: string
+          integration_mode?: string
+          integration_status?: string
           is_active?: boolean
+          is_internal?: boolean
+          last_connection_at?: string | null
           logo_url?: string | null
           manual_bank_details?: Json
           manual_instructions?: string | null
@@ -1575,19 +1590,27 @@ export type Database = {
           project_id?: string | null
           slug: string
           updated_at?: string
+          webhook_enabled?: boolean
           webhook_secret?: string
           webhook_url?: string | null
         }
         Update: {
+          allowed_origins?: string[]
+          api_enabled?: boolean
           brand_color?: string | null
           created_at?: string
           created_by?: string | null
+          database_access?: boolean
           domain?: string
           domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
           id?: string
+          integration_mode?: string
+          integration_status?: string
           is_active?: boolean
+          is_internal?: boolean
+          last_connection_at?: string | null
           logo_url?: string | null
           manual_bank_details?: Json
           manual_instructions?: string | null
@@ -1596,6 +1619,7 @@ export type Database = {
           project_id?: string | null
           slug?: string
           updated_at?: string
+          webhook_enabled?: boolean
           webhook_secret?: string
           webhook_url?: string | null
         }
@@ -1814,6 +1838,7 @@ export type Database = {
         | "developer"
         | "subscriber"
         | "viewer"
+        | "accountant"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1948,6 +1973,7 @@ export const Constants = {
         "developer",
         "subscriber",
         "viewer",
+        "accountant",
       ],
     },
   },
