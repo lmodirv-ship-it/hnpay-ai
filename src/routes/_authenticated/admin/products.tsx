@@ -11,20 +11,30 @@ export const Route = createFileRoute("/_authenticated/admin/products")({
 function ProductsPage() {
   const [sites, setSites] = useState<any[]>([]);
   const [apps, setApps] = useState<any[]>([]);
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
-      const [{ data: s }, { data: a }] = await Promise.all([
+      const [{ data: s }, { data: a }, { data: it }] = await Promise.all([
         supabase.from("sites").select("id, name, domain, is_active, created_at").order("created_at", { ascending: false }),
         supabase.from("hn_apps").select("id, app_id, name, category, active, domain, description"),
+        supabase.from("products_services")
+          .select("id, name, type, billing_type, price, currency, status, sales_count, total_revenue, project_id, created_at")
+          .order("created_at", { ascending: false })
+          .limit(200),
       ]);
       setSites(s ?? []);
       setApps(a ?? []);
+      setItems(it ?? []);
+      setLoading(false);
     })();
   }, []);
 
+  const siteName = (id: string | null) => (id ? sites.find((s) => s.id === id)?.name ?? "—" : "—");
+
   return (
-    <AdminShell title="المنتجات والخدمات" subtitle="المواقع المسجّلة والتطبيقات المتصلة بـ HN-PAY.">
+    <AdminShell title="المنتجات والخدمات" subtitle="المواقع المسجّلة والتطبيقات والمنتجات/الخدمات المتصلة بـ HN-PAY.">
       <div className="mb-6">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-300">المواقع</h2>
@@ -46,6 +56,55 @@ function ProductsPage() {
               </Card>
             ))}
           </div>
+        )}
+      </div>
+
+      <div className="mb-6">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-widest text-neutral-300">المنتجات والخدمات</h2>
+          <Link to="/owner/hn-pay/catalog" className="rounded-lg border border-amber-400/30 bg-amber-500/10 px-3 py-1.5 text-xs text-amber-200 hover:bg-amber-500/20">إدارة الكتالوج</Link>
+        </div>
+        {loading ? (
+          <Card><div className="text-xs text-neutral-500">جارٍ التحميل…</div></Card>
+        ) : items.length === 0 ? (
+          <EmptyState title="لا توجد منتجات أو خدمات بعد" />
+        ) : (
+          <Card className="p-0">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/5 text-right text-[10px] uppercase tracking-wider text-neutral-500">
+                    <th className="px-5 py-3">الاسم</th>
+                    <th className="px-5 py-3">النوع</th>
+                    <th className="px-5 py-3">الفوترة</th>
+                    <th className="px-5 py-3">السعر</th>
+                    <th className="px-5 py-3">الموقع/المشروع</th>
+                    <th className="px-5 py-3">المبيعات</th>
+                    <th className="px-5 py-3">الإيرادات</th>
+                    <th className="px-5 py-3">الحالة</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {items.map((r) => (
+                    <tr key={r.id} className="border-b border-white/5">
+                      <td className="px-5 py-3 font-semibold">{r.name}</td>
+                      <td className="px-5 py-3 text-[11px]">{r.type}</td>
+                      <td className="px-5 py-3 text-[11px]">{r.billing_type}</td>
+                      <td className="px-5 py-3 font-mono text-[11px]">{Number(r.price ?? 0).toFixed(2)} {r.currency}</td>
+                      <td className="px-5 py-3 text-[11px] text-neutral-400">{siteName(r.project_id)}</td>
+                      <td className="px-5 py-3 text-[11px]">{r.sales_count ?? 0}</td>
+                      <td className="px-5 py-3 font-mono text-[11px]">{Number(r.total_revenue ?? 0).toFixed(2)}</td>
+                      <td className="px-5 py-3">
+                        <Badge tone={r.status === "active" ? "green" : r.status === "draft" ? "neutral" : "amber"}>
+                          {r.status}
+                        </Badge>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </Card>
         )}
       </div>
 
