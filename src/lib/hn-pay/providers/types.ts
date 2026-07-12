@@ -1,7 +1,7 @@
 // Payment provider abstraction for HN-PAY.
 // Add new providers (paypal, cmi, payzone, naps) by implementing this interface.
 
-export type ProviderCode = "manual" | "stripe" | "paddle" | "paypal" | "cmi" | "payzone" | "naps";
+export type ProviderCode = "manual" | "stripe" | "paddle" | "paypal" | "cmi" | "payzone" | "naps" | "apple_pay" | "google_pay" | "usdt";
 
 export type CheckoutSessionRow = {
   id: string;
