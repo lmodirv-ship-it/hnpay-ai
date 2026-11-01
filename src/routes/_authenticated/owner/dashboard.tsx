@@ -2,7 +2,10 @@ import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
-import { Crown, LogOut, Users, Boxes, Wallet, Activity, Sparkles, Handshake, FileText, Smartphone, BrainCircuit } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { Crown, LogOut, Users, Boxes, Wallet, Activity, RefreshCcw, Globe2, Repeat, CreditCard, ShieldCheck, CheckCircle2, AlertTriangle, Landmark, Zap } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
+import { getOwnerOverview, approveManualTopup } from "@/lib/hn-pay/owner-overview.functions";
 
 export const Route = createFileRoute("/_authenticated/owner/dashboard")({
   ssr: false,
@@ -13,218 +16,214 @@ export const Route = createFileRoute("/_authenticated/owner/dashboard")({
     const isOwner = (r ?? []).some((row: any) => row.role === "owner" || row.role === "admin");
     if (!isOwner) throw redirect({ to: "/user/dashboard" });
   },
-  head: () => ({ meta: [{ title: "Owner Dashboard · HN-Pay Hub" }] }),
+  head: () => ({ meta: [{ title: "لوحة تحكم المالك · HN-Pay Live" }] }),
   component: OwnerDashboardPage,
 });
 
 function OwnerDashboardPage() {
   const { profile, signOut } = useHnSession();
-  const [stats, setStats] = useState({ users: 0, apps: 0, subs: 0, roles: 0 });
+  const load = useServerFn(getOwnerOverview);
+  const approve = useServerFn(approveManualTopup);
+  const [d, setD] = useState<Overview | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  const refresh = () => load().then(setD).catch((e) => setErr(String(e?.message ?? e)));
+  useEffect(() => { refresh(); }, []);
 
-  useEffect(() => {
-    (async () => {
-      const [{ count: users }, { count: apps }, { count: subs }, { count: roles }] = await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase.from("hn_apps").select("*", { count: "exact", head: true }),
-        supabase.from("hn_subscriptions").select("*", { count: "exact", head: true }),
-        supabase.from("user_roles").select("*", { count: "exact", head: true }),
-      ]);
-      setStats({ users: users ?? 0, apps: apps ?? 0, subs: subs ?? 0, roles: roles ?? 0 });
-    })();
-  }, []);
+  const act = async (publicId: string, action: "approve" | "reject") => {
+    const r = await approve({ data: { publicId, action } });
+    if (!r.ok) setErr(r.error ?? "Error");
+    refresh();
+  };
 
+  const k = d?.kpis;
+  const rev = d ? Object.entries(d.revenue) : [];
   return (
     <OwnerShell profile={profile} signOut={signOut}>
-      <div className="mb-6">
-        <div className="text-[10px] font-semibold uppercase tracking-[0.35em] text-amber-300/80">Command Deck</div>
-        <h1 className="text-3xl font-bold">Owner Dashboard</h1>
-        <p className="mt-1 text-sm text-neutral-400">Live control plane across the HN network.</p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.3em] text-fx-cyan">مركز التحكم الشامل</div>
+          <h1 className="mt-1 text-3xl font-bold">لوحة تحكم المالك</h1>
+          <p className="mt-1 text-sm text-fx-muted">المنصة العالمية للدفعات والاشتراكات الموحدة عبر الإنترنت — بيانات حية من قاعدة البيانات.</p>
+        </div>
+        <button onClick={refresh} className="inline-flex items-center gap-2 rounded-lg border border-fx-line px-3 py-2 text-sm hover:bg-fx-text/5"><RefreshCcw className="h-4 w-4" />تحديث</button>
       </div>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <Stat icon={<Users className="h-5 w-5" />} label="Users" value={stats.users} tone="amber" />
-        <Stat icon={<Boxes className="h-5 w-5" />} label="Apps" value={stats.apps} tone="sky" />
-        <Stat icon={<Wallet className="h-5 w-5" />} label="Subscriptions" value={stats.subs} tone="emerald" />
-        <Stat icon={<Activity className="h-5 w-5" />} label="Role assignments" value={stats.roles} tone="violet" />
+      {err && <div className="mb-4 rounded-lg border border-fx-red/40 bg-fx-red/10 px-4 py-2 text-sm">{err}</div>}
+
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-6">
+        <Stat icon={<Globe2 className="h-5 w-5" />} label="المواقع المتصلة" value={k ? `${k.activeSites}/${k.sites}` : "…"} />
+        <Stat icon={<Boxes className="h-5 w-5" />} label="المشاريع" value={k?.projects ?? "…"} sub={k ? `${k.domains} نطاق` : ""} />
+        <Stat icon={<Users className="h-5 w-5" />} label="المستخدمون / العملاء" value={k ? `${k.users} / ${k.customers}` : "…"} />
+        <Stat icon={<Repeat className="h-5 w-5" />} label="اشتراكات نشطة" value={k?.activeSubs ?? "…"} sub={k ? `${k.pausedSubs} موقوفة` : ""} />
+        <Stat icon={<CreditCard className="h-5 w-5" />} label="مدفوعات 30 يوماً" value={k?.succeeded ?? "…"} sub={k ? `${k.failed} فاشلة` : ""} />
+        <Stat icon={<Crown className="h-5 w-5" />} label="أعضاء مجموعة HN" value={k?.groupMembers ?? "…"} />
       </div>
 
-      <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <QuickLink to="/owner/hn-pay/monitor" title="HN-Pay Monitor" desc="Live revenue, payments, webhooks across the network." />
-        <QuickLink to="/owner/hn-pay/providers" title="Payment Providers" desc="Stripe, PayPal, CMI, NAPS, manual, mock — one switch." />
-        <QuickLink to="/owner/sites" title="Sites (Payment Hub)" desc="Register sites, API keys, plans, bulk import." />
-        <QuickLink to="/owner/portfolios" title="Portfolios" desc="Group sites (HN AI, Commerce, Media…)." />
-        <QuickLink to="/owner/hn-pay/integrate" title="Integrate SDK" desc="Unified checkout SDK, button, webhook template." />
-        <QuickLink to="/owner/users" title="Users & Roles" desc="Promote, demote, invite members." />
-        <QuickLink to="/owner/apps" title="Apps Control" desc="Toggle apps and edit metadata." />
-        <QuickLink to="/owner/roles" title="Roles Matrix" desc="Edit per-role permissions." />
-        <QuickLink to="/console" title="Mission Console" desc="Registry, keys, monitoring." />
+      <div className="mt-6 grid gap-4 lg:grid-cols-3">
+        <Card title="الإيرادات (30 يوماً)" icon={<Wallet className="h-4 w-4" />}>
+          {rev.length === 0 ? <Empty text="لا توجد مدفوعات ناجحة بعد" /> : rev.map(([c, v]) => <Row key={c} a={c} b={v.toFixed(2)} />)}
+        </Card>
+        <Card title="أرصدة محافظ العملاء" icon={<Wallet className="h-4 w-4" />}>
+          {d ? (["MAD", "EUR", "USD"] as const).map((c) => <Row key={c} a={c} b={d.float[c].toFixed(2)} />) : <Empty text="…" />}
+        </Card>
+        <Card title="جاهزية المنصة للتحصيل" icon={<ShieldCheck className="h-4 w-4" />}>
+          <ul className="space-y-2 text-sm">
+            {(d?.checks ?? []).map((c) => (
+              <li key={c.key} className="flex items-start gap-2">
+                {c.ok ? <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-fx-green" /> : <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-fx-red" />}
+                <span>{c.label}{!c.ok && c.hint && <span className="block text-[11px] text-fx-muted">{c.hint}</span>}</span>
+              </li>
+            ))}
+          </ul>
+        </Card>
       </div>
 
-      <FutureRoadmap />
+      <div className="mt-6 grid gap-4 lg:grid-cols-2">
+        <Card title="طلبات شحن المحافظ" icon={<Landmark className="h-4 w-4" />}>
+          {(d?.topups ?? []).length === 0 ? <Empty text="لا توجد طلبات شحن" /> : (
+            <table className="w-full text-xs"><tbody>
+              {d!.topups.map((t) => (
+                <tr key={t.public_id} className="border-b border-fx-line/60">
+                  <td className="py-2">{t.email}<div className="font-fx-mono text-[10px] text-fx-muted">{t.public_id}</div></td>
+                  <td className="py-2 font-fx-mono" dir="ltr">{Number(t.amount).toFixed(2)} {t.currency}</td>
+                  <td className="py-2 text-fx-muted">{t.method}</td>
+                  <td className="py-2"><StatusPill s={t.status} /></td>
+                  <td className="py-2 text-end">
+                    {t.status === "pending" && t.method === "bank_transfer" && (
+                      <span className="inline-flex gap-1">
+                        <button onClick={() => act(t.public_id, "approve")} className="rounded bg-fx-green/20 px-2 py-1 text-fx-green">تأكيد الاستلام</button>
+                        <button onClick={() => act(t.public_id, "reject")} className="rounded border border-fx-line px-2 py-1">رفض</button>
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody></table>
+          )}
+        </Card>
+        <Card title="آخر المدفوعات" icon={<Activity className="h-4 w-4" />}>
+          {(d?.recentPayments ?? []).length === 0 ? <Empty text="لا توجد مدفوعات بعد" /> : (
+            <table className="w-full text-xs"><tbody>
+              {d!.recentPayments.map((p) => (
+                <tr key={p.public_id} className="border-b border-fx-line/60">
+                  <td className="py-2">{(p.sites as { name?: string } | null)?.name}</td>
+                  <td className="py-2 font-fx-mono" dir="ltr">{Number(p.amount).toFixed(2)} {p.currency}</td>
+                  <td className="py-2 text-fx-muted">{p.provider}</td>
+                  <td className="py-2"><StatusPill s={p.status} /></td>
+                </tr>
+              ))}
+            </tbody></table>
+          )}
+        </Card>
+      </div>
+
+      <h2 className="mb-3 mt-10 text-lg font-bold">إدارة المنصة</h2>
+      <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        {MODULES.map((m) => (
+          <div key={m.title} className="glass rounded-2xl p-5">
+            <div className="flex items-center gap-2 font-semibold"><span className="text-fx-cyan">{m.icon}</span>{m.title}</div>
+            <ul className="mt-3 space-y-1.5 text-sm">
+              {m.links.map((l) => (
+                <li key={l.to}><Link to={l.to as "/"} className="flex items-center justify-between rounded-lg px-2 py-1.5 text-fx-muted hover:bg-fx-text/5 hover:text-fx-text"><span>{l.label}</span><span className="text-[11px]">←</span></Link></li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
     </OwnerShell>
   );
 }
 
-const FUTURE_PHASE = [
-  {
-    icon: <Wallet className="h-5 w-5" />,
-    title: "HN Wallet",
-    desc: "محفظة رقمية موحّدة تُستخدم عبر جميع مشاريع مجموعة HN، مع شحن ورصيد ومكافآت.",
-  },
-  {
-    icon: <Handshake className="h-5 w-5" />,
-    title: "Affiliates & Commissions",
-    desc: "نظام عمولات للشركاء والمسوقين مع تتبّع الروابط، وحساب العمولات، والدفعات التلقائية.",
-  },
-  {
-    icon: <FileText className="h-5 w-5" />,
-    title: "E-Invoicing",
-    desc: "دعم الفواتير الإلكترونية وفق المتطلبات المحلية (المغرب/الخليج) وربط الأنظمة الضريبية.",
-  },
-  {
-    icon: <Smartphone className="h-5 w-5" />,
-    title: "Mobile Apps (iOS & Android)",
-    desc: "تطبيقات جوّال أصلية لإدارة المدفوعات، الإشعارات الفورية، والاعتماد بالبصمة.",
-  },
-  {
-    icon: <BrainCircuit className="h-5 w-5" />,
-    title: "AI Analytics",
-    desc: "لوحة تحليلات ذكية للتنبؤ بالإيرادات، اكتشاف الاحتيال، وتحليل سلوك العملاء.",
-  },
-] as const;
+type Overview = Awaited<ReturnType<typeof getOwnerOverview>>;
 
-function FutureRoadmap() {
-  return (
-    <section className="mt-12">
-      <div className="mb-4 flex items-center gap-2">
-        <Sparkles className="h-4 w-4 text-amber-300" />
-        <div className="text-[10px] font-semibold uppercase tracking-[0.35em] text-amber-300/80">Phase 8 · Future Roadmap</div>
-      </div>
-      <div className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-500/[0.06] via-white/[0.02] to-violet-500/[0.06] p-6">
-        <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-          <div>
-            <h2 className="text-xl font-bold">ميزات مؤسسية قادمة</h2>
-            <p className="mt-1 max-w-2xl text-sm text-neutral-400">
-              بعد اكتمال المراحل السبع الحالية، ستنقل هذه المرحلة HN-PAY إلى منصة مالية مركزية قابلة للتوسع لخدمة مواقع المجموعة والجهات الخارجية.
-            </p>
-          </div>
-          <span className="rounded-full border border-amber-400/40 bg-amber-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-300">
-            Planned
-          </span>
-        </div>
-        <div className="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {FUTURE_PHASE.map((f) => (
-            <div key={f.title} className="rounded-xl border border-white/10 bg-black/30 p-4 transition hover:border-amber-400/30">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-300">
-                  {f.icon}
-                </div>
-                <div className="text-sm font-semibold">{f.title}</div>
-              </div>
-              <p className="mt-3 text-xs leading-relaxed text-neutral-400">{f.desc}</p>
-              <div className="mt-3 text-[10px] uppercase tracking-widest text-neutral-500">Coming soon</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+const MODULES = [
+  { title: "المدفوعات والتحصيل", icon: <CreditCard className="h-4 w-4" />, links: [
+    { to: "/admin/payments", label: "المدفوعات" }, { to: "/admin/orders", label: "جلسات الدفع" }, { to: "/admin/refunds", label: "الاسترجاعات والنزاعات" }, { to: "/admin/settlements", label: "التسويات المالية" }, { to: "/admin/invoices", label: "الفواتير" },
+  ] },
+  { title: "الاشتراكات والعملاء", icon: <Repeat className="h-4 w-4" />, links: [
+    { to: "/admin/subscriptions", label: "الاشتراكات" }, { to: "/admin/renewals", label: "التجديدات" }, { to: "/admin/customers", label: "العملاء" }, { to: "/admin/plans", label: "الخطط والأسعار" }, { to: "/owner/hn-pay/catalog", label: "الكتالوج المركزي" },
+  ] },
+  { title: "المواقع والمشاريع", icon: <Globe2 className="h-4 w-4" />, links: [
+    { to: "/admin", label: "مركز القيادة (المواقع)" }, { to: "/owner/sites", label: "إدارة المواقع ومفاتيح API" }, { to: "/admin/projects", label: "المشاريع والنطاقات" }, { to: "/owner/portfolios", label: "المحافظ (Portfolios)" }, { to: "/owner/hn-pay/integrate", label: "ربط SDK" },
+  ] },
+  { title: "البوابات والتوجيه", icon: <Zap className="h-4 w-4" />, links: [
+    { to: "/admin/providers", label: "مزودو الدفع والتوجيه الذكي" }, { to: "/admin/webhooks", label: "Webhooks" }, { to: "/admin/api-keys", label: "مفاتيح API" }, { to: "/owner/hn-pay/monitor", label: "المراقبة الحية" },
+  ] },
+  { title: "التقارير والإيرادات", icon: <Activity className="h-4 w-4" />, links: [
+    { to: "/admin/revenue", label: "الإيرادات و AdSense" }, { to: "/admin/reports", label: "التقارير والتحليلات" }, { to: "/admin/financial-projects", label: "المشاريع المالية" }, { to: "/admin/activity", label: "سجل النشاط" },
+  ] },
+  { title: "Google والتكاملات", icon: <Globe2 className="h-4 w-4" />, links: [
+    { to: "/admin/google-cloud", label: "Google Cloud و GA4 والمحفظة" }, { to: "/admin/integration", label: "التكاملات" }, { to: "/admin/notifications", label: "الإشعارات" },
+  ] },
+  { title: "الفريق والأمان", icon: <ShieldCheck className="h-4 w-4" />, links: [
+    { to: "/owner/users", label: "المستخدمون" }, { to: "/owner/roles", label: "مصفوفة الصلاحيات" }, { to: "/admin/team", label: "الفريق" }, { to: "/admin/security", label: "الأمان" },
+  ] },
+  { title: "الإعدادات والدعم", icon: <Boxes className="h-4 w-4" />, links: [
+    { to: "/admin/settings", label: "إعدادات المنصة" }, { to: "/owner/apps", label: "التطبيقات" }, { to: "/admin/support", label: "الدعم" }, { to: "/user/dashboard", label: "عرض كعميل" },
+  ] },
+];
+
+function Card({ title, icon, children }: { title: string; icon: React.ReactNode; children: React.ReactNode }) {
+  return <div className="glass rounded-2xl p-5"><div className="mb-3 flex items-center gap-2 text-sm font-semibold"><span className="text-fx-cyan">{icon}</span>{title}</div>{children}</div>;
+}
+function Row({ a, b }: { a: string; b: string }) {
+  return <div className="flex justify-between border-b border-fx-line/60 py-1.5 text-sm"><span className="text-fx-muted">{a}</span><span className="font-fx-mono" dir="ltr">{b}</span></div>;
+}
+function Empty({ text }: { text: string }) { return <div className="py-4 text-center text-xs text-fx-muted">{text}</div>; }
+function StatusPill({ s }: { s: string }) {
+  const tone = s === "succeeded" || s === "completed" || s === "paid" ? "bg-fx-green/15 text-fx-green" : s === "failed" || s === "canceled" ? "bg-fx-red/15 text-fx-red" : "bg-fx-blue/15 text-fx-cyan";
+  return <span className={`rounded-full px-2 py-0.5 text-[10px] ${tone}`}>{s}</span>;
 }
 
 export function OwnerShell({
   profile, signOut, children,
 }: { profile: { full_name: string | null; email: string } | null; signOut: () => Promise<void>; children: React.ReactNode }) {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#05060d] font-[Inter,ui-sans-serif,system-ui] text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-0 h-[520px] w-[520px] rounded-full bg-amber-500/10 blur-[140px]" />
-        <div className="absolute right-0 top-1/2 h-[520px] w-[520px] rounded-full bg-violet-600/10 blur-[140px]" />
-      </div>
-      <header className="relative border-b border-amber-500/10 bg-black/40 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <Link to="/owner/dashboard" className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-amber-400/50 bg-amber-500/15 shadow-[0_0_20px_rgba(251,191,36,0.5)]">
-                <Crown className="h-4 w-4 text-amber-300" />
-              </div>
-              <div>
-                <div className="text-sm font-bold">HN-Pay Hub</div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-amber-300/70">Owner Console</div>
-              </div>
-            </Link>
-            <nav className="ml-8 hidden gap-1 md:flex">
-              <NavLink to="/owner/dashboard">Overview</NavLink>
-              <NavLink to="/owner/hn-pay/monitor">Monitor</NavLink>
-              <NavLink to="/owner/sites">Sites</NavLink>
-              <NavLink to="/owner/hn-pay/catalog">Catalog</NavLink>
-              <NavLink to="/owner/portfolios">Portfolios</NavLink>
-              <NavLink to="/owner/hn-pay/integrate">Integrate</NavLink>
-              <NavLink to="/owner/users">Users</NavLink>
-              <NavLink to="/owner/roles">Roles</NavLink>
-              <NavLink to="/owner/apps">Apps</NavLink>
+    <div className="fx" dir="rtl">
+      <header className="sticky top-0 z-40 border-b border-fx-line bg-fx-bg/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3">
+          <div className="flex items-center gap-6">
+            <Logo subtitle="Owner Console" />
+            <nav className="hidden gap-1 lg:flex">
+              <NavLink to="/owner/dashboard">نظرة عامة</NavLink>
+              <NavLink to="/admin">مركز القيادة</NavLink>
+              <NavLink to="/owner/sites">المواقع</NavLink>
+              <NavLink to="/owner/hn-pay/catalog">الكتالوج</NavLink>
+              <NavLink to="/admin/providers">البوابات</NavLink>
+              <NavLink to="/owner/hn-pay/monitor">المراقبة</NavLink>
+              <NavLink to="/owner/users">المستخدمون</NavLink>
             </nav>
           </div>
           <div className="flex items-center gap-3">
-            <div className="hidden text-right sm:block">
+            <div className="hidden text-end sm:block">
               <div className="text-xs">{profile?.full_name ?? profile?.email ?? "Owner"}</div>
-              <div className="text-[10px] uppercase tracking-wider text-amber-300">Owner</div>
+              <div className="text-[10px] uppercase tracking-wider text-fx-cyan">Owner</div>
             </div>
-            <button
-              onClick={async () => { await signOut(); window.location.href = "/auth"; }}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-1.5 text-xs text-neutral-300 hover:bg-white/5"
-            >
-              <LogOut className="h-3.5 w-3.5" /> Sign out
+            <button onClick={async () => { await signOut(); window.location.href = "/auth"; }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-fx-line px-3 py-1.5 text-xs hover:bg-fx-text/5">
+              <LogOut className="h-3.5 w-3.5" /> خروج
             </button>
           </div>
         </div>
       </header>
-      <main className="relative mx-auto max-w-7xl px-6 py-10">{children}</main>
+      <main className="mx-auto max-w-7xl px-6 py-10">{children}</main>
     </div>
   );
 }
 
 function NavLink({ to, children }: { to: string; children: React.ReactNode }) {
   return (
-    <Link
-      to={to as any}
-      activeProps={{ className: "bg-amber-500/15 border-amber-400/30 text-amber-200" }}
-      className="rounded-lg border border-transparent px-3 py-1.5 text-xs text-neutral-400 hover:text-white"
-    >
-      {children}
-    </Link>
+    <Link to={to as "/"} activeOptions={{ exact: true }} activeProps={{ className: "bg-fx-blue/20 text-fx-text" }}
+      className="rounded-lg px-3 py-1.5 text-xs text-fx-muted hover:text-fx-text">{children}</Link>
   );
 }
 
-function Stat({
-  icon, label, value, tone,
-}: { icon: React.ReactNode; label: string; value: React.ReactNode; tone: "amber" | "emerald" | "sky" | "violet" }) {
-  const tones: Record<string, string> = {
-    amber: "border-amber-400/40 bg-amber-500/10 text-amber-300",
-    emerald: "border-emerald-400/40 bg-emerald-500/10 text-emerald-300",
-    sky: "border-sky-400/40 bg-sky-500/10 text-sky-300",
-    violet: "border-violet-400/40 bg-violet-500/10 text-violet-300",
-  };
+function Stat({ icon, label, value, sub }: { icon: React.ReactNode; label: string; value: React.ReactNode; sub?: string }) {
   return (
-    <div className="rounded-2xl border border-amber-500/15 bg-white/[0.02] p-5 backdrop-blur-xl">
-      <div className="flex items-start justify-between">
-        <div>
-          <div className="text-[11px] uppercase tracking-[0.2em] text-neutral-500">{label}</div>
-          <div className="mt-2 text-3xl font-bold">{value}</div>
-        </div>
-        <div className={`flex h-11 w-11 items-center justify-center rounded-xl border ${tones[tone]}`}>{icon}</div>
-      </div>
+    <div className="glass rounded-2xl p-4">
+      <div className="flex items-center justify-between text-fx-cyan">{icon}</div>
+      <div className="mt-3 font-fx-mono text-2xl font-semibold" dir="ltr">{value}</div>
+      <div className="text-xs text-fx-muted">{label}</div>
+      {sub && <div className="text-[10px] text-fx-muted">{sub}</div>}
     </div>
-  );
-}
-
-function QuickLink({ to, title, desc }: { to: string; title: string; desc: string }) {
-  return (
-    <Link
-      to={to as any}
-      className="group block rounded-2xl border border-amber-500/15 bg-gradient-to-b from-white/[0.03] to-white/[0.01] p-5 transition hover:border-amber-400/40 hover:shadow-[0_0_30px_-10px_rgba(251,191,36,0.5)]"
-    >
-      <div className="text-sm font-bold">{title}</div>
-      <div className="mt-1 text-xs text-neutral-400">{desc}</div>
-      <div className="mt-3 text-[11px] text-amber-300">Open →</div>
-    </Link>
   );
 }

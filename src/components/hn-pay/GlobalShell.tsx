@@ -1,6 +1,7 @@
 import { useEffect, useState, type ReactNode } from "react";
 import { Link } from "@tanstack/react-router";
 import { ShieldCheck, Menu, X } from "lucide-react";
+import { Logo } from "@/components/brand/Logo";
 import { FxPrefsContext, type Currency, type Lang } from "./fx-prefs";
 
 const LANG_KEY = "hn-pay:lang";
@@ -68,13 +69,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
       <div className="fx" dir={dir}>
         <header className="sticky top-0 z-40 border-b border-fx-line bg-fx-bg/80 backdrop-blur-xl">
           <div className="mx-auto flex max-w-[1440px] items-center gap-5 px-5 py-3">
-            <Link to="/" className="flex shrink-0 items-center gap-2.5">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-fx shadow-fx"><ShieldCheck className="h-5 w-5 text-fx-text" /></span>
-              <span className="leading-tight">
-                <span className="block font-fx-latin text-base font-bold tracking-tight">HN-Pay Live</span>
-                <span className="hidden text-[10px] font-medium text-fx-cyan sm:block" dir="ltr">{t.badge}</span>
-              </span>
-            </Link>
+            <Logo subtitle={t.badge} />
             <nav className="hidden flex-1 items-center justify-center gap-4 whitespace-nowrap text-[13px] text-fx-muted xl:flex">
               {NAV[lang].map((n) => <a key={n.href} href={n.href} className="transition-colors hover:text-fx-text">{n.label}</a>)}
             </nav>
@@ -110,7 +105,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
 
         <footer className="border-t border-fx-line">
           <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-5 py-8 text-xs text-fx-muted md:flex-row">
-            <div className="flex items-center gap-2"><ShieldCheck className="h-4 w-4 text-fx-cyan" /><span className="font-fx-latin font-semibold text-fx-text">HN-Pay Live</span> · Groupe-HN © {2026} · {t.rights}</div>
+            <div className="flex items-center gap-2"><span className="font-fx-latin font-semibold text-fx-text">HN-Pay Live</span> · Groupe-HN © {2026} · {t.rights}</div>
             <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-fx-green" />{t.status} · <span dir="ltr">hnpay.live</span></div>
             <div className="flex gap-4"><Link to="/terms">{t.terms}</Link><Link to="/privacy">{t.privacy}</Link><span>PCI-DSS</span></div>
           </div>

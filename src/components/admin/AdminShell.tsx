@@ -1,3 +1,4 @@
+import logoImg from "@/assets/hnpay-logo-256.png";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useState, type ReactNode } from "react";
 import { useHnSession } from "@/lib/auth/use-session";
@@ -68,13 +69,11 @@ export function AdminShell({
         {/* Sidebar */}
         <aside className={`${open ? "w-64" : "w-16"} sticky top-0 hidden h-screen shrink-0 border-l border-amber-500/10 bg-black/50 backdrop-blur-xl transition-all md:block`}>
           <div className="flex h-16 items-center justify-between border-b border-amber-500/10 px-4">
-            <Link to="/admin" className="flex items-center gap-2 overflow-hidden">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-amber-400/50 bg-amber-500/15 shadow-[0_0_20px_rgba(251,191,36,0.35)]">
-                <Crown className="h-4 w-4 text-amber-300" />
-              </div>
+            <Link to="/" className="flex items-center gap-2 overflow-hidden" aria-label="HN-Pay Live — home">
+              <img src={logoImg} alt="HN-Pay Live" width={36} height={36} className="h-9 w-9 shrink-0" />
               {open && (
                 <div className="min-w-0">
-                  <div className="truncate text-sm font-bold leading-tight">HN-PAY</div>
+                  <div className="truncate text-sm font-bold leading-tight">HN-Pay Live</div>
                   <div className="text-[9px] uppercase tracking-[0.3em] text-amber-300/70">Admin Console</div>
                 </div>
               )}
