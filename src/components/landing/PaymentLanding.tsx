@@ -132,8 +132,8 @@ export function PaymentLanding() {
                 </button>
               ))}
             </div>
-            <Link to="/auth" className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block">{c.nav.signin}</Link>
-            <Link to="/auth" className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-ink-foreground hover:opacity-90">{c.nav.start}</Link>
+            <Link to="/auth" search={{ next: "", app: "" }} className="hidden text-sm font-medium text-muted-foreground hover:text-foreground sm:block">{c.nav.signin}</Link>
+            <Link to="/auth" search={{ next: "", app: "" }} className="rounded-full bg-ink px-4 py-2 text-sm font-semibold text-ink-foreground hover:opacity-90">{c.nav.start}</Link>
           </div>
         </div>
       </header>
@@ -149,7 +149,7 @@ export function PaymentLanding() {
             <h1 className="mt-6 text-4xl font-bold leading-[1.1] sm:text-5xl lg:text-6xl">{c.title}</h1>
             <p className="mt-6 max-w-xl text-lg leading-relaxed text-muted-foreground">{c.sub}</p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-brand-foreground shadow-card hover:opacity-95">
+              <Link to="/auth" search={{ next: "", app: "" }} className="inline-flex items-center gap-2 rounded-full bg-brand px-6 py-3 font-semibold text-brand-foreground shadow-card hover:opacity-95">
                 {c.cta} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
               </Link>
               <a href="#developers" className="inline-flex items-center gap-2 rounded-full border border-border px-6 py-3 font-semibold hover:bg-muted">
@@ -253,7 +253,7 @@ window.location.href = url; // → HN-PAY checkout`}</code></pre>
                 <ul className="mt-6 space-y-2.5 text-sm">
                   {items.map((it) => <li key={it} className="flex items-center gap-2"><Check className="h-4 w-4 text-brand" />{it}</li>)}
                 </ul>
-                <Link to="/auth" className={`mt-8 block rounded-full py-2.5 text-center text-sm font-semibold ${i === 1 ? "bg-brand text-brand-foreground" : "border border-border hover:bg-muted"}`}>{c.choose}</Link>
+                <Link to="/auth" search={{ next: "", app: "" }} className={`mt-8 block rounded-full py-2.5 text-center text-sm font-semibold ${i === 1 ? "bg-brand text-brand-foreground" : "border border-border hover:bg-muted"}`}>{c.choose}</Link>
               </div>
             ))}
           </div>
@@ -265,7 +265,7 @@ window.location.href = url; // → HN-PAY checkout`}</code></pre>
         <div className="mx-auto max-w-6xl rounded-3xl bg-gradient-brand px-8 py-14 text-center text-brand-foreground">
           <h2 className="text-3xl font-bold sm:text-4xl">{c.finalTitle}</h2>
           <p className="mt-3 opacity-90">{c.finalSub}</p>
-          <Link to="/auth" className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-ink-foreground">
+          <Link to="/auth" search={{ next: "", app: "" }} className="mt-8 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 font-semibold text-ink-foreground">
             {c.cta} <ArrowRight className="h-4 w-4 rtl:rotate-180" />
           </Link>
         </div>
