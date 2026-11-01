@@ -38,7 +38,7 @@ export const setSubscriptionPaused = createServerFn({ method: "POST" })
     const status = nextStatus(sub.status, data.action);
     if (!status) return { ok: false, error: "لا يمكن تنفيذ هذا الإجراء على حالة الاشتراك الحالية" };
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const meta = { ...((sub.metadata as Record<string, unknown>) ?? {}), [`${data.action}d_at`]: new Date().toISOString() };
+    const meta = { ...((sub.metadata as Record<string, string>) ?? {}), [`${data.action}d_at`]: new Date().toISOString() };
     const { error } = await supabaseAdmin.from("subscriptions").update({ status, metadata: meta, updated_at: new Date().toISOString() }).eq("id", sub.id);
     return error ? { ok: false, error: "تعذر التحديث" } : { ok: true, status };
   });
@@ -66,7 +66,7 @@ export const upgradeSubscription = createServerFn({ method: "POST" })
     const { data: plan } = await supabaseAdmin.from("plans").select("id, amount, site_id, is_active").eq("id", data.planId).maybeSingle();
     const current = Number((sub.plans as { amount?: number } | null)?.amount ?? 0);
     if (!plan || !plan.is_active || plan.site_id !== sub.site_id || Number(plan.amount) <= current) return { ok: false, error: "الخطة غير متاحة للترقية" };
-    const meta = { ...((sub.metadata as Record<string, unknown>) ?? {}), upgraded_from: sub.plan_id, upgraded_at: new Date().toISOString() };
+    const meta = { ...((sub.metadata as Record<string, string>) ?? {}), upgraded_from: sub.plan_id, upgraded_at: new Date().toISOString() };
     const { error } = await supabaseAdmin.from("subscriptions").update({ plan_id: plan.id, metadata: meta, updated_at: new Date().toISOString() }).eq("id", sub.id);
     return error ? { ok: false, error: "تعذر الترقية" } : { ok: true };
   });
