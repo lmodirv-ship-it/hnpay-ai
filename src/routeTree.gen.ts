@@ -22,6 +22,7 @@ import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authentic
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
 import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as DemoEmbedRouteImport } from './routes/demo.embed'
+import { Route as PayCmiBridgeRouteImport } from './routes/pay/cmi-bridge'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -31,6 +32,7 @@ import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin/categories'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
 import { Route as AuthenticatedAdminFinancialProjectsRouteImport } from './routes/_authenticated/admin/financial-projects'
+import { Route as AuthenticatedAdminGoogleCloudRouteImport } from './routes/_authenticated/admin/google-cloud'
 import { Route as AuthenticatedAdminIntegrationRouteImport } from './routes/_authenticated/admin/integration'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
@@ -43,6 +45,7 @@ import { Route as AuthenticatedAdminProvidersRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminRefundsRouteImport } from './routes/_authenticated/admin/refunds'
 import { Route as AuthenticatedAdminRenewalsRouteImport } from './routes/_authenticated/admin/renewals'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminRevenueRouteImport } from './routes/_authenticated/admin/revenue'
 import { Route as AuthenticatedAdminSecurityRouteImport } from './routes/_authenticated/admin/security'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminSettlementsRouteImport } from './routes/_authenticated/admin/settlements'
@@ -65,9 +68,11 @@ import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_au
 import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
+import { Route as ApiPublicV1EntitlementsRouteImport } from './routes/api/public/v1/entitlements'
 import { Route as ApiPublicWebhooksPaddleRouteImport } from './routes/api/public/webhooks/paddle'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
+import { Route as ApiPublicV1GoogleSyncRouteImport } from './routes/api/public/v1/google.sync'
 import { Route as ApiPublicV1GroupSecretsDistributionRouteImport } from './routes/api/public/v1/group/secrets-distribution'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
 
@@ -137,6 +142,11 @@ const DemoEmbedRoute = DemoEmbedRouteImport.update({
   path: '/demo/embed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PayCmiBridgeRoute = PayCmiBridgeRouteImport.update({
+  id: '/pay/cmi-bridge',
+  path: '/pay/cmi-bridge',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
   id: '/.lovable/oauth/consent',
   path: '/.lovable/oauth/consent',
@@ -187,6 +197,12 @@ const AuthenticatedAdminFinancialProjectsRoute =
   AuthenticatedAdminFinancialProjectsRouteImport.update({
     id: '/financial-projects',
     path: '/financial-projects',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminGoogleCloudRoute =
+  AuthenticatedAdminGoogleCloudRouteImport.update({
+    id: '/google-cloud',
+    path: '/google-cloud',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminIntegrationRoute =
@@ -258,6 +274,12 @@ const AuthenticatedAdminReportsRoute =
   AuthenticatedAdminReportsRouteImport.update({
     id: '/reports',
     path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminRevenueRoute =
+  AuthenticatedAdminRevenueRouteImport.update({
+    id: '/revenue',
+    path: '/revenue',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminSecurityRoute =
@@ -386,6 +408,11 @@ const ApiPublicV1CheckoutSessionsRoute =
     path: '/api/public/v1/checkout-sessions',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1EntitlementsRoute = ApiPublicV1EntitlementsRouteImport.update({
+  id: '/api/public/v1/entitlements',
+  path: '/api/public/v1/entitlements',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksPaddleRoute = ApiPublicWebhooksPaddleRouteImport.update({
   id: '/api/public/webhooks/paddle',
   path: '/api/public/webhooks/paddle',
@@ -402,6 +429,11 @@ const ApiPublicV1CheckoutSessionsSessionIdRoute =
     path: '/$sessionId',
     getParentRoute: () => ApiPublicV1CheckoutSessionsRoute,
   } as any)
+const ApiPublicV1GoogleSyncRoute = ApiPublicV1GoogleSyncRouteImport.update({
+  id: '/api/public/v1/google/sync',
+  path: '/api/public/v1/google/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1GroupSecretsDistributionRoute =
   ApiPublicV1GroupSecretsDistributionRouteImport.update({
     id: '/api/public/v1/group/secrets-distribution',
@@ -427,6 +459,7 @@ export interface FileRoutesByFullPath {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -435,6 +468,7 @@ export interface FileRoutesByFullPath {
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -447,6 +481,7 @@ export interface FileRoutesByFullPath {
   '/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -470,9 +505,11 @@ export interface FileRoutesByFullPath {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -488,6 +525,7 @@ export interface FileRoutesByTo {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -496,6 +534,7 @@ export interface FileRoutesByTo {
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -508,6 +547,7 @@ export interface FileRoutesByTo {
   '/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -531,9 +571,11 @@ export interface FileRoutesByTo {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -552,6 +594,7 @@ export interface FileRoutesById {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -560,6 +603,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/_authenticated/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/_authenticated/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/_authenticated/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -572,6 +616,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/_authenticated/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/_authenticated/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -595,9 +640,11 @@ export interface FileRoutesById {
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -616,6 +663,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/activity'
@@ -624,6 +672,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/customers'
     | '/admin/financial-projects'
+    | '/admin/google-cloud'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -636,6 +685,7 @@ export interface FileRouteTypes {
     | '/admin/refunds'
     | '/admin/renewals'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/security'
     | '/admin/settings'
     | '/admin/settlements'
@@ -659,9 +709,11 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesByTo: FileRoutesByTo
@@ -677,6 +729,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/activity'
@@ -685,6 +738,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/customers'
     | '/admin/financial-projects'
+    | '/admin/google-cloud'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -697,6 +751,7 @@ export interface FileRouteTypes {
     | '/admin/refunds'
     | '/admin/renewals'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/security'
     | '/admin/settings'
     | '/admin/settlements'
@@ -720,9 +775,11 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   id:
@@ -740,6 +797,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/activity'
@@ -748,6 +806,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/categories'
     | '/_authenticated/admin/customers'
     | '/_authenticated/admin/financial-projects'
+    | '/_authenticated/admin/google-cloud'
     | '/_authenticated/admin/integration'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/notifications'
@@ -760,6 +819,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/refunds'
     | '/_authenticated/admin/renewals'
     | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/revenue'
     | '/_authenticated/admin/security'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/settlements'
@@ -783,9 +843,11 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/hn-pay/providers'
     | '/_authenticated/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesById: FileRoutesById
@@ -802,12 +864,15 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CheckoutSessionIdRoute: typeof CheckoutSessionIdRoute
   DemoEmbedRoute: typeof DemoEmbedRoute
+  PayCmiBridgeRoute: typeof PayCmiBridgeRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   PayEmbedSessionIdRoute: typeof PayEmbedSessionIdRoute
   ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  ApiPublicV1EntitlementsRoute: typeof ApiPublicV1EntitlementsRoute
   ApiPublicWebhooksPaddleRoute: typeof ApiPublicWebhooksPaddleRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
+  ApiPublicV1GoogleSyncRoute: typeof ApiPublicV1GoogleSyncRoute
   ApiPublicV1GroupSecretsDistributionRoute: typeof ApiPublicV1GroupSecretsDistributionRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
@@ -905,6 +970,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoEmbedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/pay/cmi-bridge': {
+      id: '/pay/cmi-bridge'
+      path: '/pay/cmi-bridge'
+      fullPath: '/pay/cmi-bridge'
+      preLoaderRoute: typeof PayCmiBridgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/.lovable/oauth/consent': {
       id: '/.lovable/oauth/consent'
       path: '/.lovable/oauth/consent'
@@ -966,6 +1038,13 @@ declare module '@tanstack/react-router' {
       path: '/financial-projects'
       fullPath: '/admin/financial-projects'
       preLoaderRoute: typeof AuthenticatedAdminFinancialProjectsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/google-cloud': {
+      id: '/_authenticated/admin/google-cloud'
+      path: '/google-cloud'
+      fullPath: '/admin/google-cloud'
+      preLoaderRoute: typeof AuthenticatedAdminGoogleCloudRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/integration': {
@@ -1050,6 +1129,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/revenue': {
+      id: '/_authenticated/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AuthenticatedAdminRevenueRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/security': {
@@ -1206,6 +1292,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1CheckoutSessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/entitlements': {
+      id: '/api/public/v1/entitlements'
+      path: '/api/public/v1/entitlements'
+      fullPath: '/api/public/v1/entitlements'
+      preLoaderRoute: typeof ApiPublicV1EntitlementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/paddle': {
       id: '/api/public/webhooks/paddle'
       path: '/api/public/webhooks/paddle'
@@ -1226,6 +1319,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/v1/checkout-sessions/$sessionId'
       preLoaderRoute: typeof ApiPublicV1CheckoutSessionsSessionIdRouteImport
       parentRoute: typeof ApiPublicV1CheckoutSessionsRoute
+    }
+    '/api/public/v1/google/sync': {
+      id: '/api/public/v1/google/sync'
+      path: '/api/public/v1/google/sync'
+      fullPath: '/api/public/v1/google/sync'
+      preLoaderRoute: typeof ApiPublicV1GoogleSyncRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/group/secrets-distribution': {
       id: '/api/public/v1/group/secrets-distribution'
@@ -1251,6 +1351,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
   AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
   AuthenticatedAdminFinancialProjectsRoute: typeof AuthenticatedAdminFinancialProjectsRoute
+  AuthenticatedAdminGoogleCloudRoute: typeof AuthenticatedAdminGoogleCloudRoute
   AuthenticatedAdminIntegrationRoute: typeof AuthenticatedAdminIntegrationRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
@@ -1263,6 +1364,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminRefundsRoute: typeof AuthenticatedAdminRefundsRoute
   AuthenticatedAdminRenewalsRoute: typeof AuthenticatedAdminRenewalsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminRevenueRoute: typeof AuthenticatedAdminRevenueRoute
   AuthenticatedAdminSecurityRoute: typeof AuthenticatedAdminSecurityRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminSettlementsRoute: typeof AuthenticatedAdminSettlementsRoute
@@ -1283,6 +1385,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
     AuthenticatedAdminFinancialProjectsRoute:
       AuthenticatedAdminFinancialProjectsRoute,
+    AuthenticatedAdminGoogleCloudRoute: AuthenticatedAdminGoogleCloudRoute,
     AuthenticatedAdminIntegrationRoute: AuthenticatedAdminIntegrationRoute,
     AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
     AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
@@ -1295,6 +1398,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminRefundsRoute: AuthenticatedAdminRefundsRoute,
     AuthenticatedAdminRenewalsRoute: AuthenticatedAdminRenewalsRoute,
     AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+    AuthenticatedAdminRevenueRoute: AuthenticatedAdminRevenueRoute,
     AuthenticatedAdminSecurityRoute: AuthenticatedAdminSecurityRoute,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminSettlementsRoute: AuthenticatedAdminSettlementsRoute,
@@ -1396,13 +1500,16 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CheckoutSessionIdRoute: CheckoutSessionIdRoute,
   DemoEmbedRoute: DemoEmbedRoute,
+  PayCmiBridgeRoute: PayCmiBridgeRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   PayEmbedSessionIdRoute: PayEmbedSessionIdRoute,
   ApiPublicV1CheckoutSessionsRoute:
     ApiPublicV1CheckoutSessionsRouteWithChildren,
+  ApiPublicV1EntitlementsRoute: ApiPublicV1EntitlementsRoute,
   ApiPublicWebhooksPaddleRoute: ApiPublicWebhooksPaddleRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
+  ApiPublicV1GoogleSyncRoute: ApiPublicV1GoogleSyncRoute,
   ApiPublicV1GroupSecretsDistributionRoute:
     ApiPublicV1GroupSecretsDistributionRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,

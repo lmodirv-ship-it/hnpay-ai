@@ -85,7 +85,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_10px_rgba(52,211,153,0.9)]" />
               </span>
               <span className="font-mono text-emerald-300/90">
-                ● Core Node: Connected to 192.168.100.233:8181
+                ● hnpay.live · All systems operational
               </span>
             </div>
             <span className="hidden text-white/20 md:inline">|</span>
@@ -199,7 +199,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
               </div>
               <div className="mt-4 inline-flex items-center gap-1.5 text-[10px] font-mono text-emerald-300/80">
                 <Radio className="h-3 w-3" />
-                TLS 1.3 · Node 192.168.100.233:8181
+                TLS 1.3 · api.hnpay.live
               </div>
             </div>
           </div>

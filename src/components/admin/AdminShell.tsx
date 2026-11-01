@@ -33,6 +33,8 @@ const NAV: NavItem[] = [
   { group: "المالية",    to: "/admin/providers",     label: "مزودو الدفع",           icon: <Wallet className="h-4 w-4" /> },
   { group: "المالية",    to: "/admin/settlements",   label: "التسويات المالية",      icon: <Landmark className="h-4 w-4" /> },
   { group: "المالية",    to: "/admin/reports",       label: "التقارير والتحليلات",   icon: <BarChart3 className="h-4 w-4" /> },
+  { group: "المالية",    to: "/admin/revenue",       label: "الإيرادات و AdSense",    icon: <BarChart3 className="h-4 w-4" /> },
+  { group: "التقنية",    to: "/admin/google-cloud",  label: "Google Cloud",          icon: <Activity className="h-4 w-4" /> },
 
   { group: "التقنية",    to: "/admin/webhooks",      label: "Webhooks",              icon: <Webhook className="h-4 w-4" /> },
   { group: "التقنية",    to: "/admin/api-keys",      label: "مفاتيح API",            icon: <KeyRound className="h-4 w-4" /> },

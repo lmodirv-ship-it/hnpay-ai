@@ -2,13 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
+import { ConsumerHub } from "@/components/hn-pay/ConsumerHub";
 import {
   Crown, LogOut, User as UserIcon, Wallet, Zap, CheckCircle2,
   CreditCard, ArrowRight, Sparkles, Boxes,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/user/dashboard")({
-  head: () => ({ meta: [{ title: "My Dashboard · HN-Pay Hub" }] }),
+  head: () => ({ meta: [{ title: "My Wallet & Subscriptions · HN-Pay Live" }] }),
   component: UserDashboard,
 });
 
@@ -88,6 +89,8 @@ function UserDashboard() {
           </h1>
           <p className="mt-1 text-sm text-neutral-400">{profile?.email}</p>
         </div>
+
+        <ConsumerHub />
 
         {/* KPIs */}
         <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">

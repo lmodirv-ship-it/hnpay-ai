@@ -9,6 +9,9 @@ import { applePayProvider } from "./apple_pay.server";
 import { googlePayProvider } from "./google_pay.server";
 import { usdtProvider } from "./usdt.server";
 import { mockProvider } from "./mock.server";
+import { youcanPayProvider } from "./youcanpay.server";
+import { lemonSqueezyProvider } from "./lemonsqueezy.server";
+import { walletProvider } from "./wallet.server";
 import type { PaymentProvider, ProviderCode } from "./types";
 
 const REGISTRY: Record<string, PaymentProvider> = {
@@ -23,6 +26,9 @@ const REGISTRY: Record<string, PaymentProvider> = {
   google_pay: googlePayProvider,
   usdt: usdtProvider,
   mock: mockProvider,
+  youcan_pay: youcanPayProvider,
+  lemon_squeezy: lemonSqueezyProvider,
+  wallet: walletProvider,
 };
 
 export function getProvider(code: string): PaymentProvider {
@@ -138,7 +144,7 @@ export async function resolveDefaultProviderCode(siteId?: string): Promise<strin
 }
 
 export async function isProviderConfigured(code: ProviderCode, siteId?: string): Promise<boolean> {
-  if (code === "manual") return true;
+  if (code === "manual" || code === "wallet") return true;
   const cfg = await loadProviderConfig(code, siteId);
   if (cfg?.secret_key || cfg?.api_key) return true;
   if (code === "stripe") return Boolean(process.env.STRIPE_SECRET_KEY);

@@ -5,6 +5,7 @@ import {
   listPaymentProviders, togglePaymentProvider, setDefaultPaymentProvider, testPaymentProvider, deletePaymentProvider,
 } from "@/lib/hn-pay/payment-providers.functions";
 import { AdminShell, Card, Badge, EmptyState, StatCard } from "@/components/admin/AdminShell";
+import { RoutingMatrix } from "@/components/admin/RoutingMatrix";
 import { Wallet, CheckCircle2, XCircle, PlayCircle, Trash2, Star } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/providers")({
@@ -41,6 +42,8 @@ function ProvidersPage() {
         <StatCard icon={<Star className="h-5 w-5" />} label="افتراضي" value={rows.filter((r) => r.is_default).length} tone="sky" />
         <StatCard icon={<XCircle className="h-5 w-5" />} label="بحاجة انتباه" value={rows.filter((r) => r.last_test_status === "fail").length} tone="rose" />
       </div>
+
+      <div className="mb-6"><RoutingMatrix /></div>
 
       {rows.length === 0 ? <EmptyState title="لم تُعرَّف مزودات دفع بعد" desc="أنشئ مزودًا جديدًا من واجهة المزودين." /> : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
