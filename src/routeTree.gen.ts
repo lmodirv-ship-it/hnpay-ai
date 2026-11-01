@@ -66,9 +66,11 @@ import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_au
 import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
+import { Route as ApiPublicV1EntitlementsRouteImport } from './routes/api/public/v1/entitlements'
 import { Route as ApiPublicWebhooksPaddleRouteImport } from './routes/api/public/webhooks/paddle'
 import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public/webhooks/stripe'
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
+import { Route as ApiPublicV1GoogleSyncRouteImport } from './routes/api/public/v1/google.sync'
 import { Route as ApiPublicV1GroupSecretsDistributionRouteImport } from './routes/api/public/v1/group/secrets-distribution'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
 
@@ -392,6 +394,11 @@ const ApiPublicV1CheckoutSessionsRoute =
     path: '/api/public/v1/checkout-sessions',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1EntitlementsRoute = ApiPublicV1EntitlementsRouteImport.update({
+  id: '/api/public/v1/entitlements',
+  path: '/api/public/v1/entitlements',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicWebhooksPaddleRoute = ApiPublicWebhooksPaddleRouteImport.update({
   id: '/api/public/webhooks/paddle',
   path: '/api/public/webhooks/paddle',
@@ -408,6 +415,11 @@ const ApiPublicV1CheckoutSessionsSessionIdRoute =
     path: '/$sessionId',
     getParentRoute: () => ApiPublicV1CheckoutSessionsRoute,
   } as any)
+const ApiPublicV1GoogleSyncRoute = ApiPublicV1GoogleSyncRouteImport.update({
+  id: '/api/public/v1/google/sync',
+  path: '/api/public/v1/google/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1GroupSecretsDistributionRoute =
   ApiPublicV1GroupSecretsDistributionRouteImport.update({
     id: '/api/public/v1/group/secrets-distribution',
@@ -477,9 +489,11 @@ export interface FileRoutesByFullPath {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -539,9 +553,11 @@ export interface FileRoutesByTo {
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -604,9 +620,11 @@ export interface FileRoutesById {
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
   '/api/public/webhooks/stripe': typeof ApiPublicWebhooksStripeRoute
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
+  '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
@@ -669,9 +687,11 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesByTo: FileRoutesByTo
@@ -731,9 +751,11 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   id:
@@ -795,9 +817,11 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/hn-pay/providers'
     | '/_authenticated/owner/sites/$siteId'
     | '/api/public/v1/checkout-sessions'
+    | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
     | '/api/public/webhooks/stripe'
     | '/api/public/v1/checkout-sessions/$sessionId'
+    | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
     | '/api/public/v1/webhooks/mock'
   fileRoutesById: FileRoutesById
@@ -819,8 +843,10 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   PayEmbedSessionIdRoute: typeof PayEmbedSessionIdRoute
   ApiPublicV1CheckoutSessionsRoute: typeof ApiPublicV1CheckoutSessionsRouteWithChildren
+  ApiPublicV1EntitlementsRoute: typeof ApiPublicV1EntitlementsRoute
   ApiPublicWebhooksPaddleRoute: typeof ApiPublicWebhooksPaddleRoute
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
+  ApiPublicV1GoogleSyncRoute: typeof ApiPublicV1GoogleSyncRoute
   ApiPublicV1GroupSecretsDistributionRoute: typeof ApiPublicV1GroupSecretsDistributionRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
@@ -1226,6 +1252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1CheckoutSessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/entitlements': {
+      id: '/api/public/v1/entitlements'
+      path: '/api/public/v1/entitlements'
+      fullPath: '/api/public/v1/entitlements'
+      preLoaderRoute: typeof ApiPublicV1EntitlementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/webhooks/paddle': {
       id: '/api/public/webhooks/paddle'
       path: '/api/public/webhooks/paddle'
@@ -1246,6 +1279,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/public/v1/checkout-sessions/$sessionId'
       preLoaderRoute: typeof ApiPublicV1CheckoutSessionsSessionIdRouteImport
       parentRoute: typeof ApiPublicV1CheckoutSessionsRoute
+    }
+    '/api/public/v1/google/sync': {
+      id: '/api/public/v1/google/sync'
+      path: '/api/public/v1/google/sync'
+      fullPath: '/api/public/v1/google/sync'
+      preLoaderRoute: typeof ApiPublicV1GoogleSyncRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/v1/group/secrets-distribution': {
       id: '/api/public/v1/group/secrets-distribution'
@@ -1422,8 +1462,10 @@ const rootRouteChildren: RootRouteChildren = {
   PayEmbedSessionIdRoute: PayEmbedSessionIdRoute,
   ApiPublicV1CheckoutSessionsRoute:
     ApiPublicV1CheckoutSessionsRouteWithChildren,
+  ApiPublicV1EntitlementsRoute: ApiPublicV1EntitlementsRoute,
   ApiPublicWebhooksPaddleRoute: ApiPublicWebhooksPaddleRoute,
   ApiPublicWebhooksStripeRoute: ApiPublicWebhooksStripeRoute,
+  ApiPublicV1GoogleSyncRoute: ApiPublicV1GoogleSyncRoute,
   ApiPublicV1GroupSecretsDistributionRoute:
     ApiPublicV1GroupSecretsDistributionRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,
