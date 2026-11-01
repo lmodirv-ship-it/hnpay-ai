@@ -22,6 +22,7 @@ import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authentic
 import { Route as AuthSyncRouteImport } from './routes/auth.sync'
 import { Route as CheckoutSessionIdRouteImport } from './routes/checkout.$sessionId'
 import { Route as DemoEmbedRouteImport } from './routes/demo.embed'
+import { Route as PayCmiBridgeRouteImport } from './routes/pay/cmi-bridge'
 import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -135,6 +136,11 @@ const CheckoutSessionIdRoute = CheckoutSessionIdRouteImport.update({
 const DemoEmbedRoute = DemoEmbedRouteImport.update({
   id: '/demo/embed',
   path: '/demo/embed',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PayCmiBridgeRoute = PayCmiBridgeRouteImport.update({
+  id: '/pay/cmi-bridge',
+  path: '/pay/cmi-bridge',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
@@ -427,6 +433,7 @@ export interface FileRoutesByFullPath {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -488,6 +495,7 @@ export interface FileRoutesByTo {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -552,6 +560,7 @@ export interface FileRoutesById {
   '/auth/sync': typeof AuthSyncRoute
   '/checkout/$sessionId': typeof CheckoutSessionIdRoute
   '/demo/embed': typeof DemoEmbedRoute
+  '/pay/cmi-bridge': typeof PayCmiBridgeRoute
   '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/admin/activity': typeof AuthenticatedAdminActivityRoute
@@ -616,6 +625,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/activity'
@@ -677,6 +687,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/admin/activity'
@@ -740,6 +751,7 @@ export interface FileRouteTypes {
     | '/auth/sync'
     | '/checkout/$sessionId'
     | '/demo/embed'
+    | '/pay/cmi-bridge'
     | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/admin/activity'
@@ -802,6 +814,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   CheckoutSessionIdRoute: typeof CheckoutSessionIdRoute
   DemoEmbedRoute: typeof DemoEmbedRoute
+  PayCmiBridgeRoute: typeof PayCmiBridgeRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   PayEmbedSessionIdRoute: typeof PayEmbedSessionIdRoute
@@ -903,6 +916,13 @@ declare module '@tanstack/react-router' {
       path: '/demo/embed'
       fullPath: '/demo/embed'
       preLoaderRoute: typeof DemoEmbedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pay/cmi-bridge': {
+      id: '/pay/cmi-bridge'
+      path: '/pay/cmi-bridge'
+      fullPath: '/pay/cmi-bridge'
+      preLoaderRoute: typeof PayCmiBridgeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.lovable/oauth/consent': {
@@ -1396,6 +1416,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   CheckoutSessionIdRoute: CheckoutSessionIdRoute,
   DemoEmbedRoute: DemoEmbedRoute,
+  PayCmiBridgeRoute: PayCmiBridgeRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   PayEmbedSessionIdRoute: PayEmbedSessionIdRoute,
