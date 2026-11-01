@@ -67,6 +67,7 @@ import { Route as AuthenticatedOwnerHnPayIntegrateRouteImport } from './routes/_
 import { Route as AuthenticatedOwnerHnPayMonitorRouteImport } from './routes/_authenticated/owner/hn-pay.monitor'
 import { Route as AuthenticatedOwnerHnPayProvidersRouteImport } from './routes/_authenticated/owner/hn-pay.providers'
 import { Route as AuthenticatedOwnerSitesSiteIdRouteImport } from './routes/_authenticated/owner/sites.$siteId'
+import { Route as AuthenticatedUserInvoicePublicIdRouteImport } from './routes/_authenticated/user.invoice.$publicId'
 import { Route as ApiPublicV1CheckoutSessionsRouteImport } from './routes/api/public/v1/checkout-sessions'
 import { Route as ApiPublicV1EntitlementsRouteImport } from './routes/api/public/v1/entitlements'
 import { Route as ApiPublicWebhooksPaddleRouteImport } from './routes/api/public/webhooks/paddle'
@@ -402,6 +403,12 @@ const AuthenticatedOwnerSitesSiteIdRoute =
     path: '/$siteId',
     getParentRoute: () => AuthenticatedOwnerSitesRoute,
   } as any)
+const AuthenticatedUserInvoicePublicIdRoute =
+  AuthenticatedUserInvoicePublicIdRouteImport.update({
+    id: '/user/invoice/$publicId',
+    path: '/user/invoice/$publicId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const ApiPublicV1CheckoutSessionsRoute =
   ApiPublicV1CheckoutSessionsRouteImport.update({
     id: '/api/public/v1/checkout-sessions',
@@ -504,6 +511,7 @@ export interface FileRoutesByFullPath {
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/user/invoice/$publicId': typeof AuthenticatedUserInvoicePublicIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
@@ -570,6 +578,7 @@ export interface FileRoutesByTo {
   '/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/user/invoice/$publicId': typeof AuthenticatedUserInvoicePublicIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
@@ -639,6 +648,7 @@ export interface FileRoutesById {
   '/_authenticated/owner/hn-pay/monitor': typeof AuthenticatedOwnerHnPayMonitorRoute
   '/_authenticated/owner/hn-pay/providers': typeof AuthenticatedOwnerHnPayProvidersRoute
   '/_authenticated/owner/sites/$siteId': typeof AuthenticatedOwnerSitesSiteIdRoute
+  '/_authenticated/user/invoice/$publicId': typeof AuthenticatedUserInvoicePublicIdRoute
   '/api/public/v1/checkout-sessions': typeof ApiPublicV1CheckoutSessionsRouteWithChildren
   '/api/public/v1/entitlements': typeof ApiPublicV1EntitlementsRoute
   '/api/public/webhooks/paddle': typeof ApiPublicWebhooksPaddleRoute
@@ -708,6 +718,7 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
+    | '/user/invoice/$publicId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
@@ -774,6 +785,7 @@ export interface FileRouteTypes {
     | '/owner/hn-pay/monitor'
     | '/owner/hn-pay/providers'
     | '/owner/sites/$siteId'
+    | '/user/invoice/$publicId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
@@ -842,6 +854,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/hn-pay/monitor'
     | '/_authenticated/owner/hn-pay/providers'
     | '/_authenticated/owner/sites/$siteId'
+    | '/_authenticated/user/invoice/$publicId'
     | '/api/public/v1/checkout-sessions'
     | '/api/public/v1/entitlements'
     | '/api/public/webhooks/paddle'
@@ -1285,6 +1298,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerSitesSiteIdRouteImport
       parentRoute: typeof AuthenticatedOwnerSitesRoute
     }
+    '/_authenticated/user/invoice/$publicId': {
+      id: '/_authenticated/user/invoice/$publicId'
+      path: '/user/invoice/$publicId'
+      fullPath: '/user/invoice/$publicId'
+      preLoaderRoute: typeof AuthenticatedUserInvoicePublicIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/api/public/v1/checkout-sessions': {
       id: '/api/public/v1/checkout-sessions'
       path: '/api/public/v1/checkout-sessions'
@@ -1442,6 +1462,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerHnPayIntegrateRoute: typeof AuthenticatedOwnerHnPayIntegrateRoute
   AuthenticatedOwnerHnPayMonitorRoute: typeof AuthenticatedOwnerHnPayMonitorRoute
   AuthenticatedOwnerHnPayProvidersRoute: typeof AuthenticatedOwnerHnPayProvidersRoute
+  AuthenticatedUserInvoicePublicIdRoute: typeof AuthenticatedUserInvoicePublicIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -1457,6 +1478,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerHnPayIntegrateRoute: AuthenticatedOwnerHnPayIntegrateRoute,
   AuthenticatedOwnerHnPayMonitorRoute: AuthenticatedOwnerHnPayMonitorRoute,
   AuthenticatedOwnerHnPayProvidersRoute: AuthenticatedOwnerHnPayProvidersRoute,
+  AuthenticatedUserInvoicePublicIdRoute: AuthenticatedUserInvoicePublicIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
