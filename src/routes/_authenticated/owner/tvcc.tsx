@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
-import { Copy, Check, Link2, Search, Globe, Layers, Users, Inbox, RefreshCw } from "lucide-react";
+import { Copy, Check, Link2, Search, Globe, Layers, Users, Inbox, RefreshCw, Server, KeyRound } from "lucide-react";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { useHnSession } from "@/lib/auth/use-session";
 import { getTvccOverview, listSiteRequests, reviewSiteRequest, pullFromTvcc } from "@/lib/hn-pay/tvcc.functions";
@@ -94,6 +94,23 @@ Content-Type: application/json
       </section>
 
       <section className="mb-6 rounded-2xl border border-fx-line bg-fx-card p-5">
+        <div className="mb-4 flex items-center gap-2">
+          <Server className="h-5 w-5 text-fx-cyan" />
+          <h2 className="font-semibold">معلومات الربط مع HN-Pay Live</h2>
+        </div>
+        <p className="mb-4 text-sm text-fx-muted">هذه البيانات تُستخدم في نافذة «إضافة تكامل مخصص» في TVCC أو أي منصة خارجية تريد مزامنة مواقعها وباقاتها مع HN-Pay Live.</p>
+        <div className="grid gap-3 md:grid-cols-2">
+          <Field label="اسم الخدمة" value="HN-Pay Live" k="name" copied={copied} copy={copy} />
+          <Field label="طريقة الربط" value="رابط URL (Webhook Push)" k="method" copied={copied} copy={copy} />
+          <Field label="رابط الخدمة (URL)" value={endpoint} k="url" copied={copied} copy={copy} mono full />
+          <Field label="المفتاح السري" value="HN_CRON_SECRET — محفوظ ومفعّل" k="secret" copied={copied} copy={copy} icon={<KeyRound className="h-4 w-4 text-fx-emerald" />} note="لا يُعرض هنا لأسباب أمنية. يُدار من إعدادات الأسرار." />
+        </div>
+        <div className="mt-4 rounded-lg border border-fx-line bg-fx-bg/60 p-3 text-xs text-fx-muted">
+          <b className="text-fx-text">ما الذي يحدث عند الربط؟</b> كل مزامنة من TVCC تُحدّث تلقائياً: لائحة المواقع، الباقات والأسعار، وحالة كل موقع (نشط/متوقف). تظهر النتائج في الجدول أدناه فوراً، وتسجَّل كل عملية في سجل المزامنة.
+        </div>
+      </section>
+
+      <section className="mb-6 rounded-2xl border border-fx-line bg-fx-card p-5">
         <div className="mb-4 flex flex-wrap items-center gap-3">
           <h2 className="me-auto font-semibold">المواقع والباقات والاشتراكات</h2>
           <div className="flex rounded-lg border border-fx-line text-xs">
@@ -172,6 +189,24 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value?: 
     <div className="rounded-2xl border border-fx-line bg-fx-card p-4">
       <div className="flex items-center gap-2 text-xs text-fx-muted"><Icon className="h-4 w-4 text-fx-cyan" />{label}</div>
       <div className="mt-1 font-mono text-2xl">{value ?? "—"}</div>
+    </div>
+  );
+}
+
+function Field({ label, value, k, copied, copy, mono, full, icon, note }: {
+  label: string; value: string; k: string; copied: string; copy: (k: string, v: string) => void;
+  mono?: boolean; full?: boolean; icon?: React.ReactNode; note?: string;
+}) {
+  return (
+    <div className={`rounded-lg border border-fx-line bg-fx-bg/60 p-3 ${full ? "md:col-span-2" : ""}`}>
+      <div className="mb-1 flex items-center gap-1.5 text-[11px] text-fx-muted">{icon}{label}</div>
+      <div className="flex items-center gap-2">
+        <span className={`flex-1 truncate text-sm ${mono ? "font-mono text-xs" : ""}`} dir={mono ? "ltr" : undefined}>{value}</span>
+        <button onClick={() => copy(k, value)} aria-label={`نسخ ${label}`} className="shrink-0 text-fx-muted hover:text-fx-text">
+          {copied === k ? <Check className="h-4 w-4 text-fx-emerald" /> : <Copy className="h-4 w-4" />}
+        </button>
+      </div>
+      {note && <p className="mt-1 text-[11px] text-fx-muted">{note}</p>}
     </div>
   );
 }
