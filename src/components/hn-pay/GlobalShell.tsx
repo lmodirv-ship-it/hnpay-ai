@@ -37,7 +37,7 @@ const T = {
 };
 
 const CURRENCIES: { c: Currency; label: string }[] = [
-  { c: "MAD", label: "MAD" }, { c: "EUR", label: "EUR €" }, { c: "USD", label: "USD $" }, { c: "GBP", label: "GBP £" },
+  { c: "MAD", label: "MAD" }, { c: "EUR", label: "€ EUR" }, { c: "USD", label: "$ USD" }, { c: "GBP", label: "£ GBP" },
 ];
 const LANGS: { l: Lang; label: string }[] = [{ l: "ar", label: "العربية" }, { l: "fr", label: "Français" }, { l: "en", label: "English" }];
 
@@ -67,7 +67,7 @@ export function GlobalShell({ children }: { children: ReactNode }) {
     <FxPrefsContext.Provider value={{ lang, currency, setLang, setCurrency }}>
       <div className="fx" dir={dir}>
         <header className="sticky top-0 z-40 border-b border-fx-line bg-fx-bg/80 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-7xl items-center gap-6 px-5 py-3">
+          <div className="mx-auto flex max-w-[1440px] items-center gap-5 px-5 py-3">
             <Link to="/" className="flex shrink-0 items-center gap-2.5">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-fx shadow-fx"><ShieldCheck className="h-5 w-5 text-fx-text" /></span>
               <span className="leading-tight">
@@ -75,20 +75,20 @@ export function GlobalShell({ children }: { children: ReactNode }) {
                 <span className="hidden text-[10px] font-medium text-fx-cyan sm:block" dir="ltr">{t.badge}</span>
               </span>
             </Link>
-            <nav className="hidden flex-1 items-center justify-center gap-5 text-sm text-fx-muted xl:flex">
+            <nav className="hidden flex-1 items-center justify-center gap-4 whitespace-nowrap text-[13px] text-fx-muted xl:flex">
               {NAV[lang].map((n) => <a key={n.href} href={n.href} className="transition-colors hover:text-fx-text">{n.label}</a>)}
             </nav>
-            <div className="ms-auto hidden items-center gap-2 lg:flex">
+            <div className="ms-auto hidden items-center gap-2 whitespace-nowrap lg:flex">
               <div role="group" aria-label="Currency" className="flex rounded-lg border border-fx-line p-0.5 font-fx-mono text-[11px]" dir="ltr">
                 {CURRENCIES.map((x) => (
                   <button key={x.c} onClick={() => setCurrency(x.c)} aria-pressed={currency === x.c}
-                    className={`rounded-md px-2 py-1 ${currency === x.c ? "bg-fx-blue text-fx-text" : "text-fx-muted hover:text-fx-text"}`}>{x.label}</button>
+                    className={`whitespace-nowrap rounded-md px-1.5 py-1 ${currency === x.c ? "bg-fx-blue text-fx-text" : "text-fx-muted hover:text-fx-text"}`}>{x.label}</button>
                 ))}
               </div>
               <div role="group" aria-label="Language" className="flex rounded-lg border border-fx-line p-0.5 text-[11px]">
                 {LANGS.map((x) => (
                   <button key={x.l} onClick={() => setLang(x.l)} aria-pressed={lang === x.l}
-                    className={`rounded-md px-2 py-1 ${lang === x.l ? "bg-fx-text/10 text-fx-text" : "text-fx-muted hover:text-fx-text"}`}>{x.label}</button>
+                    className={`whitespace-nowrap rounded-md px-1.5 py-1 ${lang === x.l ? "bg-fx-text/10 text-fx-text" : "text-fx-muted hover:text-fx-text"}`}>{x.label}</button>
                 ))}
               </div>
               <Link to="/user/dashboard" className="rounded-lg border border-fx-line px-3 py-1.5 text-sm hover:bg-fx-text/5">{t.portal}</Link>
