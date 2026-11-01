@@ -25,7 +25,7 @@ export const getOwnerOverview = createServerFn({ method: "GET" })
     const since30 = new Date(Date.now() - 30 * 864e5).toISOString();
 
     const [sites, activeSites, projects, domains, customers, users, activeSubs, pausedSubs, plans, providersEnabled, routingRules, groupMembers, syncPending, invoices, refunds, checkoutOpen] = await Promise.all([
-      count("sites"), count("sites", (q) => q.eq("status", "active")), count("hn_projects"), count("project_domains"),
+      count("sites"), count("sites", (q) => q.eq("is_active", true)), count("hn_projects"), count("project_domains"),
       count("customers"), count("profiles"),
       count("subscriptions", (q) => q.in("status", ["active", "trialing"])), count("subscriptions", (q) => q.eq("status", "paused")),
       count("plans", (q) => q.eq("is_active", true)), count("payment_providers", (q) => q.eq("is_enabled", true)),
