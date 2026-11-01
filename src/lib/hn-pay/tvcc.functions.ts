@@ -42,7 +42,7 @@ export const getTvccOverview = createServerFn({ method: "POST" })
     return {
       rows, total: count ?? 0, pageSize: size, runs: runs.data ?? [],
       totals: { sites: t1.count ?? 0, tvccSites: t2.count ?? 0, plans: t3.count ?? 0, activeSubs: t4.count ?? 0, pendingRequests: t5.count ?? 0 },
-      configured: !!process.env.HN_CRON_SECRET,
+      configured: !!process.env.HN_CRON_SECRET, pullConfigured: !!process.env.TVCC_API_TOKEN,
     };
   });
 
@@ -64,4 +64,19 @@ export const reviewSiteRequest = createServerFn({ method: "POST" })
     const { error } = await db.from("user_site_requests").update({ status: data.status, updated_at: new Date().toISOString() }).eq("id", data.id).eq("status", "pending");
     if (error) throw new Error(error.message);
     return { ok: true };
+  });
+
+/** Owner-triggered pull from the TVCC catalog (TVCC is the source of truth for site linkage). */
+export const pullFromTvcc = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    await assertOwner(context);
+    const url = process.env.TVCC_CATALOG_URL, token = process.env.TVCC_API_TOKEN;
+    if (!url || !token) throw new Error("TVCC غير مهيأ");
+    const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+    if (!res.ok) throw new Error(`TVCC ${res.status}: ${(await res.text()).slice(0, 200)}`);
+    const { mapTvccCatalog, applyTvccSync } = await import("./tvcc-sync.server");
+    const payload = mapTvccCatalog(await res.json());
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    return applyTvccSync(supabaseAdmin, payload);
   });
