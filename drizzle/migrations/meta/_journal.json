@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1793519803193,
+      "tag": "0000_hnpay_global_wallet_routing_google",
+      "breakpoints": true
+    }
+  ]
+}

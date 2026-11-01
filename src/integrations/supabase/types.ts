@@ -704,6 +704,39 @@ export type Database = {
           },
         ]
       }
+      consumer_wallets: {
+        Row: {
+          balance_eur: number
+          balance_mad: number
+          balance_usd: number
+          created_at: string
+          email: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance_eur?: number
+          balance_mad?: number
+          balance_usd?: number
+          created_at?: string
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance_eur?: number
+          balance_mad?: number
+          balance_usd?: number
+          created_at?: string
+          email?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       customers: {
         Row: {
           created_at: string
@@ -770,6 +803,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      google_sync_events: {
+        Row: {
+          attempts: number
+          created_at: string
+          event_type: string
+          google_destination: string
+          id: string
+          last_error: string | null
+          payload: Json
+          sync_status: string
+          synced_at: string | null
+        }
+        Insert: {
+          attempts?: number
+          created_at?: string
+          event_type: string
+          google_destination: string
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          sync_status?: string
+          synced_at?: string | null
+        }
+        Update: {
+          attempts?: number
+          created_at?: string
+          event_type?: string
+          google_destination?: string
+          id?: string
+          last_error?: string | null
+          payload?: Json
+          sync_status?: string
+          synced_at?: string | null
+        }
+        Relationships: []
       }
       hn_apps: {
         Row: {
@@ -2089,6 +2158,48 @@ export type Database = {
         }
         Relationships: []
       }
+      routing_rules: {
+        Row: {
+          condition_app_category: string | null
+          condition_country: string | null
+          condition_currency: string | null
+          created_at: string
+          fallback_provider: string | null
+          id: string
+          is_active: boolean
+          name: string | null
+          primary_provider: string
+          priority: number
+          updated_at: string
+        }
+        Insert: {
+          condition_app_category?: string | null
+          condition_country?: string | null
+          condition_currency?: string | null
+          created_at?: string
+          fallback_provider?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          primary_provider: string
+          priority?: number
+          updated_at?: string
+        }
+        Update: {
+          condition_app_category?: string | null
+          condition_country?: string | null
+          condition_currency?: string | null
+          created_at?: string
+          fallback_provider?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string | null
+          primary_provider?: string
+          priority?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       settlements: {
         Row: {
           bank_reference: string | null
@@ -2216,7 +2327,10 @@ export type Database = {
       }
       sites: {
         Row: {
+          adsense_enabled: boolean
+          adsense_publisher_id: string | null
           allowed_origins: string[]
+          allowed_providers: string[]
           api_enabled: boolean
           brand_color: string | null
           created_at: string
@@ -2227,6 +2341,7 @@ export type Database = {
           domain_id: string | null
           enabled_providers: string[]
           environment: string
+          google_analytics_id: string | null
           id: string
           integration_mode: string
           integration_status: string
@@ -2247,7 +2362,10 @@ export type Database = {
           webhook_url: string | null
         }
         Insert: {
+          adsense_enabled?: boolean
+          adsense_publisher_id?: string | null
           allowed_origins?: string[]
+          allowed_providers?: string[]
           api_enabled?: boolean
           brand_color?: string | null
           created_at?: string
@@ -2258,6 +2376,7 @@ export type Database = {
           domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
+          google_analytics_id?: string | null
           id?: string
           integration_mode?: string
           integration_status?: string
@@ -2278,7 +2397,10 @@ export type Database = {
           webhook_url?: string | null
         }
         Update: {
+          adsense_enabled?: boolean
+          adsense_publisher_id?: string | null
           allowed_origins?: string[]
+          allowed_providers?: string[]
           api_enabled?: boolean
           brand_color?: string | null
           created_at?: string
@@ -2289,6 +2411,7 @@ export type Database = {
           domain_id?: string | null
           enabled_providers?: string[]
           environment?: string
+          google_analytics_id?: string | null
           id?: string
           integration_mode?: string
           integration_status?: string
@@ -2462,6 +2585,57 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          id: string
+          metadata: Json
+          reference: string | null
+          source_site_id: string | null
+          type: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency: string
+          id?: string
+          metadata?: Json
+          reference?: string | null
+          source_site_id?: string | null
+          type: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          metadata?: Json
+          reference?: string | null
+          source_site_id?: string | null
+          type?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_source_site_id_fkey"
+            columns: ["source_site_id"]
+            isOneToOne: false
+            referencedRelation: "sites"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "consumer_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       webhook_events: {
         Row: {
           attempts: number
@@ -2537,6 +2711,18 @@ export type Database = {
       user_can_access_project: {
         Args: { _project_id: string }
         Returns: boolean
+      }
+      wallet_apply: {
+        Args: {
+          _amount: number
+          _currency: string
+          _email: string
+          _reference: string
+          _site_id: string
+          _type: string
+          _user_id: string
+        }
+        Returns: string
       }
     }
     Enums: {
