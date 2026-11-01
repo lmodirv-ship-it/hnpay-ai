@@ -93,84 +93,84 @@ export function ConsumerHub() {
   return (
     <section className="mb-10 grid gap-4 lg:grid-cols-3">
       {msg && (
-        <div role="status" className={`lg:col-span-3 flex items-center justify-between rounded-xl border px-4 py-2 text-sm ${msg.tone === "ok" ? "border-emerald-400/30 bg-emerald-500/10 text-emerald-100" : "border-rose-400/30 bg-rose-500/10 text-rose-100"}`}>
+        <div role="status" className={`lg:col-span-3 flex items-center justify-between rounded-xl border px-4 py-2 text-sm ${msg.tone === "ok" ? "border-fx-green/30 bg-fx-green/10 text-fx-green" : "border-rose-400/30 bg-rose-500/10 text-rose-100"}`}>
           <span>{msg.text}</span><button aria-label="Dismiss" onClick={() => setMsg(null)}><X className="h-4 w-4" /></button>
         </div>
       )}
 
-      <div className="rounded-2xl border border-emerald-400/20 bg-white/[0.02] p-6">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-emerald-300"><Wallet className="h-4 w-4" /> HN-Pay Wallet</div>
+      <div className="rounded-2xl border border-fx-green/20 bg-fx-card p-6">
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-fx-green"><Wallet className="h-4 w-4" /> HN-Pay Wallet</div>
         <div className="mt-4 grid grid-cols-3 gap-2 text-center">
           {(["eur", "usd", "mad"] as const).map((c) => (
-            <div key={c} className="rounded-lg border border-white/10 bg-black/30 p-2">
-              <div className="text-[10px] text-neutral-500">{c.toUpperCase()}</div>
+            <div key={c} className="rounded-lg border border-fx-line bg-fx-bg/60 p-2">
+              <div className="text-[10px] text-fx-muted">{c.toUpperCase()}</div>
               <div className="font-mono text-lg">{Number((w as Record<string, unknown> | null)?.[`balance_${c}`] ?? 0).toFixed(2)}</div>
             </div>
           ))}
         </div>
-        <button onClick={() => setTopup((v) => !v)} className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-xl border border-emerald-400/40 bg-emerald-500/10 py-2 text-sm text-emerald-100">
+        <button onClick={() => setTopup((v) => !v)} className="mt-4 inline-flex w-full items-center justify-center gap-1 rounded-xl border border-fx-green/40 bg-fx-green/10 py-2 text-sm text-fx-green">
           <Plus className="h-4 w-4" /> Top Up Wallet
         </button>
         {topup && (
-          <div className="mt-3 space-y-3 rounded-lg border border-white/10 bg-black/40 p-3">
+          <div className="mt-3 space-y-3 rounded-lg border border-fx-line bg-fx-bg/60 p-3">
             <div className="grid grid-cols-2 gap-2">
               {METHODS.map((m) => (
                 <button key={m.id} onClick={() => setMethod(m.id)} aria-pressed={method === m.id}
-                  className={`rounded-lg border p-2 text-start text-xs ${method === m.id ? "border-emerald-400/60 bg-emerald-500/15" : "border-white/10"}`}>
+                  className={`rounded-lg border p-2 text-start text-xs ${method === m.id ? "border-fx-green/60 bg-fx-green/15" : "border-fx-line"}`}>
                   <div className="flex items-center gap-1 font-medium"><m.icon className="h-3.5 w-3.5" />{m.label}</div>
-                  <div className="text-[10px] text-neutral-500">{m.hint}</div>
+                  <div className="text-[10px] text-fx-muted">{m.hint}</div>
                 </button>
               ))}
             </div>
             <div className="flex gap-2">
-              <input aria-label="Amount" type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 font-mono text-sm" />
-              <select aria-label="Currency" value={currency} onChange={(e) => setCurrency(e.target.value as Cur)} className="rounded-lg border border-white/10 bg-black/40 px-2 text-sm">
+              <input aria-label="Amount" type="number" min="1" value={amount} onChange={(e) => setAmount(e.target.value)} className="w-full rounded-lg border border-fx-line bg-fx-bg/60 px-3 py-2 font-mono text-sm" />
+              <select aria-label="Currency" value={currency} onChange={(e) => setCurrency(e.target.value as Cur)} className="rounded-lg border border-fx-line bg-fx-bg/60 px-2 text-sm">
                 {(method === "youcan_pay" ? ["MAD"] : method === "paypal" ? ["EUR", "USD"] : ["MAD", "EUR", "USD"]).map((c) => <option key={c}>{c}</option>)}
               </select>
             </div>
-            <div className="flex gap-1">{[50, 100, 250, 500].map((v) => <button key={v} onClick={() => setAmount(String(v))} className="flex-1 rounded border border-white/10 py-1 text-[11px]">{v}</button>)}</div>
-            <button disabled={busy} onClick={submitTopup} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 py-2 text-sm font-semibold text-black disabled:opacity-60">
+            <div className="flex gap-1">{[50, 100, 250, 500].map((v) => <button key={v} onClick={() => setAmount(String(v))} className="flex-1 rounded border border-fx-line py-1 text-[11px]">{v}</button>)}</div>
+            <button disabled={busy} onClick={submitTopup} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-fx-green py-2 text-sm font-semibold text-black disabled:opacity-60">
               {busy && <Loader2 className="h-4 w-4 animate-spin" />} {method === "bank_transfer" ? "Get transfer reference" : `Pay ${amount || 0} ${currency} now`}
             </button>
           </div>
         )}
       </div>
 
-      <div className="rounded-2xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 to-transparent p-6">
-        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-amber-300"><Crown className="h-4 w-4" /> NAWAT Pass</div>
+      <div className="rounded-2xl border border-fx-blue/30 bg-gradient-to-br from-fx-blue/10 to-transparent p-6">
+        <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.2em] text-fx-blue"><Crown className="h-4 w-4" /> NAWAT Pass</div>
         <div className="mt-3 text-2xl font-bold">{activeCount > 0 ? "Active" : "Not active"}</div>
-        <p className="mt-1 text-xs text-neutral-400">One master subscription unlocks premium tiers across every connected Groupe-HN platform.</p>
+        <p className="mt-1 text-xs text-fx-muted">One master subscription unlocks premium tiers across every connected Groupe-HN platform.</p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
-        <div className="text-[11px] uppercase tracking-[0.2em] text-neutral-400">Recent wallet activity</div>
+      <div className="rounded-2xl border border-fx-line bg-fx-card p-6">
+        <div className="text-[11px] uppercase tracking-[0.2em] text-fx-muted">Recent wallet activity</div>
         <ul className="mt-3 space-y-1 text-xs">
-          {(hub?.txs ?? []).length === 0 ? <li className="text-neutral-500">No activity yet.</li> :
+          {(hub?.txs ?? []).length === 0 ? <li className="text-fx-muted">No activity yet.</li> :
             hub!.txs.map((t) => <li key={t.id} className="flex justify-between"><span className="capitalize">{t.type}</span><span className="font-mono">{t.type === "spend" ? "-" : "+"}{Number(t.amount).toFixed(2)} {t.currency}</span></li>)}
         </ul>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6 lg:col-span-3">
-        <div className="mb-3 text-[11px] uppercase tracking-[0.2em] text-neutral-400">All subscriptions across Groupe-HN</div>
-        {(hub?.subscriptions ?? []).length === 0 ? <div className="text-xs text-neutral-500">No subscriptions yet.</div> : (
+      <div className="rounded-2xl border border-fx-line bg-fx-card p-6 lg:col-span-3">
+        <div className="mb-3 text-[11px] uppercase tracking-[0.2em] text-fx-muted">All subscriptions across Groupe-HN</div>
+        {(hub?.subscriptions ?? []).length === 0 ? <div className="text-xs text-fx-muted">No subscriptions yet.</div> : (
           <table className="w-full text-xs">
-            <thead className="text-neutral-500"><tr><th className="p-2 text-start">Site</th><th className="p-2 text-start">Plan</th><th className="p-2">Status</th><th className="p-2">Renews</th><th className="p-2">Manage</th></tr></thead>
+            <thead className="text-fx-muted"><tr><th className="p-2 text-start">Site</th><th className="p-2 text-start">Plan</th><th className="p-2">Status</th><th className="p-2">Renews</th><th className="p-2">Manage</th></tr></thead>
             <tbody>
               {hub!.subscriptions.map((s) => {
                 const site = s.sites as { name?: string; domain?: string } | null;
                 const plan = s.plans as { name?: string; amount?: number; currency?: string } | null;
                 const canPause = s.status === "active" || s.status === "trialing";
                 return (
-                  <tr key={s.id} className="border-t border-white/5">
-                    <td className="p-2">{site?.name ?? "—"}<div className="text-[10px] text-neutral-500">{site?.domain}</div></td>
+                  <tr key={s.id} className="border-t border-fx-line">
+                    <td className="p-2">{site?.name ?? "—"}<div className="text-[10px] text-fx-muted">{site?.domain}</div></td>
                     <td className="p-2">{plan?.name} · {plan?.amount} {plan?.currency}</td>
                     <td className="p-2 text-center">{s.status}</td>
                     <td className="p-2 text-center">{s.current_period_end ? new Date(s.current_period_end).toLocaleDateString() : "—"}</td>
                     <td className="p-2">
                       <div className="flex justify-center gap-1">
-                        <button onClick={() => openUpgrade(s.id)} className="inline-flex items-center gap-1 rounded border border-amber-400/40 px-2 py-1 text-amber-200"><ArrowUpCircle className="h-3 w-3" />Upgrade</button>
-                        {canPause && <button onClick={() => doPause(s.id, "pause")} className="inline-flex items-center gap-1 rounded border border-white/15 px-2 py-1"><Pause className="h-3 w-3" />Pause</button>}
-                        {s.status === "paused" && <button onClick={() => doPause(s.id, "resume")} className="inline-flex items-center gap-1 rounded border border-emerald-400/40 px-2 py-1 text-emerald-200"><Play className="h-3 w-3" />Resume</button>}
+                        <button onClick={() => openUpgrade(s.id)} className="inline-flex items-center gap-1 rounded border border-fx-blue/40 px-2 py-1 text-fx-blue"><ArrowUpCircle className="h-3 w-3" />Upgrade</button>
+                        {canPause && <button onClick={() => doPause(s.id, "pause")} className="inline-flex items-center gap-1 rounded border border-fx-line px-2 py-1"><Pause className="h-3 w-3" />Pause</button>}
+                        {s.status === "paused" && <button onClick={() => doPause(s.id, "resume")} className="inline-flex items-center gap-1 rounded border border-fx-green/40 px-2 py-1 text-fx-green"><Play className="h-3 w-3" />Resume</button>}
                       </div>
                     </td>
                   </tr>
@@ -180,25 +180,25 @@ export function ConsumerHub() {
           </table>
         )}
         {upgrade && (
-          <div className="mt-3 rounded-lg border border-amber-400/30 bg-black/40 p-3 text-xs">
+          <div className="mt-3 rounded-lg border border-fx-blue/30 bg-fx-bg/60 p-3 text-xs">
             <div className="mb-2 flex justify-between"><b>Choose a higher plan</b><button aria-label="Close" onClick={() => setUpgrade(null)}><X className="h-4 w-4" /></button></div>
-            {upgrade.plans.length === 0 ? <div className="text-neutral-500">You are already on the highest plan for this site.</div> :
+            {upgrade.plans.length === 0 ? <div className="text-fx-muted">You are already on the highest plan for this site.</div> :
               <div className="grid gap-2 sm:grid-cols-3">{upgrade.plans.map((p) => (
-                <button key={p.id} onClick={() => doUpgrade(p.id)} className="rounded-lg border border-white/10 p-3 text-start hover:border-amber-400/60">
-                  <div className="font-medium">{p.name}</div><div className="font-mono text-amber-200">{Number(p.amount).toFixed(2)} {p.currency}</div><div className="text-[10px] text-neutral-500">{p.billing_interval}</div>
+                <button key={p.id} onClick={() => doUpgrade(p.id)} className="rounded-lg border border-fx-line p-3 text-start hover:border-fx-blue/60">
+                  <div className="font-medium">{p.name}</div><div className="font-mono text-fx-blue">{Number(p.amount).toFixed(2)} {p.currency}</div><div className="text-[10px] text-fx-muted">{p.billing_interval}</div>
                 </button>))}</div>}
           </div>
         )}
         {(hub?.payments ?? []).length > 0 && (
           <div className="mt-4">
-            <div className="mb-2 flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-neutral-400"><FileText className="h-3 w-3" /> Invoices</div>
+            <div className="mb-2 flex items-center gap-1 text-[11px] uppercase tracking-[0.2em] text-fx-muted"><FileText className="h-3 w-3" /> Invoices</div>
             <ul className="space-y-1 text-xs">
               {hub!.payments.map((p) => (
-                <li key={p.id} className="flex items-center justify-between border-b border-white/5 py-1">
+                <li key={p.id} className="flex items-center justify-between border-b border-fx-line py-1">
                   <span>{(p.sites as { name?: string } | null)?.name} · {new Date(p.created_at).toLocaleDateString()}</span>
                   <span className="flex items-center gap-3">
                     <span className="font-mono">{Number(p.amount).toFixed(2)} {p.currency} · {p.status}</span>
-                    <Link to="/user/invoice/$publicId" params={{ publicId: p.public_id }} className="inline-flex items-center gap-1 rounded border border-white/15 px-2 py-0.5"><Printer className="h-3 w-3" />PDF</Link>
+                    <Link to="/user/invoice/$publicId" params={{ publicId: p.public_id }} className="inline-flex items-center gap-1 rounded border border-fx-line px-2 py-0.5"><Printer className="h-3 w-3" />PDF</Link>
                   </span>
                 </li>
               ))}

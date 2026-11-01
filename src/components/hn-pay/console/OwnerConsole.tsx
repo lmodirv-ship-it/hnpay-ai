@@ -99,17 +99,17 @@ export function OwnerConsole() {
   }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#05060d] font-[Inter,ui-sans-serif,system-ui] text-white">
+    <div className="relative min-h-screen overflow-hidden bg-fx-bg font-fx text-white">
       {/* Ambient cosmic backdrop */}
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-0 h-[520px] w-[520px] rounded-full bg-amber-500/10 blur-[140px]" />
-        <div className="absolute right-0 top-1/3 h-[620px] w-[620px] rounded-full bg-violet-600/10 blur-[160px]" />
-        <div className="absolute bottom-0 left-1/3 h-[420px] w-[420px] rounded-full bg-emerald-500/[0.06] blur-[140px]" />
+        <div className="absolute -left-40 top-0 h-[520px] w-[520px] rounded-full bg-fx-blue/10 blur-[140px]" />
+        <div className="absolute right-0 top-1/3 h-[620px] w-[620px] rounded-full bg-fx-cyan/10 blur-[160px]" />
+        <div className="absolute bottom-0 left-1/3 h-[420px] w-[420px] rounded-full bg-fx-green/[0.06] blur-[140px]" />
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(251,191,36,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.5) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in_oklab,var(--fx-blue)_40%,transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in_oklab,var(--fx-blue)_40%,transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
           }}
         />
@@ -117,14 +117,14 @@ export function OwnerConsole() {
 
       <div className="relative mx-auto flex min-h-screen max-w-[1600px] gap-6 px-4 py-6 lg:px-8">
         {/* Sidebar */}
-        <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-64 shrink-0 flex-col overflow-y-auto rounded-2xl border border-amber-500/15 bg-black/40 p-4 backdrop-blur-xl lg:flex">
-          <Link to="/" className="mb-6 flex items-center gap-3 rounded-xl border border-amber-500/20 bg-gradient-to-br from-amber-500/10 to-transparent p-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/50 bg-amber-500/15 shadow-[0_0_25px_rgba(251,191,36,0.4)]">
-              <Crown className="h-5 w-5 text-amber-300" />
+        <aside className="sticky top-6 hidden h-[calc(100vh-3rem)] w-64 shrink-0 flex-col overflow-y-auto rounded-2xl border border-fx-blue/15 bg-fx-bg/60 p-4 backdrop-blur-xl lg:flex">
+          <Link to="/" className="mb-6 flex items-center gap-3 rounded-xl border border-fx-blue/20 bg-gradient-to-br from-fx-blue/10 to-transparent p-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fx-blue/50 bg-fx-blue/15 shadow-[0_0_25px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
+              <Crown className="h-5 w-5 text-fx-blue" />
             </div>
             <div>
               <div className="text-sm font-bold tracking-tight text-white">HN-Pay Hub</div>
-              <div className="text-[10px] uppercase tracking-[0.2em] text-amber-300/80">Owner Console</div>
+              <div className="text-[10px] uppercase tracking-[0.2em] text-fx-blue/80">Owner Console</div>
             </div>
           </Link>
 
@@ -143,11 +143,11 @@ export function OwnerConsole() {
                       onClick={() => setTab(n.id)}
                       className={`group flex w-full items-center gap-3 rounded-xl border px-3 py-2 text-left text-sm transition ${
                         active
-                          ? "border-amber-400/40 bg-gradient-to-r from-amber-500/15 to-transparent text-amber-100 shadow-[0_0_20px_-8px_rgba(251,191,36,0.6)]"
-                          : "border-transparent text-neutral-400 hover:border-white/5 hover:bg-white/[0.03] hover:text-white"
+                          ? "border-fx-blue/40 bg-gradient-to-r from-fx-blue/15 to-transparent text-fx-blue shadow-[0_0_20px_-8px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]"
+                          : "border-transparent text-fx-muted hover:border-fx-line hover:bg-white/[0.03] hover:text-white"
                       }`}
                     >
-                      <Icon className={`h-4 w-4 ${active ? "text-amber-300" : ""}`} />
+                      <Icon className={`h-4 w-4 ${active ? "text-fx-blue" : ""}`} />
                       <span>{n.label}</span>
                     </button>
                   );
@@ -156,12 +156,12 @@ export function OwnerConsole() {
             </div>
           ))}
 
-          <div className="mt-auto rounded-xl border border-emerald-400/20 bg-emerald-500/[0.06] p-3">
-            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-emerald-300">
+          <div className="mt-auto rounded-xl border border-fx-green/20 bg-fx-green/[0.06] p-3">
+            <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wider text-fx-green">
               <Radio className="h-3.5 w-3.5 animate-pulse" />
               Mesh Online
             </div>
-            <div className="mt-1 text-[11px] text-emerald-200/70">
+            <div className="mt-1 text-[11px] text-fx-green/70">
               {NETWORK_KPIS.online}/{NETWORK_KPIS.totalServices} nodes healthy
             </div>
           </div>
@@ -197,13 +197,13 @@ export function OwnerConsole() {
 /* ─────────────────────────── Top Bar ─────────────────────────── */
 function TopBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-amber-500/15 bg-black/40 p-3 backdrop-blur-xl">
+    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-fx-blue/15 bg-fx-bg/60 p-3 backdrop-blur-xl">
       <div className="flex items-center gap-2">
         <div className="lg:hidden">
           <select
             value={tab}
             onChange={(e) => setTab(e.target.value as Tab)}
-            className="rounded-xl border border-white/10 bg-black/60 px-3 py-2 text-sm text-white"
+            className="rounded-xl border border-fx-line bg-black/60 px-3 py-2 text-sm text-white"
           >
             {NAV.map((n) => (
               <option key={n.id} value={n.id}>
@@ -212,10 +212,10 @@ function TopBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
             ))}
           </select>
         </div>
-        <div className="hidden items-center gap-2 rounded-xl border border-white/10 bg-black/40 px-3 py-2 text-xs text-neutral-400 lg:flex">
+        <div className="hidden items-center gap-2 rounded-xl border border-fx-line bg-fx-bg/60 px-3 py-2 text-xs text-fx-muted lg:flex">
           <Search className="h-3.5 w-3.5" />
           Search services, keys, users…
-          <kbd className="ml-2 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] text-neutral-400">
+          <kbd className="ml-2 rounded border border-fx-line bg-white/5 px-1.5 py-0.5 text-[10px] text-fx-muted">
             ⌘K
           </kbd>
         </div>
@@ -232,13 +232,13 @@ function TopBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
             <Wallet className="h-3.5 w-3.5" /> Billing Hub
           </Button>
         </Link>
-        <div className="flex items-center gap-2 rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-500/15 to-transparent py-1.5 pl-1.5 pr-3">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-500/20 text-[11px] font-bold text-amber-200">
+        <div className="flex items-center gap-2 rounded-xl border border-fx-blue/30 bg-gradient-to-br from-fx-blue/15 to-transparent py-1.5 pl-1.5 pr-3">
+          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-fx-blue/20 text-[11px] font-bold text-fx-blue">
             MI
           </div>
           <div className="hidden text-left sm:block">
             <div className="text-[11px] font-semibold text-white">Moulay Ismail</div>
-            <div className="text-[9px] uppercase tracking-wider text-amber-300">Owner</div>
+            <div className="text-[9px] uppercase tracking-wider text-fx-blue">Owner</div>
           </div>
         </div>
       </div>
@@ -249,17 +249,17 @@ function TopBar({ tab, setTab }: { tab: Tab; setTab: (t: Tab) => void }) {
 /* ─────────────────────────── Footer ─────────────────────────── */
 function Footer() {
   return (
-    <footer className="mt-16 border-t border-amber-500/10 pt-8 text-center text-xs text-neutral-500">
+    <footer className="mt-16 border-t border-fx-blue/10 pt-8 text-center text-xs text-fx-muted">
       <div className="flex flex-wrap items-center justify-center gap-2">
         <Chip tone="amber">PCI-DSS L1</Chip>
         <Chip tone="emerald">SOC 2 · Type II</Chip>
         <Chip tone="sky">ISO/IEC 27001</Chip>
       </div>
-      <div className="mt-4 text-neutral-400">
-        © 2026 <span className="text-amber-300">HN-Pay Hub</span> · All rights reserved to{" "}
+      <div className="mt-4 text-fx-muted">
+        © 2026 <span className="text-fx-blue">HN-Pay Hub</span> · All rights reserved to{" "}
         <span className="font-semibold text-white">Al-Hasani Moulay Ismail</span>
       </div>
-      <div className="mt-1 text-[11px] text-neutral-500">
+      <div className="mt-1 text-[11px] text-fx-muted">
         HN Group · Design & Software · <span dir="rtl">مجموعة HN للتصميم والبرمجيات</span>
       </div>
     </footer>
@@ -322,7 +322,7 @@ function OverviewPage() {
           <div className="mb-4 flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold text-white">Mesh Traffic · Last 24h</h3>
-              <p className="text-xs text-neutral-500">Requests per hour across the network.</p>
+              <p className="text-xs text-fx-muted">Requests per hour across the network.</p>
             </div>
             <Chip tone="emerald">
               <CheckCircle2 className="h-3 w-3" /> Healthy
@@ -345,11 +345,11 @@ function OverviewPage() {
                   <StatusDot status={s.status} />
                   <div className="flex-1 truncate">
                     <div className="truncate text-sm text-white">{s.name}</div>
-                    <div className="text-[10px] text-neutral-500">{s.category}</div>
+                    <div className="text-[10px] text-fx-muted">{s.category}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-mono text-amber-200">{fmt(s.requests24h)}</div>
-                    <div className="text-[10px] text-neutral-500">{s.latency} ms</div>
+                    <div className="text-sm font-mono text-fx-blue">{fmt(s.requests24h)}</div>
+                    <div className="text-[10px] text-fx-muted">{s.latency} ms</div>
                   </div>
                 </div>
               ))}
@@ -372,14 +372,14 @@ function OverviewPage() {
             {AI_SUGGESTIONS.slice(0, 4).map((s) => (
               <div
                 key={s.id}
-                className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] p-3"
+                className="flex items-start gap-3 rounded-xl border border-fx-line bg-fx-card p-3"
               >
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-300">
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-fx-blue/30 bg-fx-blue/10 text-fx-blue">
                   <Sparkles className="h-4 w-4" />
                 </div>
                 <div className="flex-1">
                   <div className="text-sm font-medium text-white">{s.title}</div>
-                  <div className="text-[11px] text-neutral-500">{s.detail}</div>
+                  <div className="text-[11px] text-fx-muted">{s.detail}</div>
                 </div>
                 <Chip tone={s.impact === "high" ? "rose" : s.impact === "medium" ? "amber" : "sky"}>
                   {s.impact}
@@ -396,21 +396,21 @@ function OverviewPage() {
 function RequestRow({ r }: { r: (typeof LIVE_REQUESTS)[number] }) {
   const methodTone: Record<string, string> = {
     GET: "text-sky-300 bg-sky-500/10 border-sky-400/30",
-    POST: "text-emerald-300 bg-emerald-500/10 border-emerald-400/30",
-    PUT: "text-amber-300 bg-amber-500/10 border-amber-400/30",
+    POST: "text-fx-green bg-fx-green/10 border-fx-green/30",
+    PUT: "text-fx-blue bg-fx-blue/10 border-fx-blue/30",
     DELETE: "text-rose-300 bg-rose-500/10 border-rose-400/30",
   };
   return (
-    <div className="flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-xs">
+    <div className="flex items-center gap-3 rounded-lg border border-fx-line bg-fx-card px-3 py-2 text-xs">
       <span className={`rounded border px-1.5 py-0.5 font-mono text-[10px] font-semibold ${methodTone[r.method]}`}>
         {r.method}
       </span>
       <span className="flex-1 truncate font-mono text-neutral-300">{r.path}</span>
-      <span className="hidden text-neutral-500 sm:inline">{r.from}</span>
+      <span className="hidden text-fx-muted sm:inline">{r.from}</span>
       <ArrowRight className="hidden h-3 w-3 text-neutral-600 sm:inline" />
-      <span className="hidden text-amber-200 sm:inline">{r.to}</span>
-      <span className="font-mono text-emerald-300">{r.status}</span>
-      <span className="w-14 text-right font-mono text-neutral-400">{r.latency} ms</span>
+      <span className="hidden text-fx-blue sm:inline">{r.to}</span>
+      <span className="font-mono text-fx-green">{r.status}</span>
+      <span className="w-14 text-right font-mono text-fx-muted">{r.latency} ms</span>
     </div>
   );
 }
@@ -427,7 +427,7 @@ function SparkChart() {
       {bars.map((h, i) => (
         <div
           key={i}
-          className="flex-1 rounded-t bg-gradient-to-t from-amber-500/70 via-amber-400/50 to-amber-300/90 shadow-[0_0_12px_rgba(251,191,36,0.35)]"
+          className="flex-1 rounded-t bg-gradient-to-t from-fx-blue/70 via-fx-blue/50 to-fx-blue/90 shadow-[0_0_12px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]"
           style={{ height: `${h}%` }}
         />
       ))}
@@ -489,7 +489,7 @@ function RegistryPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-[10px] uppercase tracking-wider text-neutral-500">
+              <tr className="border-b border-fx-line text-left text-[10px] uppercase tracking-wider text-fx-muted">
                 <th className="px-5 py-3">Service</th>
                 <th className="px-5 py-3">Category</th>
                 <th className="px-5 py-3">Domain</th>
@@ -503,15 +503,15 @@ function RegistryPage() {
             </thead>
             <tbody>
               {filtered.slice(0, 40).map((s) => (
-                <tr key={s.id} className="border-b border-white/5 transition hover:bg-white/[0.02]">
+                <tr key={s.id} className="border-b border-fx-line transition hover:bg-fx-card">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-amber-400/25 bg-amber-500/10 text-[10px] font-bold text-amber-200">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-fx-blue/25 bg-fx-blue/10 text-[10px] font-bold text-fx-blue">
                         {s.name.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
                         <div className="font-medium text-white">{s.name}</div>
-                        <div className="font-mono text-[10px] text-neutral-500">{s.id} · {s.version}</div>
+                        <div className="font-mono text-[10px] text-fx-muted">{s.id} · {s.version}</div>
                       </div>
                     </div>
                   </td>
@@ -523,20 +523,20 @@ function RegistryPage() {
                       <span className="capitalize text-neutral-300">{s.status}</span>
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-right font-mono text-emerald-300">
+                  <td className="px-5 py-3 text-right font-mono text-fx-green">
                     {s.uptime.toFixed(2)}%
                   </td>
-                  <td className="px-5 py-3 text-right font-mono text-amber-200">{s.latency} ms</td>
+                  <td className="px-5 py-3 text-right font-mono text-fx-blue">{s.latency} ms</td>
                   <td className="px-5 py-3 text-right font-mono text-neutral-300">
                     {fmt(s.requests24h)}
                   </td>
                   <td className="px-5 py-3 text-right text-neutral-300">{s.apiKeys}</td>
                   <td className="px-5 py-3">
                     <div className="flex justify-end gap-1">
-                      <button className="rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:bg-white/5 hover:text-amber-300">
+                      <button className="rounded-lg border border-fx-line p-1.5 text-fx-muted hover:bg-white/5 hover:text-fx-blue">
                         <Eye className="h-3.5 w-3.5" />
                       </button>
-                      <button className="rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:bg-white/5 hover:text-amber-300">
+                      <button className="rounded-lg border border-fx-line p-1.5 text-fx-muted hover:bg-white/5 hover:text-fx-blue">
                         <Settings2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -546,7 +546,7 @@ function RegistryPage() {
             </tbody>
           </table>
         </div>
-        <div className="border-t border-white/5 p-3 text-center text-xs text-neutral-500">
+        <div className="border-t border-fx-line p-3 text-center text-xs text-fx-muted">
           Showing {Math.min(40, filtered.length)} of {filtered.length} services
         </div>
       </Panel>
@@ -574,18 +574,18 @@ function KeysPage() {
         <Panel>
           <div className="mb-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-amber-300" />
+              <Sparkles className="h-4 w-4 text-fx-blue" />
               <h3 className="text-sm font-semibold text-white">New Key Generated</h3>
             </div>
-            <button onClick={() => setShowNew(false)} className="text-xs text-neutral-500 hover:text-white">
+            <button onClick={() => setShowNew(false)} className="text-xs text-fx-muted hover:text-white">
               Close
             </button>
           </div>
-          <div className="rounded-xl border border-amber-400/30 bg-black/60 p-4 font-mono text-sm text-amber-200">
+          <div className="rounded-xl border border-fx-blue/30 bg-black/60 p-4 font-mono text-sm text-fx-blue">
             hnp_live_a29f7Bx13Kq0LmZs847nQpVt_secret_stored_once
           </div>
-          <div className="mt-3 flex items-center gap-2 text-xs text-neutral-500">
-            <AlertTriangle className="h-3.5 w-3.5 text-amber-400" />
+          <div className="mt-3 flex items-center gap-2 text-xs text-fx-muted">
+            <AlertTriangle className="h-3.5 w-3.5 text-fx-blue" />
             Copy now — this value will never be shown again.
           </div>
           <div className="mt-4 flex gap-2">
@@ -603,7 +603,7 @@ function KeysPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-[10px] uppercase tracking-wider text-neutral-500">
+              <tr className="border-b border-fx-line text-left text-[10px] uppercase tracking-wider text-fx-muted">
                 <th className="px-5 py-3">Label</th>
                 <th className="px-5 py-3">Key</th>
                 <th className="px-5 py-3">Service</th>
@@ -617,14 +617,14 @@ function KeysPage() {
             </thead>
             <tbody>
               {API_KEYS.map((k) => (
-                <tr key={k.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <tr key={k.id} className="border-b border-fx-line hover:bg-fx-card">
                   <td className="px-5 py-3 text-white">{k.label}</td>
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-2">
-                      <code className="rounded-md border border-white/10 bg-black/60 px-2 py-1 font-mono text-[11px] text-amber-200">
+                      <code className="rounded-md border border-fx-line bg-black/60 px-2 py-1 font-mono text-[11px] text-fx-blue">
                         {k.masked}
                       </code>
-                      <button className="text-neutral-500 hover:text-amber-300">
+                      <button className="text-fx-muted hover:text-fx-blue">
                         <Copy className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -638,8 +638,8 @@ function KeysPage() {
                       {k.scopes.length > 2 && <Chip>+{k.scopes.length - 2}</Chip>}
                     </div>
                   </td>
-                  <td className="px-5 py-3 text-neutral-400">{k.createdAt}</td>
-                  <td className="px-5 py-3 text-neutral-400">{k.lastUsed}</td>
+                  <td className="px-5 py-3 text-fx-muted">{k.createdAt}</td>
+                  <td className="px-5 py-3 text-fx-muted">{k.lastUsed}</td>
                   <td className="px-5 py-3 text-right font-mono text-neutral-300">{fmt(k.requests)}</td>
                   <td className="px-5 py-3">
                     {k.status === "active" ? (
@@ -658,10 +658,10 @@ function KeysPage() {
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex justify-end gap-1">
-                      <button className="rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:bg-white/5 hover:text-amber-300">
+                      <button className="rounded-lg border border-fx-line p-1.5 text-fx-muted hover:bg-white/5 hover:text-fx-blue">
                         <RefreshCw className="h-3.5 w-3.5" />
                       </button>
-                      <button className="rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:bg-white/5 hover:text-rose-300">
+                      <button className="rounded-lg border border-fx-line p-1.5 text-fx-muted hover:bg-white/5 hover:text-rose-300">
                         <Trash2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -716,8 +716,8 @@ function DiscoveryPage() {
           <div className="mt-6 space-y-2">
             {["Resolving DNS…", "Probing /health & /openapi.json…", "Extracting endpoints…", "Classifying capabilities…", "Generating identity card…"].map(
               (s, i) => (
-                <div key={s} className="flex items-center gap-2 text-xs text-neutral-400">
-                  <Loader2 className="h-3 w-3 animate-spin text-amber-300" style={{ animationDelay: `${i * 100}ms` }} />
+                <div key={s} className="flex items-center gap-2 text-xs text-fx-muted">
+                  <Loader2 className="h-3 w-3 animate-spin text-fx-blue" style={{ animationDelay: `${i * 100}ms` }} />
                   {s}
                 </div>
               ),
@@ -727,17 +727,17 @@ function DiscoveryPage() {
 
         {state === "done" && (
           <div className="mt-6 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <div className="rounded-xl border border-amber-400/30 bg-gradient-to-br from-amber-500/10 to-transparent p-4">
+            <div className="rounded-xl border border-fx-blue/30 bg-gradient-to-br from-fx-blue/10 to-transparent p-4">
               <div className="mb-2 flex items-center gap-2">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/40 bg-amber-500/15 text-amber-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fx-blue/40 bg-fx-blue/15 text-fx-blue">
                   <Cpu className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="font-bold text-white">HN-Vision</div>
-                  <div className="text-[10px] text-neutral-500">svc_0016 · v2.4.7</div>
+                  <div className="text-[10px] text-fx-muted">svc_0016 · v2.4.7</div>
                 </div>
               </div>
-              <div className="text-xs text-neutral-400">
+              <div className="text-xs text-fx-muted">
                 Computer vision inference API. Detected 18 endpoints, 4 categories.
               </div>
               <div className="mt-3 flex flex-wrap gap-1">
@@ -746,8 +746,8 @@ function DiscoveryPage() {
                 <Chip tone="emerald">OpenAPI 3.1</Chip>
               </div>
             </div>
-            <div className="lg:col-span-2 rounded-xl border border-white/5 bg-white/[0.02] p-4">
-              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-neutral-500">
+            <div className="lg:col-span-2 rounded-xl border border-fx-line bg-fx-card p-4">
+              <div className="mb-3 text-xs font-semibold uppercase tracking-wider text-fx-muted">
                 Detected Endpoints
               </div>
               <div className="space-y-1.5">
@@ -758,8 +758,8 @@ function DiscoveryPage() {
                   { m: "POST", p: "/v1/embeddings" },
                   { m: "GET", p: "/health" },
                 ].map((e) => (
-                  <div key={e.p} className="flex items-center gap-2 rounded-lg border border-white/5 bg-black/30 px-3 py-1.5 text-xs">
-                    <span className="rounded border border-emerald-400/30 bg-emerald-500/10 px-1.5 py-0.5 font-mono text-[10px] text-emerald-300">
+                  <div key={e.p} className="flex items-center gap-2 rounded-lg border border-fx-line bg-fx-bg/60 px-3 py-1.5 text-xs">
+                    <span className="rounded border border-fx-green/30 bg-fx-green/10 px-1.5 py-0.5 font-mono text-[10px] text-fx-green">
                       {e.m}
                     </span>
                     <code className="text-neutral-300">{e.p}</code>
@@ -780,11 +780,11 @@ function DiscoveryPage() {
         <h3 className="mb-4 text-sm font-semibold text-white">Recent Discoveries</h3>
         <div className="space-y-2">
           {HN_SERVICES.slice(0, 5).map((s) => (
-            <div key={s.id} className="flex items-center gap-3 rounded-lg border border-white/5 bg-white/[0.02] px-3 py-2 text-sm">
-              <Radar className="h-4 w-4 text-amber-300" />
+            <div key={s.id} className="flex items-center gap-3 rounded-lg border border-fx-line bg-fx-card px-3 py-2 text-sm">
+              <Radar className="h-4 w-4 text-fx-blue" />
               <div className="flex-1">
                 <div className="text-white">{s.name}</div>
-                <div className="text-[10px] text-neutral-500">{s.domain} · {s.endpoints} endpoints</div>
+                <div className="text-[10px] text-fx-muted">{s.domain} · {s.endpoints} endpoints</div>
               </div>
               <Chip tone="emerald">Registered</Chip>
             </div>
@@ -828,12 +828,12 @@ function OrchestrationPage() {
               { name: "mail.* → hn-mailer", weight: "Fallback: hn-sms" },
               { name: "*.public → edge cache", weight: "TTL 900 s" },
             ].map((r) => (
-              <div key={r.name} className="rounded-xl border border-white/5 bg-white/[0.02] p-3">
+              <div key={r.name} className="rounded-xl border border-fx-line bg-fx-card p-3">
                 <div className="flex items-center gap-2">
-                  <GitBranch className="h-4 w-4 text-amber-300" />
+                  <GitBranch className="h-4 w-4 text-fx-blue" />
                   <div className="font-mono text-xs text-white">{r.name}</div>
                 </div>
-                <div className="mt-1 text-[10px] text-neutral-500">{r.weight}</div>
+                <div className="mt-1 text-[10px] text-fx-muted">{r.weight}</div>
               </div>
             ))}
           </div>
@@ -864,7 +864,7 @@ function MonitoringPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-[10px] uppercase tracking-wider text-neutral-500">
+              <tr className="border-b border-fx-line text-left text-[10px] uppercase tracking-wider text-fx-muted">
                 <th className="px-5 py-3">Service</th>
                 <th className="px-5 py-3">Status</th>
                 <th className="px-5 py-3">Uptime</th>
@@ -891,13 +891,13 @@ function ServiceMonRow({ s }: { s: HnService }) {
     return h;
   });
   return (
-    <tr className="border-b border-white/5 hover:bg-white/[0.02]">
+    <tr className="border-b border-fx-line hover:bg-fx-card">
       <td className="px-5 py-3">
         <div className="flex items-center gap-2">
           <StatusDot status={s.status} />
           <div>
             <div className="text-white">{s.name}</div>
-            <div className="text-[10px] text-neutral-500">{s.domain}</div>
+            <div className="text-[10px] text-fx-muted">{s.domain}</div>
           </div>
         </div>
       </td>
@@ -906,8 +906,8 @@ function ServiceMonRow({ s }: { s: HnService }) {
           {s.status}
         </Chip>
       </td>
-      <td className="px-5 py-3 font-mono text-emerald-300">{s.uptime.toFixed(2)}%</td>
-      <td className="px-5 py-3 font-mono text-amber-200">{s.latency} ms</td>
+      <td className="px-5 py-3 font-mono text-fx-green">{s.uptime.toFixed(2)}%</td>
+      <td className="px-5 py-3 font-mono text-fx-blue">{s.latency} ms</td>
       <td className="px-5 py-3 font-mono text-rose-300">{s.errors24h}</td>
       <td className="px-5 py-3">
         <div className="flex h-6 items-end gap-[2px]">
@@ -915,7 +915,7 @@ function ServiceMonRow({ s }: { s: HnService }) {
             <div
               key={i}
               className={`w-[3px] rounded-t ${
-                s.status === "offline" ? "bg-rose-400/60" : s.status === "degraded" ? "bg-amber-400/70" : "bg-emerald-400/70"
+                s.status === "offline" ? "bg-rose-400/60" : s.status === "degraded" ? "bg-fx-blue/70" : "bg-fx-green/70"
               }`}
               style={{ height: `${h}%` }}
             />
@@ -946,23 +946,23 @@ function KnowledgePage() {
           <Panel key={k.slug} className="!p-5">
             <div className="mb-3 flex items-start justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-amber-300">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fx-blue/30 bg-fx-blue/10 text-fx-blue">
                   <BookOpen className="h-5 w-5" />
                 </div>
                 <div>
                   <div className="font-semibold text-white">{k.title}</div>
-                  <div className="text-[10px] text-neutral-500">Updated {k.updated}</div>
+                  <div className="text-[10px] text-fx-muted">Updated {k.updated}</div>
                 </div>
               </div>
-              <ExternalLink className="h-3.5 w-3.5 text-neutral-500" />
+              <ExternalLink className="h-3.5 w-3.5 text-fx-muted" />
             </div>
-            <p className="text-xs text-neutral-400">{k.summary}</p>
+            <p className="text-xs text-fx-muted">{k.summary}</p>
             <div className="mt-3 flex flex-wrap gap-1">
               {k.tags.map((t) => (
                 <Chip key={t}>{t}</Chip>
               ))}
             </div>
-            <div className="mt-4 flex items-center justify-between border-t border-white/5 pt-3 text-[11px] text-neutral-500">
+            <div className="mt-4 flex items-center justify-between border-t border-fx-line pt-3 text-[11px] text-fx-muted">
               <span>{k.endpoints} endpoints</span>
               <span>{k.dependents} dependents</span>
             </div>
@@ -1021,24 +1021,24 @@ function ServiceMapPage() {
                   y1={n.y}
                   x2={t.x}
                   y2={t.y}
-                  stroke="rgba(251,191,36,0.12)"
+                  stroke="color-mix(in_oklab,var(--fx-blue)_40%,transparent)"
                   strokeWidth={0.5}
                 />
               );
             })}
             <defs>
               <radialGradient id="glow" cx="50%" cy="50%">
-                <stop offset="0%" stopColor="rgba(251,191,36,0.6)" />
-                <stop offset="100%" stopColor="rgba(251,191,36,0.05)" />
+                <stop offset="0%" stopColor="color-mix(in_oklab,var(--fx-blue)_40%,transparent)" />
+                <stop offset="100%" stopColor="color-mix(in_oklab,var(--fx-blue)_40%,transparent)" />
               </radialGradient>
             </defs>
 
             {/* center */}
-            <circle cx={300} cy={300} r={44} fill="rgba(251,191,36,0.15)" stroke="rgba(251,191,36,0.6)" strokeWidth={1.5} />
-            <text x={300} y={296} textAnchor="middle" className="fill-amber-200" fontSize={11} fontWeight="700">
+            <circle cx={300} cy={300} r={44} fill="color-mix(in_oklab,var(--fx-blue)_40%,transparent)" stroke="color-mix(in_oklab,var(--fx-blue)_40%,transparent)" strokeWidth={1.5} />
+            <text x={300} y={296} textAnchor="middle" className="fill-fx-blue" fontSize={11} fontWeight="700">
               HN-PAY
             </text>
-            <text x={300} y={312} textAnchor="middle" className="fill-amber-300/70" fontSize={8}>
+            <text x={300} y={312} textAnchor="middle" className="fill-fx-blue/70" fontSize={8}>
               HUB
             </text>
 
@@ -1057,7 +1057,7 @@ function ServiceMapPage() {
             })}
           </svg>
         </div>
-        <div className="flex flex-wrap items-center justify-center gap-3 border-t border-white/5 p-4 text-xs text-neutral-400">
+        <div className="flex flex-wrap items-center justify-center gap-3 border-t border-fx-line p-4 text-xs text-fx-muted">
           <span className="flex items-center gap-1.5"><StatusDot status="online" /> Online</span>
           <span className="flex items-center gap-1.5"><StatusDot status="degraded" /> Degraded</span>
           <span className="flex items-center gap-1.5"><StatusDot status="offline" /> Offline</span>
@@ -1085,8 +1085,8 @@ function SearchPage() {
         desc="Semantic search across the HN mesh — services, endpoints, docs and capabilities."
       />
       <Panel>
-        <div className="flex items-center gap-3 rounded-xl border border-amber-400/30 bg-black/50 px-4 py-3">
-          <Search className="h-5 w-5 text-amber-300" />
+        <div className="flex items-center gap-3 rounded-xl border border-fx-blue/30 bg-black/50 px-4 py-3">
+          <Search className="h-5 w-5 text-fx-blue" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
@@ -1102,7 +1102,7 @@ function SearchPage() {
           <Panel key={s.id} className="!p-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/30 bg-amber-500/10 text-[11px] font-bold text-amber-200">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fx-blue/30 bg-fx-blue/10 text-[11px] font-bold text-fx-blue">
                   {s.name.slice(0, 2).toUpperCase()}
                 </div>
                 <div>
@@ -1112,7 +1112,7 @@ function SearchPage() {
               </div>
               <StatusDot status={s.status} />
             </div>
-            <p className="mt-3 text-xs text-neutral-400">{s.description}</p>
+            <p className="mt-3 text-xs text-fx-muted">{s.description}</p>
             <div className="mt-3 flex flex-wrap items-center gap-2">
               <Chip tone="amber">{s.category}</Chip>
               <Chip>{s.endpoints} endpoints</Chip>
@@ -1139,7 +1139,7 @@ function PermissionsPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-[10px] uppercase tracking-wider text-neutral-500">
+              <tr className="border-b border-fx-line text-left text-[10px] uppercase tracking-wider text-fx-muted">
                 <th className="px-5 py-3">Capability</th>
                 <th className="px-5 py-3 text-center">Owner</th>
                 <th className="px-5 py-3 text-center">Admin</th>
@@ -1151,13 +1151,13 @@ function PermissionsPage() {
             </thead>
             <tbody>
               {ROLE_MATRIX.map((r) => (
-                <tr key={r.capability} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <tr key={r.capability} className="border-b border-fx-line hover:bg-fx-card">
                   <td className="px-5 py-3 text-white">{r.capability}</td>
                   {(["owner", "admin", "operator", "developer", "auditor", "viewer"] as const).map(
                     (role) => (
                       <td key={role} className="px-5 py-3 text-center">
                         {r[role] ? (
-                          <CheckCircle2 className="mx-auto h-4 w-4 text-emerald-400" />
+                          <CheckCircle2 className="mx-auto h-4 w-4 text-fx-green" />
                         ) : (
                           <XCircle className="mx-auto h-4 w-4 text-neutral-700" />
                         )}
@@ -1193,7 +1193,7 @@ function UsersPage() {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/5 text-left text-[10px] uppercase tracking-wider text-neutral-500">
+              <tr className="border-b border-fx-line text-left text-[10px] uppercase tracking-wider text-fx-muted">
                 <th className="px-5 py-3">Member</th>
                 <th className="px-5 py-3">Role</th>
                 <th className="px-5 py-3">Services</th>
@@ -1204,15 +1204,15 @@ function UsersPage() {
             </thead>
             <tbody>
               {USERS.map((u) => (
-                <tr key={u.id} className="border-b border-white/5 hover:bg-white/[0.02]">
+                <tr key={u.id} className="border-b border-fx-line hover:bg-fx-card">
                   <td className="px-5 py-3">
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-amber-400/30 bg-gradient-to-br from-amber-500/25 to-transparent text-[11px] font-bold text-amber-200">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-full border border-fx-blue/30 bg-gradient-to-br from-fx-blue/25 to-transparent text-[11px] font-bold text-fx-blue">
                         {u.avatar}
                       </div>
                       <div>
                         <div className="text-white">{u.name}</div>
-                        <div className="text-[10px] text-neutral-500">{u.email}</div>
+                        <div className="text-[10px] text-fx-muted">{u.email}</div>
                       </div>
                     </div>
                   </td>
@@ -1233,7 +1233,7 @@ function UsersPage() {
                     </Chip>
                   </td>
                   <td className="px-5 py-3 text-neutral-300">{u.services}</td>
-                  <td className="px-5 py-3 text-neutral-400">{u.lastActive}</td>
+                  <td className="px-5 py-3 text-fx-muted">{u.lastActive}</td>
                   <td className="px-5 py-3">
                     {u.status === "active" ? (
                       <Chip tone="emerald">Active</Chip>
@@ -1245,7 +1245,7 @@ function UsersPage() {
                   </td>
                   <td className="px-5 py-3">
                     <div className="flex justify-end gap-1">
-                      <button className="rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:bg-white/5 hover:text-amber-300">
+                      <button className="rounded-lg border border-fx-line p-1.5 text-fx-muted hover:bg-white/5 hover:text-fx-blue">
                         <Settings2 className="h-3.5 w-3.5" />
                       </button>
                     </div>
@@ -1290,11 +1290,11 @@ function AnalyticsPage() {
               <div key={s.id}>
                 <div className="mb-1 flex justify-between text-xs">
                   <span className="text-neutral-300">{s.name}</span>
-                  <span className="font-mono text-amber-200">{fmt(s.requests24h)}</span>
+                  <span className="font-mono text-fx-blue">{fmt(s.requests24h)}</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-white/5">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.6)]"
+                    className="h-full rounded-full bg-gradient-to-r from-fx-blue to-fx-blue shadow-[0_0_12px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]"
                     style={{ width: `${(s.requests24h / maxR) * 100}%` }}
                   />
                 </div>
@@ -1310,11 +1310,11 @@ function AnalyticsPage() {
               <div key={s.id}>
                 <div className="mb-1 flex justify-between text-xs">
                   <span className="text-neutral-300">{s.name}</span>
-                  <span className="font-mono text-emerald-300">${fmt(s.monthlyRevenue)}</span>
+                  <span className="font-mono text-fx-green">${fmt(s.monthlyRevenue)}</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-white/5">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-emerald-400 to-emerald-300 shadow-[0_0_12px_rgba(16,185,129,0.55)]"
+                    className="h-full rounded-full bg-gradient-to-r from-fx-green to-fx-green shadow-[0_0_12px_rgba(16,185,129,0.55)]"
                     style={{ width: `${(s.monthlyRevenue / maxRev) * 100}%` }}
                   />
                 </div>
@@ -1353,13 +1353,13 @@ function AiPage() {
               >
                 {s.type}
               </Chip>
-              <div className="flex items-center gap-2 text-[11px] text-neutral-500">
+              <div className="flex items-center gap-2 text-[11px] text-fx-muted">
                 Confidence
-                <span className="font-mono text-amber-200">{Math.round(s.confidence * 100)}%</span>
+                <span className="font-mono text-fx-blue">{Math.round(s.confidence * 100)}%</span>
               </div>
             </div>
             <h4 className="text-base font-semibold text-white">{s.title}</h4>
-            <p className="mt-1 text-xs text-neutral-400">{s.detail}</p>
+            <p className="mt-1 text-xs text-fx-muted">{s.detail}</p>
             <div className="mt-4 flex items-center justify-between">
               <Chip
                 tone={s.impact === "high" ? "rose" : s.impact === "medium" ? "amber" : "sky"}
@@ -1408,7 +1408,7 @@ function UnifiedCheckoutPage() {
               "On success, HN-Pay emits a signed webhook back to the origin site.",
             ].map((s, i) => (
               <li key={s} className="flex gap-3">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-amber-400/40 bg-amber-500/10 text-[11px] font-bold text-amber-200">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-fx-blue/40 bg-fx-blue/10 text-[11px] font-bold text-fx-blue">
                   {i + 1}
                 </span>
                 <span>{s}</span>
@@ -1418,7 +1418,7 @@ function UnifiedCheckoutPage() {
         </Panel>
         <Panel>
           <h3 className="mb-3 text-sm font-semibold text-white">Embed snippet</h3>
-          <pre className="overflow-x-auto rounded-xl border border-white/10 bg-black/60 p-3 font-mono text-[11px] leading-relaxed text-amber-200">
+          <pre className="overflow-x-auto rounded-xl border border-fx-line bg-black/60 p-3 font-mono text-[11px] leading-relaxed text-fx-blue">
 {`<script
   src="https://cdn.hn-pay.io/v1/checkout.js"
   data-key="hnp_live_..."
@@ -1434,69 +1434,69 @@ function UnifiedCheckoutPage() {
 
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md">
-          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-amber-400/40 bg-gradient-to-b from-[#0a0d1c] to-black p-8 shadow-[0_0_80px_rgba(251,191,36,0.25)]">
+          <div className="relative w-full max-w-md overflow-hidden rounded-3xl border border-fx-blue/40 bg-gradient-to-b from-[#0a0d1c] to-black p-8 shadow-[0_0_80px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
             <button
               onClick={() => setOpen(false)}
-              className="absolute right-4 top-4 rounded-lg border border-white/10 p-1.5 text-neutral-400 hover:text-white"
+              className="absolute right-4 top-4 rounded-lg border border-fx-line p-1.5 text-fx-muted hover:text-white"
             >
               <XCircle className="h-4 w-4" />
             </button>
             <div className="mb-6 flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-amber-400/50 bg-amber-500/15 shadow-[0_0_25px_rgba(251,191,36,0.5)]">
-                <Crown className="h-5 w-5 text-amber-300" />
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-fx-blue/50 bg-fx-blue/15 shadow-[0_0_25px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
+                <Crown className="h-5 w-5 text-fx-blue" />
               </div>
               <div>
-                <div className="text-[10px] uppercase tracking-[0.3em] text-amber-300/80">HN-Pay · Secure</div>
+                <div className="text-[10px] uppercase tracking-[0.3em] text-fx-blue/80">HN-Pay · Secure</div>
                 <div className="text-lg font-bold text-white">Unified Checkout</div>
               </div>
             </div>
 
-            <div className="mb-4 rounded-2xl border border-white/10 bg-black/40 p-4">
-              <div className="flex items-center justify-between text-xs text-neutral-400">
+            <div className="mb-4 rounded-2xl border border-fx-line bg-fx-bg/60 p-4">
+              <div className="flex items-center justify-between text-xs text-fx-muted">
                 <span>Merchant</span>
                 <span className="text-white">HN-Lavage</span>
               </div>
-              <div className="mt-2 flex items-center justify-between text-xs text-neutral-400">
+              <div className="mt-2 flex items-center justify-between text-xs text-fx-muted">
                 <span>Plan</span>
                 <span className="text-white">Pro · Monthly</span>
               </div>
-              <div className="mt-2 flex items-center justify-between border-t border-white/5 pt-2 text-sm">
+              <div className="mt-2 flex items-center justify-between border-t border-fx-line pt-2 text-sm">
                 <span className="text-neutral-300">Total due</span>
-                <span className="font-mono text-amber-200">$49.00</span>
+                <span className="font-mono text-fx-blue">$49.00</span>
               </div>
             </div>
 
             <div className="space-y-2 text-xs">
               <label className="block">
-                <span className="mb-1 block text-[10px] uppercase tracking-wider text-neutral-500">Card number</span>
+                <span className="mb-1 block text-[10px] uppercase tracking-wider text-fx-muted">Card number</span>
                 <input
-                  className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-amber-400/50"
+                  className="w-full rounded-xl border border-fx-line bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-fx-blue/50"
                   defaultValue="4242 4242 4242 4242"
                 />
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <label>
-                  <span className="mb-1 block text-[10px] uppercase tracking-wider text-neutral-500">MM/YY</span>
+                  <span className="mb-1 block text-[10px] uppercase tracking-wider text-fx-muted">MM/YY</span>
                   <input
-                    className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-amber-400/50"
+                    className="w-full rounded-xl border border-fx-line bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-fx-blue/50"
                     defaultValue="12/28"
                   />
                 </label>
                 <label>
-                  <span className="mb-1 block text-[10px] uppercase tracking-wider text-neutral-500">CVV</span>
+                  <span className="mb-1 block text-[10px] uppercase tracking-wider text-fx-muted">CVV</span>
                   <input
-                    className="w-full rounded-xl border border-white/10 bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-amber-400/50"
+                    className="w-full rounded-xl border border-fx-line bg-black/50 px-3 py-2.5 font-mono text-sm text-white outline-none focus:border-fx-blue/50"
                     defaultValue="123"
                   />
                 </label>
               </div>
             </div>
 
-            <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-amber-400/50 bg-gradient-to-b from-amber-400/30 to-amber-500/10 py-3 text-sm font-semibold text-amber-100 shadow-[0_0_30px_-5px_rgba(251,191,36,0.7)]">
+            <button className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-fx-blue/50 bg-gradient-to-b from-fx-blue/30 to-fx-blue/10 py-3 text-sm font-semibold text-fx-blue shadow-[0_0_30px_-5px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
               <Fingerprint className="h-4 w-4" /> Confirm Secure Payment
             </button>
-            <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-neutral-500">
-              <ShieldCheck className="h-3 w-3 text-emerald-400" />
+            <div className="mt-3 flex items-center justify-center gap-1.5 text-[10px] text-fx-muted">
+              <ShieldCheck className="h-3 w-3 text-fx-green" />
               Encrypted end-to-end · PCI-DSS L1
             </div>
           </div>

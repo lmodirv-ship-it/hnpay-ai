@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowLeft, ArrowRight, CreditCard, Wallet, ShieldCheck, Zap, RefreshCcw, Globe2, Check, Code2, Smartphone, Landmark } from "lucide-react";
-import { routePayment } from "@/lib/hn-pay/routing-engine";
+import { routePayment, DEFAULT_RULES } from "@/lib/hn-pay/routing-engine";
 import { formatPrice, useFxPrefs, type Lang } from "./fx-prefs";
 
 const C = {
@@ -79,7 +79,7 @@ export function HnPayHub() {
     if (method === "paypal" || method === "cmi" || method === "youcan_pay" || method === "google_pay" || method === "wallet") {
       return { provider: method, fallbacks: method === "paypal" ? [] : ["paypal"] };
     }
-    const d = routePayment({ country: simCur === "MAD" ? "MA" : "FR", currency: simCur }, []);
+    const d = routePayment({ country: simCur === "MAD" ? "MA" : "FR", currency: simCur }, DEFAULT_RULES);
     return { provider: d.provider, fallbacks: d.fallbacks };
   }, [method, simCur]);
 
