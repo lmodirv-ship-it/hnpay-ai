@@ -8,6 +8,13 @@
       "when": 1793519803193,
       "tag": "0000_hnpay_global_wallet_routing_google",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793521698542,
+      "tag": "0001_wallet_topups",
+      "breakpoints": true
     }
   ]
 }

@@ -2585,6 +2585,57 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_topups: {
+        Row: {
+          amount: number
+          checkout_url: string | null
+          created_at: string
+          credited_at: string | null
+          currency: string
+          email: string | null
+          id: string
+          method: string
+          provider: string
+          provider_ref: string | null
+          public_id: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          checkout_url?: string | null
+          created_at?: string
+          credited_at?: string | null
+          currency: string
+          email?: string | null
+          id?: string
+          method: string
+          provider: string
+          provider_ref?: string | null
+          public_id?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          checkout_url?: string | null
+          created_at?: string
+          credited_at?: string | null
+          currency?: string
+          email?: string | null
+          id?: string
+          method?: string
+          provider?: string
+          provider_ref?: string | null
+          public_id?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       wallet_transactions: {
         Row: {
           amount: number
