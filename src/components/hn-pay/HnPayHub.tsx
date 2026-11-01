@@ -80,7 +80,7 @@ export function HnPayHub() {
       return { provider: method, fallbacks: method === "paypal" ? [] : ["paypal"] };
     }
     const d = routePayment({ country: simCur === "MAD" ? "MA" : "FR", currency: simCur }, DEFAULT_RULES);
-    return { provider: d.provider, fallbacks: d.fallbacks };
+    return { provider: d.primary, fallbacks: d.fallbacks };
   }, [method, simCur]);
 
   const simAmount = simCur === "MAD" ? "299.00 MAD" : simCur === "EUR" ? "€27.00" : "$29.00";
