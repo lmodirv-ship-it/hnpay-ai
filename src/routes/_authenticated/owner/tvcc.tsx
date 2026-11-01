@@ -192,3 +192,21 @@ function Stat({ icon: Icon, label, value }: { icon: any; label: string; value?: 
     </div>
   );
 }
+
+function Field({ label, value, k, copied, copy, mono, full, icon, note }: {
+  label: string; value: string; k: string; copied: string; copy: (k: string, v: string) => void;
+  mono?: boolean; full?: boolean; icon?: React.ReactNode; note?: string;
+}) {
+  return (
+    <div className={`rounded-lg border border-fx-line bg-fx-bg/60 p-3 ${full ? "md:col-span-2" : ""}`}>
+      <div className="mb-1 flex items-center gap-1.5 text-[11px] text-fx-muted">{icon}{label}</div>
+      <div className="flex items-center gap-2">
+        <span className={`flex-1 truncate text-sm ${mono ? "font-mono text-xs" : ""}`} dir={mono ? "ltr" : undefined}>{value}</span>
+        <button onClick={() => copy(k, value)} aria-label={`نسخ ${label}`} className="shrink-0 text-fx-muted hover:text-fx-text">
+          {copied === k ? <Check className="h-4 w-4 text-fx-emerald" /> : <Copy className="h-4 w-4" />}
+        </button>
+      </div>
+      {note && <p className="mt-1 text-[11px] text-fx-muted">{note}</p>}
+    </div>
+  );
+}
