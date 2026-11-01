@@ -75,6 +75,7 @@ import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
 import { Route as ApiPublicV1GoogleSyncRouteImport } from './routes/api/public/v1/google.sync'
 import { Route as ApiPublicV1GroupSecretsDistributionRouteImport } from './routes/api/public/v1/group/secrets-distribution'
+import { Route as ApiPublicV1TvccSyncRouteImport } from './routes/api/public/v1/tvcc/sync'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
 
 const IndexRoute = IndexRouteImport.update({
@@ -447,6 +448,11 @@ const ApiPublicV1GroupSecretsDistributionRoute =
     path: '/api/public/v1/group/secrets-distribution',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1TvccSyncRoute = ApiPublicV1TvccSyncRouteImport.update({
+  id: '/api/public/v1/tvcc/sync',
+  path: '/api/public/v1/tvcc/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1WebhooksMockRoute = ApiPublicV1WebhooksMockRouteImport.update({
   id: '/api/public/v1/webhooks/mock',
   path: '/api/public/v1/webhooks/mock',
@@ -519,6 +525,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesByTo {
@@ -586,6 +593,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesById {
@@ -656,6 +664,7 @@ export interface FileRoutesById {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRouteTypes {
@@ -726,6 +735,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -793,6 +803,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   id:
     | '__root__'
@@ -862,6 +873,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   fileRoutesById: FileRoutesById
 }
@@ -887,6 +899,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicV1GoogleSyncRoute: typeof ApiPublicV1GoogleSyncRoute
   ApiPublicV1GroupSecretsDistributionRoute: typeof ApiPublicV1GroupSecretsDistributionRoute
+  ApiPublicV1TvccSyncRoute: typeof ApiPublicV1TvccSyncRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
 
@@ -1354,6 +1367,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1GroupSecretsDistributionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/tvcc/sync': {
+      id: '/api/public/v1/tvcc/sync'
+      path: '/api/public/v1/tvcc/sync'
+      fullPath: '/api/public/v1/tvcc/sync'
+      preLoaderRoute: typeof ApiPublicV1TvccSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/webhooks/mock': {
       id: '/api/public/v1/webhooks/mock'
       path: '/api/public/v1/webhooks/mock'
@@ -1534,6 +1554,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1GoogleSyncRoute: ApiPublicV1GoogleSyncRoute,
   ApiPublicV1GroupSecretsDistributionRoute:
     ApiPublicV1GroupSecretsDistributionRoute,
+  ApiPublicV1TvccSyncRoute: ApiPublicV1TvccSyncRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,
 }
 export const routeTree = rootRouteImport
