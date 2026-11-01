@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { PaymentLanding } from "@/components/landing/PaymentLanding";
+import { GlobalShell } from "@/components/hn-pay/GlobalShell";
+import { HnPayHub } from "@/components/hn-pay/HnPayHub";
 import { GoogleOneTap } from "@/components/auth/GoogleOneTap";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "HN-PAY — Payments & subscriptions for any website" },
-      { name: "description", content: "Accept payments, run subscriptions and send invoices for any website from one dashboard. Arabic, English and French." },
-      { property: "og:title", content: "HN-PAY — Payments & subscriptions for any website" },
-      { property: "og:description", content: "Hosted checkout, recurring billing and automatic invoices for any site or app." },
+      { title: "HN-Pay Live — Global payments & unified subscriptions infrastructure" },
+      { name: "description", content: "Accept cards, PayPal, YouCan Pay, CMI, Google Pay and the HN-Pay Wallet with smart routing and subscriptions. Arabic, French, English." },
+      { property: "og:title", content: "HN-Pay Live — Global payments & unified subscriptions infrastructure" },
+      { property: "og:description", content: "Smart payment routing, unified wallet and NAWAT Pass for any website — one line of code." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -18,9 +19,9 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   return (
-    <>
-      <PaymentLanding />
+    <GlobalShell>
+      <HnPayHub />
       <GoogleOneTap />
-    </>
+    </GlobalShell>
   );
 }

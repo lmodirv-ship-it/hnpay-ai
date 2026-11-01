@@ -93,15 +93,15 @@ function AuthPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#05060d] px-4 font-[Inter,ui-sans-serif,system-ui] text-white">
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-fx-bg px-4 font-fx text-white">
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 top-0 h-[520px] w-[520px] rounded-full bg-amber-500/10 blur-[140px]" />
-        <div className="absolute right-0 bottom-0 h-[520px] w-[520px] rounded-full bg-violet-600/10 blur-[140px]" />
+        <div className="absolute -left-40 top-0 h-[520px] w-[520px] rounded-full bg-fx-blue/10 blur-[140px]" />
+        <div className="absolute right-0 bottom-0 h-[520px] w-[520px] rounded-full bg-fx-cyan/10 blur-[140px]" />
         <div
           className="absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
-              "linear-gradient(rgba(251,191,36,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(251,191,36,0.5) 1px, transparent 1px)",
+              "linear-gradient(color-mix(in_oklab,var(--fx-blue)_40%,transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in_oklab,var(--fx-blue)_40%,transparent) 1px, transparent 1px)",
             backgroundSize: "48px 48px",
           }}
         />
@@ -109,23 +109,23 @@ function AuthPage() {
 
       <div className="relative w-full max-w-md">
         <Link to="/" className="mb-6 flex items-center justify-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-amber-400/50 bg-amber-500/15 shadow-[0_0_30px_rgba(251,191,36,0.5)]">
-            <Crown className="h-5 w-5 text-amber-300" />
+          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-fx-blue/50 bg-fx-blue/15 shadow-[0_0_30px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
+            <Crown className="h-5 w-5 text-fx-blue" />
           </div>
           <div>
             <div className="text-lg font-bold tracking-tight">HN-Pay Hub</div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-amber-300/80">Central Identity</div>
+            <div className="text-[10px] uppercase tracking-[0.3em] text-fx-blue/80">Central Identity</div>
           </div>
         </Link>
 
-        <div className="relative overflow-hidden rounded-3xl border border-amber-500/20 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 shadow-[0_20px_80px_-20px_rgba(251,191,36,0.35)] backdrop-blur-xl">
-          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent" />
+        <div className="relative overflow-hidden rounded-3xl border border-fx-blue/20 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 shadow-[0_20px_80px_-20px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)] backdrop-blur-xl">
+          <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fx-blue/50 to-transparent" />
 
-          <div className="mb-6 flex gap-1 rounded-xl border border-white/10 bg-black/40 p-1">
+          <div className="mb-6 flex gap-1 rounded-xl border border-fx-line bg-fx-bg/60 p-1">
             <button
               onClick={() => setMode("signin")}
               className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${
-                mode === "signin" ? "bg-amber-500/20 text-amber-200" : "text-neutral-400 hover:text-white"
+                mode === "signin" ? "bg-fx-blue/20 text-fx-blue" : "text-fx-muted hover:text-white"
               }`}
             >
               Sign in
@@ -133,7 +133,7 @@ function AuthPage() {
             <button
               onClick={() => setMode("signup")}
               className={`flex-1 rounded-lg py-2 text-sm font-medium transition ${
-                mode === "signup" ? "bg-amber-500/20 text-amber-200" : "text-neutral-400 hover:text-white"
+                mode === "signup" ? "bg-fx-blue/20 text-fx-blue" : "text-fx-muted hover:text-white"
               }`}
             >
               Create account
@@ -142,7 +142,7 @@ function AuthPage() {
 
           <button
             onClick={handleGoogle}
-            className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/[0.03] py-2.5 text-sm font-medium text-white transition hover:bg-white/[0.06]"
+            className="mb-4 flex w-full items-center justify-center gap-3 rounded-xl border border-fx-line bg-white/[0.03] py-2.5 text-sm font-medium text-white transition hover:bg-white/[0.06]"
           >
             <GoogleIcon />
             Continue with Google
@@ -198,7 +198,7 @@ function AuthPage() {
             <button
               type="submit"
               disabled={busy}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-amber-400/50 bg-gradient-to-b from-amber-400/30 to-amber-500/10 py-2.5 text-sm font-semibold text-amber-100 shadow-[0_0_25px_-5px_rgba(251,191,36,0.7)] transition disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-fx-blue/50 bg-gradient-to-b from-fx-blue/30 to-fx-blue/10 py-2.5 text-sm font-semibold text-fx-blue shadow-[0_0_25px_-5px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)] transition disabled:opacity-50"
             >
               {busy ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -211,13 +211,13 @@ function AuthPage() {
             </button>
           </form>
 
-          <div className="mt-6 flex items-center justify-center gap-1.5 text-[10px] text-neutral-500">
-            <ShieldCheck className="h-3 w-3 text-emerald-400" />
+          <div className="mt-6 flex items-center justify-center gap-1.5 text-[10px] text-fx-muted">
+            <ShieldCheck className="h-3 w-3 text-fx-green" />
             Encrypted · PCI-DSS L1 · SOC 2
           </div>
         </div>
 
-        <div className="mt-6 text-center text-[11px] text-neutral-500">
+        <div className="mt-6 text-center text-[11px] text-fx-muted">
           By continuing you accept the HN Group terms.
         </div>
       </div>
@@ -227,8 +227,8 @@ function AuthPage() {
 
 function Field({ icon, children }: { icon: React.ReactNode; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-3 rounded-xl border border-white/10 bg-black/40 px-3 py-2.5 focus-within:border-amber-400/50 focus-within:shadow-[0_0_0_3px_rgba(251,191,36,0.12)]">
-      <span className="text-neutral-500">{icon}</span>
+    <div className="flex items-center gap-3 rounded-xl border border-fx-line bg-fx-bg/60 px-3 py-2.5 focus-within:border-fx-blue/50 focus-within:shadow-[0_0_0_3px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
+      <span className="text-fx-muted">{icon}</span>
       {children}
     </div>
   );
