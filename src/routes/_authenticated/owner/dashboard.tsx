@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/owner/dashboard")({
     const isOwner = (r ?? []).some((row: any) => row.role === "owner" || row.role === "admin");
     if (!isOwner) throw redirect({ to: "/user/dashboard" });
   },
-  head: () => ({ meta: [{ title: "Owner Dashboard · HN-Pay Hub" }] }),
+  head: () => ({ meta: [{ title: "لوحة تحكم المالك · HN-Pay Live" }] }),
   component: OwnerDashboardPage,
 });
 

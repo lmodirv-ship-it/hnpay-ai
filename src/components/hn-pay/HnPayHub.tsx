@@ -7,7 +7,7 @@ import { formatPrice, useFxPrefs, type Lang } from "./fx-prefs";
 const C = {
   ar: {
     badge: "متصل بمنظومة Google Cloud & AdSense (pub-3443455318197857) · PCI-DSS Level 1",
-    h1: "البنية التحتية العالمية للمدفوعات والاشتراكات الموحدة عبر الإنترنت",
+    h1: "المنصة العالمية للدفعات والاشتراكات الموحدة عبر الإنترنت",
     sub: "اقبل المدفوعات فوراً من المغرب وأوروبا والعالم عبر البطاقات البنكية الدولية، PayPal، YouCan Pay، CMI، Apple/Google Pay، ومحفظة HN-Pay الموحدة — مع إدارة ذكية للاشتراكات وإعفاء تلقائي من إعلانات Google للمشتركين.",
     cta1: "ابدأ قبول المدفوعات الآن", cta2: "استكشف تجربة الدفع الحية",
     sim: "محاكي الدفع الحي", method: "وسيلة الدفع", routed: "التوجيه الذكي اختار", fallback: "احتياطي", pay: "ادفع",
@@ -21,7 +21,7 @@ const C = {
   },
   fr: {
     badge: "Connecté à Google Cloud & AdSense (pub-3443455318197857) · PCI-DSS Level 1",
-    h1: "L'infrastructure mondiale des paiements et abonnements unifiés en ligne",
+    h1: "La plateforme mondiale des paiements et abonnements unifiés en ligne",
     sub: "Acceptez les paiements du Maroc, d'Europe et du monde : cartes internationales, PayPal, YouCan Pay, CMI, Apple/Google Pay et le portefeuille HN-Pay — avec gestion intelligente des abonnements et suppression automatique des pubs Google pour les abonnés.",
     cta1: "Commencer à encaisser", cta2: "Tester le paiement en direct",
     sim: "Simulateur de paiement", method: "Moyen de paiement", routed: "Le routage intelligent a choisi", fallback: "Secours", pay: "Payer",
@@ -35,7 +35,7 @@ const C = {
   },
   en: {
     badge: "Connected to Google Cloud & AdSense (pub-3443455318197857) · PCI-DSS Level 1",
-    h1: "Global infrastructure for unified online payments and subscriptions",
+    h1: "The global platform for unified online payments and subscriptions",
     sub: "Accept payments instantly from Morocco, Europe and the world via international cards, PayPal, YouCan Pay, CMI, Apple/Google Pay and the unified HN-Pay Wallet — with smart subscription management and automatic Google ad removal for subscribers.",
     cta1: "Start accepting payments", cta2: "Explore the live checkout",
     sim: "Live checkout simulator", method: "Payment method", routed: "Smart routing selected", fallback: "Fallback", pay: "Pay",
