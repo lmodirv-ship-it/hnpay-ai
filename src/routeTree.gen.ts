@@ -32,6 +32,7 @@ import { Route as AuthenticatedAdminCatalogRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminCategoriesRouteImport } from './routes/_authenticated/admin/categories'
 import { Route as AuthenticatedAdminCustomersRouteImport } from './routes/_authenticated/admin/customers'
 import { Route as AuthenticatedAdminFinancialProjectsRouteImport } from './routes/_authenticated/admin/financial-projects'
+import { Route as AuthenticatedAdminGoogleCloudRouteImport } from './routes/_authenticated/admin/google-cloud'
 import { Route as AuthenticatedAdminIntegrationRouteImport } from './routes/_authenticated/admin/integration'
 import { Route as AuthenticatedAdminInvoicesRouteImport } from './routes/_authenticated/admin/invoices'
 import { Route as AuthenticatedAdminNotificationsRouteImport } from './routes/_authenticated/admin/notifications'
@@ -44,6 +45,7 @@ import { Route as AuthenticatedAdminProvidersRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminRefundsRouteImport } from './routes/_authenticated/admin/refunds'
 import { Route as AuthenticatedAdminRenewalsRouteImport } from './routes/_authenticated/admin/renewals'
 import { Route as AuthenticatedAdminReportsRouteImport } from './routes/_authenticated/admin/reports'
+import { Route as AuthenticatedAdminRevenueRouteImport } from './routes/_authenticated/admin/revenue'
 import { Route as AuthenticatedAdminSecurityRouteImport } from './routes/_authenticated/admin/security'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminSettlementsRouteImport } from './routes/_authenticated/admin/settlements'
@@ -197,6 +199,12 @@ const AuthenticatedAdminFinancialProjectsRoute =
     path: '/financial-projects',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminGoogleCloudRoute =
+  AuthenticatedAdminGoogleCloudRouteImport.update({
+    id: '/google-cloud',
+    path: '/google-cloud',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminIntegrationRoute =
   AuthenticatedAdminIntegrationRouteImport.update({
     id: '/integration',
@@ -266,6 +274,12 @@ const AuthenticatedAdminReportsRoute =
   AuthenticatedAdminReportsRouteImport.update({
     id: '/reports',
     path: '/reports',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminRevenueRoute =
+  AuthenticatedAdminRevenueRouteImport.update({
+    id: '/revenue',
+    path: '/revenue',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
 const AuthenticatedAdminSecurityRoute =
@@ -454,6 +468,7 @@ export interface FileRoutesByFullPath {
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -466,6 +481,7 @@ export interface FileRoutesByFullPath {
   '/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -518,6 +534,7 @@ export interface FileRoutesByTo {
   '/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -530,6 +547,7 @@ export interface FileRoutesByTo {
   '/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -585,6 +603,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/categories': typeof AuthenticatedAdminCategoriesRoute
   '/_authenticated/admin/customers': typeof AuthenticatedAdminCustomersRoute
   '/_authenticated/admin/financial-projects': typeof AuthenticatedAdminFinancialProjectsRoute
+  '/_authenticated/admin/google-cloud': typeof AuthenticatedAdminGoogleCloudRoute
   '/_authenticated/admin/integration': typeof AuthenticatedAdminIntegrationRoute
   '/_authenticated/admin/invoices': typeof AuthenticatedAdminInvoicesRoute
   '/_authenticated/admin/notifications': typeof AuthenticatedAdminNotificationsRoute
@@ -597,6 +616,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/refunds': typeof AuthenticatedAdminRefundsRoute
   '/_authenticated/admin/renewals': typeof AuthenticatedAdminRenewalsRoute
   '/_authenticated/admin/reports': typeof AuthenticatedAdminReportsRoute
+  '/_authenticated/admin/revenue': typeof AuthenticatedAdminRevenueRoute
   '/_authenticated/admin/security': typeof AuthenticatedAdminSecurityRoute
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/settlements': typeof AuthenticatedAdminSettlementsRoute
@@ -652,6 +672,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/customers'
     | '/admin/financial-projects'
+    | '/admin/google-cloud'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -664,6 +685,7 @@ export interface FileRouteTypes {
     | '/admin/refunds'
     | '/admin/renewals'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/security'
     | '/admin/settings'
     | '/admin/settlements'
@@ -716,6 +738,7 @@ export interface FileRouteTypes {
     | '/admin/categories'
     | '/admin/customers'
     | '/admin/financial-projects'
+    | '/admin/google-cloud'
     | '/admin/integration'
     | '/admin/invoices'
     | '/admin/notifications'
@@ -728,6 +751,7 @@ export interface FileRouteTypes {
     | '/admin/refunds'
     | '/admin/renewals'
     | '/admin/reports'
+    | '/admin/revenue'
     | '/admin/security'
     | '/admin/settings'
     | '/admin/settlements'
@@ -782,6 +806,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/categories'
     | '/_authenticated/admin/customers'
     | '/_authenticated/admin/financial-projects'
+    | '/_authenticated/admin/google-cloud'
     | '/_authenticated/admin/integration'
     | '/_authenticated/admin/invoices'
     | '/_authenticated/admin/notifications'
@@ -794,6 +819,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/refunds'
     | '/_authenticated/admin/renewals'
     | '/_authenticated/admin/reports'
+    | '/_authenticated/admin/revenue'
     | '/_authenticated/admin/security'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/settlements'
@@ -1014,6 +1040,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminFinancialProjectsRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/google-cloud': {
+      id: '/_authenticated/admin/google-cloud'
+      path: '/google-cloud'
+      fullPath: '/admin/google-cloud'
+      preLoaderRoute: typeof AuthenticatedAdminGoogleCloudRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/integration': {
       id: '/_authenticated/admin/integration'
       path: '/integration'
@@ -1096,6 +1129,13 @@ declare module '@tanstack/react-router' {
       path: '/reports'
       fullPath: '/admin/reports'
       preLoaderRoute: typeof AuthenticatedAdminReportsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/revenue': {
+      id: '/_authenticated/admin/revenue'
+      path: '/revenue'
+      fullPath: '/admin/revenue'
+      preLoaderRoute: typeof AuthenticatedAdminRevenueRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/security': {
@@ -1311,6 +1351,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminCategoriesRoute: typeof AuthenticatedAdminCategoriesRoute
   AuthenticatedAdminCustomersRoute: typeof AuthenticatedAdminCustomersRoute
   AuthenticatedAdminFinancialProjectsRoute: typeof AuthenticatedAdminFinancialProjectsRoute
+  AuthenticatedAdminGoogleCloudRoute: typeof AuthenticatedAdminGoogleCloudRoute
   AuthenticatedAdminIntegrationRoute: typeof AuthenticatedAdminIntegrationRoute
   AuthenticatedAdminInvoicesRoute: typeof AuthenticatedAdminInvoicesRoute
   AuthenticatedAdminNotificationsRoute: typeof AuthenticatedAdminNotificationsRoute
@@ -1323,6 +1364,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminRefundsRoute: typeof AuthenticatedAdminRefundsRoute
   AuthenticatedAdminRenewalsRoute: typeof AuthenticatedAdminRenewalsRoute
   AuthenticatedAdminReportsRoute: typeof AuthenticatedAdminReportsRoute
+  AuthenticatedAdminRevenueRoute: typeof AuthenticatedAdminRevenueRoute
   AuthenticatedAdminSecurityRoute: typeof AuthenticatedAdminSecurityRoute
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminSettlementsRoute: typeof AuthenticatedAdminSettlementsRoute
@@ -1343,6 +1385,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminCustomersRoute: AuthenticatedAdminCustomersRoute,
     AuthenticatedAdminFinancialProjectsRoute:
       AuthenticatedAdminFinancialProjectsRoute,
+    AuthenticatedAdminGoogleCloudRoute: AuthenticatedAdminGoogleCloudRoute,
     AuthenticatedAdminIntegrationRoute: AuthenticatedAdminIntegrationRoute,
     AuthenticatedAdminInvoicesRoute: AuthenticatedAdminInvoicesRoute,
     AuthenticatedAdminNotificationsRoute: AuthenticatedAdminNotificationsRoute,
@@ -1355,6 +1398,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminRefundsRoute: AuthenticatedAdminRefundsRoute,
     AuthenticatedAdminRenewalsRoute: AuthenticatedAdminRenewalsRoute,
     AuthenticatedAdminReportsRoute: AuthenticatedAdminReportsRoute,
+    AuthenticatedAdminRevenueRoute: AuthenticatedAdminRevenueRoute,
     AuthenticatedAdminSecurityRoute: AuthenticatedAdminSecurityRoute,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminSettlementsRoute: AuthenticatedAdminSettlementsRoute,
