@@ -83,3 +83,17 @@ export async function applyTvccSync(db: any, payload: TvccPayload) {
     return { ok: false, error: msg, created, updated, plans: plansUpserted };
   }
 }
+
+/** Map the TVCC hn-service catalog response into our sync payload. */
+export function mapTvccCatalog(raw: any): TvccPayload {
+  const sites = (Array.isArray(raw?.sites) ? raw.sites : [])
+    .filter((s: any) => s?.domain && (s.id || s.site_id))
+    .map((s: any) => ({
+      external_id: String(s.id ?? s.site_id),
+      domain: normalizeDomain(String(s.frontend_domain || s.domain)),
+      name: s.name ? String(s.name).slice(0, 200) : undefined,
+      is_active: s.is_active !== false,
+      plans: Array.isArray(s.plans) ? s.plans : undefined,
+    }));
+  return tvccPayloadSchema.parse({ sites });
+}

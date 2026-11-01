@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Copy, Check, Link2, Search, Globe, Layers, Users, Inbox, RefreshCw } from "lucide-react";
 import { OwnerShell } from "@/routes/_authenticated/owner/dashboard";
 import { useHnSession } from "@/lib/auth/use-session";
-import { getTvccOverview, listSiteRequests, reviewSiteRequest } from "@/lib/hn-pay/tvcc.functions";
+import { getTvccOverview, listSiteRequests, reviewSiteRequest, pullFromTvcc } from "@/lib/hn-pay/tvcc.functions";
 
 export const Route = createFileRoute("/_authenticated/owner/tvcc")({
   ssr: false,
@@ -31,6 +31,8 @@ function TvccPage() {
     mutationFn: (v: { id: string; status: "approved" | "rejected" }) => reviewFn({ data: v }),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ["tvcc-req"] }); qc.invalidateQueries({ queryKey: ["tvcc"] }); },
   });
+  const pullFn = useServerFn(pullFromTvcc);
+  const pull = useMutation({ mutationFn: () => pullFn(), onSuccess: () => qc.invalidateQueries({ queryKey: ["tvcc"] }) });
   const endpoint = typeof window !== "undefined" ? `${window.location.origin}/api/public/v1/tvcc/sync` : "/api/public/v1/tvcc/sync";
   const copy = (k: string, v: string) => { navigator.clipboard.writeText(v); setCopied(k); setTimeout(() => setCopied(""), 1500); };
   const sample = `POST ${endpoint}
@@ -51,11 +53,18 @@ Content-Type: application/json
           <h1 className="text-2xl font-bold">ربط TVCC</h1>
           <p className="text-sm text-fx-muted">TVCC هي من تتحكم في ربط المواقع. كل مزامنة منها تحدّث المواقع والباقات هنا تلقائياً.</p>
         </div>
+        <div className="flex gap-2">
+        <button onClick={() => pull.mutate()} disabled={pull.isPending} className="inline-flex items-center gap-2 rounded-lg bg-fx-blue px-3 py-2 text-xs text-primary-foreground disabled:opacity-50">
+          <Link2 className="h-3.5 w-3.5" /> {pull.isPending ? "جارٍ السحب…" : "سحب المواقع من TVCC الآن"}
+        </button>
         <button onClick={() => refetch()} className="inline-flex items-center gap-2 rounded-lg border border-fx-line px-3 py-2 text-xs hover:bg-fx-text/5">
           <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? "animate-spin" : ""}`} /> تحديث
         </button>
+        </div>
       </div>
 
+      {pull.data && <p className={`mb-4 text-sm ${pull.data.ok ? "text-fx-emerald" : "text-destructive"}`}>{pull.data.ok ? `تمت المزامنة: ${pull.data.created} موقع جديد، ${pull.data.updated} محدَّث، ${pull.data.plans} باقة.` : `فشلت المزامنة: ${pull.data.error}`}</p>}
+      {pull.error && <p className="mb-4 text-sm text-destructive">{(pull.error as Error).message}</p>}
       <div className="mb-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         <Stat icon={Globe} label="كل المواقع" value={t?.sites} />
         <Stat icon={Link2} label="مواقع من TVCC" value={t?.tvccSites} />
