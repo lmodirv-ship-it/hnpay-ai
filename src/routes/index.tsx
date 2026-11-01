@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { PaymentLanding } from "@/components/landing/PaymentLanding";
+import { GoogleOneTap } from "@/components/auth/GoogleOneTap";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -12,5 +13,14 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: PaymentLanding,
+  component: Home,
 });
+
+function Home() {
+  return (
+    <>
+      <PaymentLanding />
+      <GoogleOneTap />
+    </>
+  );
+}
