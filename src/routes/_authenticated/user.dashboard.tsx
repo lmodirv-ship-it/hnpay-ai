@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
 import { ConsumerHub } from "@/components/hn-pay/ConsumerHub";
+import { Logo } from "@/components/brand/Logo";
 import {
   Crown, LogOut, User as UserIcon, Wallet, Zap, CheckCircle2,
   CreditCard, ArrowRight, Sparkles, Boxes,
@@ -53,15 +54,7 @@ function UserDashboard() {
 
       <header className="relative border-b border-fx-blue/10 bg-fx-bg/60 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-fx-blue/50 bg-fx-blue/15 shadow-[0_0_20px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
-              <Crown className="h-4 w-4 text-fx-blue" />
-            </div>
-            <div>
-              <div className="text-sm font-bold">HN-Pay Hub</div>
-              <div className="text-[10px] uppercase tracking-[0.3em] text-fx-blue/70">My Space</div>
-            </div>
-          </Link>
+          <Logo subtitle="My Space" />
           <div className="flex items-center gap-3">
             <div className="hidden text-right sm:block">
               <div className="text-xs text-white">{profile?.full_name ?? profile?.email}</div>

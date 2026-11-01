@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate, useSearch } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
+import { Logo } from "@/components/brand/Logo";
 import { pickPostLoginRoute } from "@/lib/auth/use-session";
 import { Crown, Loader2, Mail, Lock, User as UserIcon, ArrowRight, ShieldCheck } from "lucide-react";
 
@@ -108,15 +109,7 @@ function AuthPage() {
       </div>
 
       <div className="relative w-full max-w-md">
-        <Link to="/" className="mb-6 flex items-center justify-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-fx-blue/50 bg-fx-blue/15 shadow-[0_0_30px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)]">
-            <Crown className="h-5 w-5 text-fx-blue" />
-          </div>
-          <div>
-            <div className="text-lg font-bold tracking-tight">HN-Pay Hub</div>
-            <div className="text-[10px] uppercase tracking-[0.3em] text-fx-blue/80">Central Identity</div>
-          </div>
-        </Link>
+        <div className="mb-6 flex justify-center"><Logo size={44} subtitle="Central Identity" /></div>
 
         <div className="relative overflow-hidden rounded-3xl border border-fx-blue/20 bg-gradient-to-b from-white/[0.04] to-white/[0.01] p-8 shadow-[0_20px_80px_-20px_color-mix(in_oklab,var(--fx-blue)_40%,transparent)] backdrop-blur-xl">
           <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-fx-blue/50 to-transparent" />
