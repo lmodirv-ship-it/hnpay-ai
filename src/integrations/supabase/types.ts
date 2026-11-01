@@ -2356,6 +2356,9 @@ export type Database = {
           portfolio_id: string | null
           project_id: string | null
           slug: string
+          source: string
+          tvcc_external_id: string | null
+          tvcc_synced_at: string | null
           updated_at: string
           webhook_enabled: boolean
           webhook_secret: string
@@ -2391,6 +2394,9 @@ export type Database = {
           portfolio_id?: string | null
           project_id?: string | null
           slug: string
+          source?: string
+          tvcc_external_id?: string | null
+          tvcc_synced_at?: string | null
           updated_at?: string
           webhook_enabled?: boolean
           webhook_secret?: string
@@ -2426,6 +2432,9 @@ export type Database = {
           portfolio_id?: string | null
           project_id?: string | null
           slug?: string
+          source?: string
+          tvcc_external_id?: string | null
+          tvcc_synced_at?: string | null
           updated_at?: string
           webhook_enabled?: boolean
           webhook_secret?: string
@@ -2561,6 +2570,42 @@ export type Database = {
           },
         ]
       }
+      tvcc_sync_runs: {
+        Row: {
+          error: string | null
+          finished_at: string | null
+          id: string
+          plans_upserted: number
+          sites_created: number
+          sites_received: number
+          sites_updated: number
+          started_at: string
+          status: string
+        }
+        Insert: {
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          plans_upserted?: number
+          sites_created?: number
+          sites_received?: number
+          sites_updated?: number
+          started_at?: string
+          status?: string
+        }
+        Update: {
+          error?: string | null
+          finished_at?: string | null
+          id?: string
+          plans_upserted?: number
+          sites_created?: number
+          sites_received?: number
+          sites_updated?: number
+          started_at?: string
+          status?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           app_id: string
@@ -2581,6 +2626,42 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_site_requests: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          name: string
+          notes: string | null
+          status: string
+          updated_at: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          url?: string | null
           user_id?: string
         }
         Relationships: []

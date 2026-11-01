@@ -59,6 +59,7 @@ import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authe
 import { Route as AuthenticatedOwnerPortfoliosRouteImport } from './routes/_authenticated/owner/portfolios'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
 import { Route as AuthenticatedOwnerSitesRouteImport } from './routes/_authenticated/owner/sites'
+import { Route as AuthenticatedOwnerTvccRouteImport } from './routes/_authenticated/owner/tvcc'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as PayEmbedSessionIdRouteImport } from './routes/pay/embed.$sessionId'
@@ -75,6 +76,7 @@ import { Route as ApiPublicWebhooksStripeRouteImport } from './routes/api/public
 import { Route as ApiPublicV1CheckoutSessionsSessionIdRouteImport } from './routes/api/public/v1/checkout-sessions.$sessionId'
 import { Route as ApiPublicV1GoogleSyncRouteImport } from './routes/api/public/v1/google.sync'
 import { Route as ApiPublicV1GroupSecretsDistributionRouteImport } from './routes/api/public/v1/group/secrets-distribution'
+import { Route as ApiPublicV1TvccSyncRouteImport } from './routes/api/public/v1/tvcc/sync'
 import { Route as ApiPublicV1WebhooksMockRouteImport } from './routes/api/public/v1/webhooks.mock'
 
 const IndexRoute = IndexRouteImport.update({
@@ -357,6 +359,11 @@ const AuthenticatedOwnerSitesRoute = AuthenticatedOwnerSitesRouteImport.update({
   path: '/owner/sites',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerTvccRoute = AuthenticatedOwnerTvccRouteImport.update({
+  id: '/owner/tvcc',
+  path: '/owner/tvcc',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOwnerUsersRoute = AuthenticatedOwnerUsersRouteImport.update({
   id: '/owner/users',
   path: '/owner/users',
@@ -447,6 +454,11 @@ const ApiPublicV1GroupSecretsDistributionRoute =
     path: '/api/public/v1/group/secrets-distribution',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicV1TvccSyncRoute = ApiPublicV1TvccSyncRouteImport.update({
+  id: '/api/public/v1/tvcc/sync',
+  path: '/api/public/v1/tvcc/sync',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicV1WebhooksMockRoute = ApiPublicV1WebhooksMockRouteImport.update({
   id: '/api/public/v1/webhooks/mock',
   path: '/api/public/v1/webhooks/mock',
@@ -502,6 +514,7 @@ export interface FileRoutesByFullPath {
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -519,6 +532,7 @@ export interface FileRoutesByFullPath {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesByTo {
@@ -569,6 +583,7 @@ export interface FileRoutesByTo {
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -586,6 +601,7 @@ export interface FileRoutesByTo {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRoutesById {
@@ -639,6 +655,7 @@ export interface FileRoutesById {
   '/_authenticated/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/_authenticated/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/_authenticated/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -656,6 +673,7 @@ export interface FileRoutesById {
   '/api/public/v1/checkout-sessions/$sessionId': typeof ApiPublicV1CheckoutSessionsSessionIdRoute
   '/api/public/v1/google/sync': typeof ApiPublicV1GoogleSyncRoute
   '/api/public/v1/group/secrets-distribution': typeof ApiPublicV1GroupSecretsDistributionRoute
+  '/api/public/v1/tvcc/sync': typeof ApiPublicV1TvccSyncRoute
   '/api/public/v1/webhooks/mock': typeof ApiPublicV1WebhooksMockRoute
 }
 export interface FileRouteTypes {
@@ -709,6 +727,7 @@ export interface FileRouteTypes {
     | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
+    | '/owner/tvcc'
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -726,6 +745,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -776,6 +796,7 @@ export interface FileRouteTypes {
     | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
+    | '/owner/tvcc'
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -793,6 +814,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   id:
     | '__root__'
@@ -845,6 +867,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/portfolios'
     | '/_authenticated/owner/roles'
     | '/_authenticated/owner/sites'
+    | '/_authenticated/owner/tvcc'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -862,6 +885,7 @@ export interface FileRouteTypes {
     | '/api/public/v1/checkout-sessions/$sessionId'
     | '/api/public/v1/google/sync'
     | '/api/public/v1/group/secrets-distribution'
+    | '/api/public/v1/tvcc/sync'
     | '/api/public/v1/webhooks/mock'
   fileRoutesById: FileRoutesById
 }
@@ -887,6 +911,7 @@ export interface RootRouteChildren {
   ApiPublicWebhooksStripeRoute: typeof ApiPublicWebhooksStripeRoute
   ApiPublicV1GoogleSyncRoute: typeof ApiPublicV1GoogleSyncRoute
   ApiPublicV1GroupSecretsDistributionRoute: typeof ApiPublicV1GroupSecretsDistributionRoute
+  ApiPublicV1TvccSyncRoute: typeof ApiPublicV1TvccSyncRoute
   ApiPublicV1WebhooksMockRoute: typeof ApiPublicV1WebhooksMockRoute
 }
 
@@ -1242,6 +1267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerSitesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/tvcc': {
+      id: '/_authenticated/owner/tvcc'
+      path: '/owner/tvcc'
+      fullPath: '/owner/tvcc'
+      preLoaderRoute: typeof AuthenticatedOwnerTvccRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/users': {
       id: '/_authenticated/owner/users'
       path: '/owner/users'
@@ -1354,6 +1386,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicV1GroupSecretsDistributionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/v1/tvcc/sync': {
+      id: '/api/public/v1/tvcc/sync'
+      path: '/api/public/v1/tvcc/sync'
+      fullPath: '/api/public/v1/tvcc/sync'
+      preLoaderRoute: typeof ApiPublicV1TvccSyncRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/v1/webhooks/mock': {
       id: '/api/public/v1/webhooks/mock'
       path: '/api/public/v1/webhooks/mock'
@@ -1456,6 +1495,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerPortfoliosRoute: typeof AuthenticatedOwnerPortfoliosRoute
   AuthenticatedOwnerRolesRoute: typeof AuthenticatedOwnerRolesRoute
   AuthenticatedOwnerSitesRoute: typeof AuthenticatedOwnerSitesRouteWithChildren
+  AuthenticatedOwnerTvccRoute: typeof AuthenticatedOwnerTvccRoute
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
   AuthenticatedOwnerHnPayCatalogRoute: typeof AuthenticatedOwnerHnPayCatalogRoute
@@ -1472,6 +1512,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerPortfoliosRoute: AuthenticatedOwnerPortfoliosRoute,
   AuthenticatedOwnerRolesRoute: AuthenticatedOwnerRolesRoute,
   AuthenticatedOwnerSitesRoute: AuthenticatedOwnerSitesRouteWithChildren,
+  AuthenticatedOwnerTvccRoute: AuthenticatedOwnerTvccRoute,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
   AuthenticatedOwnerHnPayCatalogRoute: AuthenticatedOwnerHnPayCatalogRoute,
@@ -1534,6 +1575,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicV1GoogleSyncRoute: ApiPublicV1GoogleSyncRoute,
   ApiPublicV1GroupSecretsDistributionRoute:
     ApiPublicV1GroupSecretsDistributionRoute,
+  ApiPublicV1TvccSyncRoute: ApiPublicV1TvccSyncRoute,
   ApiPublicV1WebhooksMockRoute: ApiPublicV1WebhooksMockRoute,
 }
 export const routeTree = rootRouteImport

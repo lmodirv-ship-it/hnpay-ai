@@ -187,6 +187,7 @@ export function OwnerShell({
               <NavLink to="/owner/dashboard">نظرة عامة</NavLink>
               <NavLink to="/admin">مركز القيادة</NavLink>
               <NavLink to="/owner/sites">المواقع</NavLink>
+              <NavLink to="/owner/tvcc">ربط TVCC</NavLink>
               <NavLink to="/owner/hn-pay/catalog">الكتالوج</NavLink>
               <NavLink to="/admin/providers">البوابات</NavLink>
               <NavLink to="/owner/hn-pay/monitor">المراقبة</NavLink>

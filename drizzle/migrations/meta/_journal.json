@@ -15,6 +15,13 @@
       "when": 1793521698542,
       "tag": "0001_wallet_topups",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793524860240,
+      "tag": "0002_tvcc_sync_and_user_requests",
+      "breakpoints": true
     }
   ]
 }

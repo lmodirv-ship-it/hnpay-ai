@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useHnSession } from "@/lib/auth/use-session";
 import { ConsumerHub } from "@/components/hn-pay/ConsumerHub";
+import { UserSiteRequests } from "@/components/hn-pay/UserSiteRequests";
 import { Logo } from "@/components/brand/Logo";
 import {
   Crown, LogOut, User as UserIcon, Wallet, Zap, CheckCircle2,
@@ -84,6 +85,7 @@ function UserDashboard() {
         </div>
 
         <ConsumerHub />
+        <div className="mt-6"><UserSiteRequests /></div>
 
         {/* KPIs */}
         <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
