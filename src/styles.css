@@ -142,3 +142,27 @@
     color: var(--color-foreground);
   }
 }
+
+/* Public payment-platform landing theme (scoped) */
+@theme inline {
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+  --font-display: "Space Grotesk", "IBM Plex Sans Arabic", system-ui, sans-serif;
+  --font-body: "IBM Plex Sans Arabic", "Space Grotesk", system-ui, sans-serif;
+}
+:root {
+  --brand: oklch(0.62 0.17 155);
+  --brand-foreground: oklch(0.99 0.01 155);
+  --brand-soft: oklch(0.95 0.05 155);
+  --ink: oklch(0.18 0.03 250);
+  --ink-foreground: oklch(0.97 0.01 250);
+  --gradient-brand: linear-gradient(135deg, oklch(0.62 0.17 155), oklch(0.7 0.15 195));
+  --shadow-card: 0 30px 60px -30px color-mix(in oklab, var(--ink) 35%, transparent);
+}
+.landing { font-family: var(--font-body); }
+.landing h1, .landing h2, .landing h3 { font-family: var(--font-display); letter-spacing: -0.02em; }
+.bg-gradient-brand { background-image: var(--gradient-brand); }
+.shadow-card { box-shadow: var(--shadow-card); }
