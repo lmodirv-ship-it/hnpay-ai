@@ -59,6 +59,7 @@ import { Route as AuthenticatedOwnerDashboardRouteImport } from './routes/_authe
 import { Route as AuthenticatedOwnerPortfoliosRouteImport } from './routes/_authenticated/owner/portfolios'
 import { Route as AuthenticatedOwnerRolesRouteImport } from './routes/_authenticated/owner/roles'
 import { Route as AuthenticatedOwnerSitesRouteImport } from './routes/_authenticated/owner/sites'
+import { Route as AuthenticatedOwnerTvccRouteImport } from './routes/_authenticated/owner/tvcc'
 import { Route as AuthenticatedOwnerUsersRouteImport } from './routes/_authenticated/owner/users'
 import { Route as AuthenticatedUserDashboardRouteImport } from './routes/_authenticated/user.dashboard'
 import { Route as PayEmbedSessionIdRouteImport } from './routes/pay/embed.$sessionId'
@@ -358,6 +359,11 @@ const AuthenticatedOwnerSitesRoute = AuthenticatedOwnerSitesRouteImport.update({
   path: '/owner/sites',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedOwnerTvccRoute = AuthenticatedOwnerTvccRouteImport.update({
+  id: '/owner/tvcc',
+  path: '/owner/tvcc',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedOwnerUsersRoute = AuthenticatedOwnerUsersRouteImport.update({
   id: '/owner/users',
   path: '/owner/users',
@@ -508,6 +514,7 @@ export interface FileRoutesByFullPath {
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -576,6 +583,7 @@ export interface FileRoutesByTo {
   '/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -647,6 +655,7 @@ export interface FileRoutesById {
   '/_authenticated/owner/portfolios': typeof AuthenticatedOwnerPortfoliosRoute
   '/_authenticated/owner/roles': typeof AuthenticatedOwnerRolesRoute
   '/_authenticated/owner/sites': typeof AuthenticatedOwnerSitesRouteWithChildren
+  '/_authenticated/owner/tvcc': typeof AuthenticatedOwnerTvccRoute
   '/_authenticated/owner/users': typeof AuthenticatedOwnerUsersRoute
   '/_authenticated/user/dashboard': typeof AuthenticatedUserDashboardRoute
   '/pay/embed/$sessionId': typeof PayEmbedSessionIdRoute
@@ -718,6 +727,7 @@ export interface FileRouteTypes {
     | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
+    | '/owner/tvcc'
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -786,6 +796,7 @@ export interface FileRouteTypes {
     | '/owner/portfolios'
     | '/owner/roles'
     | '/owner/sites'
+    | '/owner/tvcc'
     | '/owner/users'
     | '/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -856,6 +867,7 @@ export interface FileRouteTypes {
     | '/_authenticated/owner/portfolios'
     | '/_authenticated/owner/roles'
     | '/_authenticated/owner/sites'
+    | '/_authenticated/owner/tvcc'
     | '/_authenticated/owner/users'
     | '/_authenticated/user/dashboard'
     | '/pay/embed/$sessionId'
@@ -1255,6 +1267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOwnerSitesRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/owner/tvcc': {
+      id: '/_authenticated/owner/tvcc'
+      path: '/owner/tvcc'
+      fullPath: '/owner/tvcc'
+      preLoaderRoute: typeof AuthenticatedOwnerTvccRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/owner/users': {
       id: '/_authenticated/owner/users'
       path: '/owner/users'
@@ -1476,6 +1495,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOwnerPortfoliosRoute: typeof AuthenticatedOwnerPortfoliosRoute
   AuthenticatedOwnerRolesRoute: typeof AuthenticatedOwnerRolesRoute
   AuthenticatedOwnerSitesRoute: typeof AuthenticatedOwnerSitesRouteWithChildren
+  AuthenticatedOwnerTvccRoute: typeof AuthenticatedOwnerTvccRoute
   AuthenticatedOwnerUsersRoute: typeof AuthenticatedOwnerUsersRoute
   AuthenticatedUserDashboardRoute: typeof AuthenticatedUserDashboardRoute
   AuthenticatedOwnerHnPayCatalogRoute: typeof AuthenticatedOwnerHnPayCatalogRoute
@@ -1492,6 +1512,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOwnerPortfoliosRoute: AuthenticatedOwnerPortfoliosRoute,
   AuthenticatedOwnerRolesRoute: AuthenticatedOwnerRolesRoute,
   AuthenticatedOwnerSitesRoute: AuthenticatedOwnerSitesRouteWithChildren,
+  AuthenticatedOwnerTvccRoute: AuthenticatedOwnerTvccRoute,
   AuthenticatedOwnerUsersRoute: AuthenticatedOwnerUsersRoute,
   AuthenticatedUserDashboardRoute: AuthenticatedUserDashboardRoute,
   AuthenticatedOwnerHnPayCatalogRoute: AuthenticatedOwnerHnPayCatalogRoute,
